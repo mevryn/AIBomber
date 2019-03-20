@@ -43,3 +43,7 @@ hs_err_pid*
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
+# Maven
+log/
+target/
