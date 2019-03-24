@@ -1,11 +1,9 @@
 package GUI;
 
-import GameEngine.Game;
-
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
-public class Render2D extends Canvas {
+public class Renderer2D extends Canvas implements Renderer {
 
 
     public static final int  WIDTH = 640;

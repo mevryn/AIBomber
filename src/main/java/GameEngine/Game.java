@@ -1,11 +1,8 @@
 package GameEngine;
 
-import java.awt.*;
-
-import GUI.Render2D;
+import GUI.Renderer;
+import GUI.Renderer2D;
 import GUI.Window;
-
-import javax.swing.text.StyledEditorKit;
 
 public class Game implements Runnable{
 
@@ -14,8 +11,9 @@ public class Game implements Runnable{
 
     private Thread thread;
     private Boolean running = false;
+    private Window window;
     public Game(){
-        Window window = new Window(WIDTH,HEIGHT,"AiBomber",new Render2D());
+        window = new Window(WIDTH,HEIGHT,"AiBomber",new Renderer2D());
     }
 
     public synchronized void start(){
@@ -49,7 +47,7 @@ public class Game implements Runnable{
                 delta --;
             }
             if(running)
-                render2D.render();
+                window.getRenderer().render();
             frames++;
             if(System.currentTimeMillis()-timer>1000){
                 timer += 1000;
