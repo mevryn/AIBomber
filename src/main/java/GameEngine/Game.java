@@ -1,19 +1,31 @@
 package GameEngine;
 
+import BoardGame.TypicalBoardGame;
 import GUI.Renderer;
 import GUI.Renderer2D;
 import GUI.Window;
+import Player.ID;
+import Player.ManualPlayer;
 
-public class Game implements Runnable{
+import java.awt.*;
+import java.awt.image.BufferStrategy;
 
-    public static final int  WIDTH = 640;
-    public static final int  HEIGHT = 480;
+public class Game extends Canvas implements Runnable{
 
+    public static final int  WIDTH = 800;
+    public static final int  HEIGHT = 600;
+
+    private Handler handler;
     private Thread thread;
     private Boolean running = false;
-    private Window window;
     public Game(){
-        window = new Window(WIDTH,HEIGHT,"AiBomber",new Renderer2D());
+        new Window(WIDTH,HEIGHT,"AiBomber",this);
+        handler = new Handler();
+        handler.setBoardGame(new TypicalBoardGame(640,480,32));
+        handler.addObject(new ManualPlayer(50,50, ID.Player));
+        handler.addObject(new ManualPlayer(100,100, ID.Player));
+        handler.addObject(new ManualPlayer(150,150, ID.MyAI));
+        handler.addObject(new ManualPlayer(200,200, ID.MyAI));
     }
 
     public synchronized void start(){
@@ -47,7 +59,7 @@ public class Game implements Runnable{
                 delta --;
             }
             if(running)
-                window.getRenderer().render();
+              render();
             frames++;
             if(System.currentTimeMillis()-timer>1000){
                 timer += 1000;
@@ -58,8 +70,21 @@ public class Game implements Runnable{
         stop();
     }
 
+    public void render(){
+        BufferStrategy bufferStrategy = this.getBufferStrategy();
+        if(bufferStrategy == null){
+            this.createBufferStrategy(3);
+            return;
+        }
+        Graphics g = bufferStrategy.getDrawGraphics();
+        g.setColor(Color.black);
+        g.fillRect(0,0,WIDTH,HEIGHT);
+        handler.render(g);
+        g.dispose();
+        bufferStrategy.show();
+    }
     public void tick(){
-
+        handler.tick();
     }
 
     public static void main(String[] args){
