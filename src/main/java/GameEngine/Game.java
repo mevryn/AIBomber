@@ -17,15 +17,19 @@ public class Game extends Canvas implements Runnable{
 
     private Handler handler;
     private Thread thread;
+    
+    private int boardSizeX = 608;
+    private int boardSizeY = 448;
+    
     private Boolean running = false;
     public Game(){
         new Window(WIDTH,HEIGHT,"AiBomber",this);
         handler = new Handler();
-        handler.setBoardGame(new TypicalBoardGame(640,480,32));
-        handler.addObject(new ManualPlayer(50,50, ID.Player));
-        handler.addObject(new ManualPlayer(100,100, ID.Player));
-        handler.addObject(new ManualPlayer(150,150, ID.MyAI));
-        handler.addObject(new ManualPlayer(200,200, ID.MyAI));
+        handler.setBoardGame(new TypicalBoardGame(WIDTH,HEIGHT,boardSizeX,boardSizeY,32));
+        handler.addObject(new ManualPlayer((WIDTH - boardSizeX)/2,(HEIGHT-boardSizeY)/2, ID.PLAYER));
+        handler.addObject(new ManualPlayer((WIDTH - boardSizeX)/2,HEIGHT-(HEIGHT-boardSizeY)/2-32, ID.PLAYER));
+        handler.addObject(new ManualPlayer(WIDTH-(WIDTH-boardSizeX)/2-32,HEIGHT-(HEIGHT-boardSizeY)/2-32, ID.MYAI));
+        handler.addObject(new ManualPlayer(WIDTH-(WIDTH-boardSizeX)/2-32,(HEIGHT-boardSizeY)/2, ID.MYAI));
     }
 
     public synchronized void start(){

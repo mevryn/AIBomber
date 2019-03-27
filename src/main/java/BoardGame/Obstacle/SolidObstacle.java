@@ -4,10 +4,10 @@ import java.awt.*;
 
 public class SolidObstacle extends Obstacle{
 
-    public SolidObstacle(int sizeX,int sizeY) {
+    public SolidObstacle() {
         this.destroyable = false;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        this.sizeX = 32;
+        this.sizeY = 32;
     }
     public boolean isDestroyable() {
         return destroyable;
