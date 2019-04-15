@@ -14,7 +14,8 @@ public class TypicalBoardGame implements BoardGame {
     private int tileSize;
     private int gameSizeWidth;
     private int gameSizeHeight;
-
+    private int tilesVertically;
+    private int tilesHorizontally;
     private ArrayList<SolidObstacle> solidObstacles = new ArrayList<>();
 
     @Override
@@ -22,10 +23,12 @@ public class TypicalBoardGame implements BoardGame {
         return tileSize;
     }
 
-    public TypicalBoardGame(int gameSizeWidth,int gameSizeHeight,int sizeX, int sizeY, int tileSize) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+    public TypicalBoardGame(int gameSizeWidth,int gameSizeHeight, int tileSize,int tilesVertically,int tilesHorizontally) {
         this.tileSize = tileSize;
+        this.tilesVertically=tilesVertically;
+        this.tilesHorizontally = tilesHorizontally;
+        this.sizeY = tilesVertically*tileSize;
+        this.sizeX = tilesHorizontally*tileSize;
         this.gameSizeWidth = gameSizeWidth;
         this.gameSizeHeight = gameSizeHeight;
         this.sizeOffsetX = (gameSizeWidth - sizeX) / 2;
@@ -45,6 +48,11 @@ public class TypicalBoardGame implements BoardGame {
     @Override
     public int getSizeY() {
         return sizeY;
+    }
+
+    @Override
+    public int getNumberOfTiles(int vertically, int horizontally) {
+        return 0;
     }
 
     public void boardGameRender(Graphics graphics){

@@ -8,6 +8,7 @@ public abstract class GameObject {
     protected int x,y;
     protected int velX,velY;
     protected ID id;
+    protected Point point;
     public GameObject(int x, int y,ID id) {
         this.x = x;
         this.y = y;

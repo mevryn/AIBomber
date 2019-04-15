@@ -1,5 +1,6 @@
 package GameEngine;
 
+import BoardGame.BoardGame;
 import BoardGame.TypicalBoardGame;
 import GUI.Renderer;
 import GUI.Renderer2D;
@@ -18,18 +19,18 @@ public class Game extends Canvas implements Runnable{
     private Handler handler;
     private Thread thread;
     
-    private int boardSizeX = 608;
-    private int boardSizeY = 448;
+
     
     private Boolean running = false;
     public Game(){
         new Window(WIDTH,HEIGHT,"AiBomber",this);
         handler = new Handler();
-        handler.setBoardGame(new TypicalBoardGame(WIDTH,HEIGHT,boardSizeX,boardSizeY,32));
-        handler.addObject(new ManualPlayer((WIDTH - boardSizeX)/2,(HEIGHT-boardSizeY)/2, ID.PLAYER));
-        handler.addObject(new ManualPlayer((WIDTH - boardSizeX)/2,HEIGHT-(HEIGHT-boardSizeY)/2-32, ID.PLAYER));
-        handler.addObject(new ManualPlayer(WIDTH-(WIDTH-boardSizeX)/2-32,HEIGHT-(HEIGHT-boardSizeY)/2-32, ID.MYAI));
-        handler.addObject(new ManualPlayer(WIDTH-(WIDTH-boardSizeX)/2-32,(HEIGHT-boardSizeY)/2, ID.MYAI));
+        BoardGame boardGame = new TypicalBoardGame(WIDTH,HEIGHT,32,13,15);
+        handler.setBoardGame(boardGame);
+        handler.addObject(new ManualPlayer((WIDTH - boardGame.getSizeX())/2,(HEIGHT-boardGame.getSizeY())/2, ID.PLAYER));
+        handler.addObject(new ManualPlayer((WIDTH - boardGame.getSizeX())/2,HEIGHT-(HEIGHT-boardGame.getSizeY())/2-32, ID.PLAYER));
+        handler.addObject(new ManualPlayer(WIDTH-(WIDTH-boardGame.getSizeX())/2-32,HEIGHT-(HEIGHT-boardGame.getSizeY())/2-32, ID.MYAI));
+        handler.addObject(new ManualPlayer(WIDTH-(WIDTH-boardGame.getSizeX())/2-32,(HEIGHT-boardGame.getSizeY())/2, ID.MYAI));
     }
 
     public synchronized void start(){
