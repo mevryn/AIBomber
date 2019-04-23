@@ -6,9 +6,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-class BoardGame {
+public class BoardGame {
     private Map<Player,Point> map = new HashMap<>();
-
     public boolean put(Player player,Point point){
         if(checkIfFieldIsEmpty(point)){
             map.put(player,point);

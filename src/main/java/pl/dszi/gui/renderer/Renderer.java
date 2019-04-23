@@ -1,5 +1,7 @@
 package pl.dszi.gui.renderer;
 
-public interface Renderer {
-    public void render();
+import java.awt.*;
+
+public abstract class Renderer extends Canvas {
+    public abstract void render();
 }

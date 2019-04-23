@@ -4,8 +4,6 @@ import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
 
-import java.awt.*;
-
 public class Game implements Runnable{
 
 
