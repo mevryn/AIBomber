@@ -6,13 +6,14 @@ import pl.dszi.gui.renderer.Renderer2D;
 
 import java.awt.*;
 
-public class Game  implements Runnable{
+public class Game implements Runnable{
 
 
     private Thread thread;
     private Boolean running = false;
 
     private Renderer renderer;
+
     public Game() {
         this.renderer = new Renderer2D();
         new Window(960,832,"AiBomber",renderer);
@@ -36,7 +37,7 @@ public class Game  implements Runnable{
                 delta --;
             }
             if(running)
-                render();
+                renderer.render();
             frames++;
             if(System.currentTimeMillis()-timer>1000){
                 timer += 1000;

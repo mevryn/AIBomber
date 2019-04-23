@@ -1,9 +1,11 @@
 package pl.dszi.gui;
 
 import pl.dszi.engine.Game;
+import pl.dszi.gui.renderer.Renderer;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JFrame;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -21,20 +23,8 @@ public class Window extends JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        this.add(renderer);
+        this.add((Component) renderer);
         BufferedImage img=null;
-        try {
-             img = ImageIO.read(new URL(
-                    "http://www.java2s.com/style/download.png"));
-        }catch(MalformedURLException e){
-            e.printStackTrace();
-        }catch(IOException i){
-            i.printStackTrace();
-        }
-        ImageIcon imageIcon = new ImageIcon(img);
-        JLabel lbl = new JLabel();
-        lbl.setIcon(imageIcon);
-        this.add(lbl);
         this.setVisible(true);
 
     }

@@ -10,10 +10,6 @@ public class Renderer2D extends Canvas implements Renderer {
 
     @Override
     public void render() {
-
-    }
-
-    public Renderer2D() {
         bufferStrategy = this.getBufferStrategy();
         if(bufferStrategy == null){
             this.createBufferStrategy(3);
@@ -21,5 +17,4 @@ public class Renderer2D extends Canvas implements Renderer {
         }
         graphics = bufferStrategy.getDrawGraphics();
     }
-
 }
