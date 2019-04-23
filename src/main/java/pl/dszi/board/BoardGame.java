@@ -43,9 +43,6 @@ public class BoardGame {
             return false;
     }
     boolean checkIfFieldIsEmpty(Point point){
-        if(map.containsValue(point)){
-            return false;
-        }else
-            return true;
+        return !map.containsValue(point);
     }
 }

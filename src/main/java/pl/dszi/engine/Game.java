@@ -45,21 +45,17 @@ public class Game implements Runnable{
         }
         stop();
     }
-    public synchronized void start(){
+    void start(){
         thread = new Thread(this);
         thread.start();
         running=true;
     }
-    public synchronized void stop(){
+    void stop(){
         try{
-            thread.join();
             running=false;
         }catch(Exception e){
             e.printStackTrace();
         }
-    }
-    private void render(){
-
     }
 
     private void tick(){
