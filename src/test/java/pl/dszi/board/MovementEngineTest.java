@@ -12,13 +12,14 @@ class MovementEngineTest {
     private Player player1;
     private Player player2;
     private BoardGame boardGame;
-
     @BeforeEach
     void init() {
-        Integer NOT_IMPORTANT_HP = 3;
-        player1 = new Player(NOT_IMPORTANT_HP);
-        player2 = new Player(NOT_IMPORTANT_HP);
-        boardGame = new BoardGame();
+        String NOT_IMPORTNANT_NAME="player";
+        int NOT_IMPORTANT_HP = 3;
+        int NOT_IMPORTANT_SIZE=700;
+        player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP);
+        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP);
+        boardGame = new BoardGame(NOT_IMPORTANT_SIZE,NOT_IMPORTANT_SIZE,null);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package pl.dszi.board;
 
+import pl.dszi.engine.Constants;
 import pl.dszi.player.Player;
 
 import java.awt.*;
@@ -8,7 +9,35 @@ import java.util.Map;
 
 public class BoardGame {
     private Map<Player,Point> map = new HashMap<>();
-    public boolean put(Player player,Point point){
+    public final int  width;
+    public final int height;
+
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+   public final Cell[][] cells;
+
+    public BoardGame(int width, int height,Cell[][] cells) {
+        this.width = width;
+        this.height = height;
+        this.cells= cells;
+        setBoard();
+    }
+
+    private void setBoard(){
+        boolean even = true;
+        for(int i = 0; i<cells.length;i++){
+            for(int j = 0; j<cells[i].length;j++){
+                this.cells[i][j] = new Cell(CellType.CELL_EMPTY,new Point(i*Constants.DEFAULT_CELL_SIZE,j*Constants.DEFAULT_CELL_SIZE),even);
+                if(even)
+                    even = false;
+                    else
+                    even = true;
+            }
+        }
+    }
+    public boolean put(Player player, Point point){
         if(checkIfFieldIsEmpty(point)){
             map.put(player,point);
             return true;
@@ -17,6 +46,10 @@ public class BoardGame {
             return false;
         }
 
+    }
+
+    public Map<Player, Point> getMap() {
+        return map;
     }
 
     public Point getPlayerPosition(Player player){
@@ -35,7 +68,7 @@ public class BoardGame {
     }
 
     public boolean targetSpaceIsInside(Point point){
-        if(point.x > 0 || point.y > 0 ) {
+        if((point.x > 0 || point.y > 0) && (point.x < Constants.DEFAULT_GAME_WIDTH || point.y < Constants.DEFAULT_GAME_HEIGHT)) {
             System.err.println("Target space is out of boarda");
             return true;
         }

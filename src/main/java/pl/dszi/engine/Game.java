@@ -1,8 +1,12 @@
 package pl.dszi.engine;
 
+import pl.dszi.board.BoardGame;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
+import pl.dszi.player.Player;
+
+import java.awt.*;
 
 public class Game implements Runnable{
 
@@ -11,11 +15,21 @@ public class Game implements Runnable{
     private Boolean running = false;
 
     private Renderer renderer;
+    private BoardGame boardGame;
+
+    public BoardGame getBoardGame() {
+        return boardGame;
+    }
 
     public Game() {
         this.renderer = new Renderer2D();
-        new Window(960,832,"AiBomber",renderer);
+        new Window(Constants.DEFAULT_GAME_WIDTH,Constants.DEFAULT_GAME_HEIGHT,"AiBomber",this.renderer);
         this.start();
+    }
+
+
+    public void setBoardGame(BoardGame boardGame){
+        this.boardGame = boardGame;
     }
 
     @Override
@@ -34,8 +48,11 @@ public class Game implements Runnable{
                 tick();
                 delta --;
             }
-            if(running)
-                renderer.render();
+            if(running) {
+                renderer.renderBoardGame(boardGame.getCells());
+                boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
+                renderer.showGraphic();
+            }
             frames++;
             if(System.currentTimeMillis()-timer>1000){
                 timer += 1000;
@@ -60,8 +77,5 @@ public class Game implements Runnable{
 
     private void tick(){
 
-    }
-    public static void main(final String[] args){
-        new Game();
     }
 }
