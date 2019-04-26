@@ -21,7 +21,7 @@ public class Game implements Runnable {
     public Game(BoardGame boardGame) {
         this.boardGame = boardGame;
         this.renderer = new Renderer2D();
-        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber", this.renderer);
+        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber",this.boardGame, this.renderer);
         this.start();
     }
 
@@ -77,6 +77,6 @@ public class Game implements Runnable {
     }
 
     private void tick() {
-
+        System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.player1Name)));
     }
 }

@@ -12,6 +12,10 @@ public class Cell {
         return point;
     }
 
+    public CellType getType() {
+        return type;
+    }
+
     public Cell(CellType type, Point point, boolean even) {
         this.type = type;
         this.color = setColor(even);
@@ -19,10 +23,20 @@ public class Cell {
 
     }
 
+    public Cell(CellType type,Point point){
+        this.type = type;
+        this.point = point;
+        this.color = setColor();
+    }
+
+    private Color setColor(){
+        return Color.BLACK;
+    }
     private Color setColor(boolean even) {
         if (even) {
             return Color.GRAY;
-        } else
+        }
+        else
             return Color.LIGHT_GRAY;
     }
 

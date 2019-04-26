@@ -3,6 +3,7 @@ package pl.dszi.board;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import pl.dszi.player.Player;
+import pl.dszi.player.noob.NoobPlayerController;
 
 import java.awt.*;
 
@@ -17,10 +18,10 @@ class MovementEngineTest {
         String NOT_IMPORTNANT_NAME="player";
         int NOT_IMPORTANT_HP = 3;
         int NOT_IMPORTANT_SIZE=700;
-        player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP);
-        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP);
         boardGame = new BoardGame(NOT_IMPORTANT_SIZE,NOT_IMPORTANT_SIZE,null);
-    }
+        player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController());
+        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController());
+  }
 
     @Test
     void cannotPutPlayerOnTakenPlace() {
