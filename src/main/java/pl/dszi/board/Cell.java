@@ -18,10 +18,11 @@ public class Cell {
         this.point = point;
 
     }
-    private Color setColor(boolean even){
-        if(even){
+
+    private Color setColor(boolean even) {
+        if (even) {
             return Color.GRAY;
-        }else
+        } else
             return Color.LIGHT_GRAY;
     }
 

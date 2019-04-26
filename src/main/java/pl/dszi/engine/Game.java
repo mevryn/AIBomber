@@ -4,11 +4,8 @@ import pl.dszi.board.BoardGame;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
-import pl.dszi.player.Player;
 
-import java.awt.*;
-
-public class Game implements Runnable{
+public class Game implements Runnable {
 
 
     private Thread thread;
@@ -21,61 +18,65 @@ public class Game implements Runnable{
         return boardGame;
     }
 
-    public Game() {
+    public Game(BoardGame boardGame) {
+        this.boardGame = boardGame;
         this.renderer = new Renderer2D();
-        new Window(Constants.DEFAULT_GAME_WIDTH,Constants.DEFAULT_GAME_HEIGHT,"AiBomber",this.renderer);
+        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber", this.renderer);
         this.start();
     }
 
 
-    public void setBoardGame(BoardGame boardGame){
-        this.boardGame = boardGame;
-    }
-
     @Override
-    public void run(){
+    public void run() {
         long lastTime = System.nanoTime();
-        double amountOfTicks=60.0;
+        double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
-        while(running){
+        while (running) {
             long now = System.nanoTime();
-            delta +=(now - lastTime)/ ns;
+            delta += (now - lastTime) / ns;
             lastTime = now;
-            while(delta >= 1){
+            while (delta >= 1) {
                 tick();
-                delta --;
+                delta--;
             }
-            if(running) {
-                renderer.renderBoardGame(boardGame.getCells());
-                boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
-                renderer.showGraphic();
+            if (running) {
+                render();
             }
             frames++;
-            if(System.currentTimeMillis()-timer>1000){
+            if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println("FPS: "+ frames);
+                System.out.println("FPS: " + frames);
                 frames = 0;
             }
         }
         stop();
     }
-    void start(){
+
+    void start() {
         thread = new Thread(this);
         thread.start();
-        running=true;
+        running = true;
     }
-    void stop(){
-        try{
-            running=false;
-        }catch(Exception e){
+
+    void stop() {
+        try {
+            running = false;
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void tick(){
+    private void render() {
+        renderer.render();
+        renderer.renderBoardGame(boardGame.getCells());
+        boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
+        renderer.showGraphic();
+    }
+
+    private void tick() {
 
     }
 }

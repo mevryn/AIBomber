@@ -11,7 +11,6 @@ import java.awt.*;
 
 public class Main {
     public static void main(final String[] args){
-        Game game = new Game();
         int maxHp = 3;
         Player pl = new Player("Player 1",3);
         Player p2 = new Player("Player 2",3);
@@ -21,6 +20,6 @@ public class Main {
         int spawnOffset=Constants.DEFAULT_OFFSET*2;
         boardGame.put(pl,new Point(Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE));
         boardGame.put(p2,new Point(Constants.DEFAULT_GAME_WIDTH-spawnOffset,Constants.DEFAULT_GAME_HEIGHT-spawnOffset));
-        game.setBoardGame(boardGame);
+        Game game = new Game(boardGame);
     }
 }

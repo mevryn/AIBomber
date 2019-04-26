@@ -12,7 +12,8 @@ public enum CellType {
     CELL_BOOM_HORIZONTAL('-');
 
     public final char code;
-    private CellType(char code){
+
+    private CellType(char code) {
         this.code = code;
     }
 }

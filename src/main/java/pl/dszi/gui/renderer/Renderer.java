@@ -7,7 +7,10 @@ import java.awt.*;
 
 public abstract class Renderer extends Canvas {
     public abstract void render();
+
     public abstract void renderPlayer(Player player, Point point);
+
     public abstract void showGraphic();
-    public abstract  void renderBoardGame(Cell[][] cells);
+
+    public abstract void renderBoardGame(Cell[][] cells);
 }
