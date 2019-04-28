@@ -19,7 +19,7 @@ class MovementEngineTest {
         String NOT_IMPORTNANT_NAME="player";
         int NOT_IMPORTANT_HP = 3;
         int NOT_IMPORTANT_SIZE=700;
-        boardGame = new BoardGame(NOT_IMPORTANT_SIZE,NOT_IMPORTANT_SIZE,new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
+        boardGame = new BoardGame(new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
         player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame));
         player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame));
   }
@@ -47,8 +47,21 @@ class MovementEngineTest {
     @Test
     void playerCantMoveToTakenPlace(){
         boardGame.put(player1,new Point(0,0));
-        boardGame.put(player2,new Point(0,1));
+        boardGame.put(player2,new Point(64,64));
         boardGame.move(player1,Direction.SOUTH);
         assertEquals(new Point(0, 0), boardGame.getPlayerPosition(player1));
+    }
+
+    @Test
+    void gameDimensionNeedToBeDevidedBySpeed(){
+
+        boolean divisible;
+        if(Constants.DEFAULT_GAME_WIDTH%Constants.DEFAULT_SPEED==0 && Constants.DEFAULT_GAME_HEIGHT%Constants.DEFAULT_SPEED==0) {
+            divisible = true;
+        } else
+        {
+            divisible = false;
+        }
+        assertTrue(divisible);
     }
 }

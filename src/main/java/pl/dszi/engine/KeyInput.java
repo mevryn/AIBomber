@@ -6,18 +6,17 @@ import pl.dszi.player.Player;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class KeyInput extends KeyAdapter {
 
-    BoardGame boardGame;
+    private BoardGame boardGame;
 
     public KeyInput(BoardGame boardGame) {
         this.boardGame = boardGame;
     }
 
     public void keyPressed(KeyEvent e){
-        Player player = boardGame.getPlayerByName(Constants.player1Name);
+        Player player = boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
         int key = e.getKeyCode();
         if( key == KeyEvent.VK_W){
             boardGame.move(player,Direction.NORTH);

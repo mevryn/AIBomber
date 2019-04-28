@@ -1,9 +1,13 @@
 package pl.dszi.engine;
 
 import pl.dszi.board.BoardGame;
+import pl.dszi.board.Cell;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
+import pl.dszi.player.Player;
+
+import java.util.List;
 
 public class Game implements Runnable {
 
@@ -77,6 +81,12 @@ public class Game implements Runnable {
     }
 
     private void tick() {
-        System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.player1Name)));
+        List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
+        Cell[][] sampleCell = boardGame.getCells();
+        for(int i = 0; i<autoPlayers.size();i++){
+            autoPlayers.get(i).getPlayerController().makeAMove(sampleCell[0][0]);
+        }
+
+        System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 }

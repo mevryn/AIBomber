@@ -14,6 +14,10 @@ public class Player {
         return name;
     }
 
+    public PlayerController getPlayerController() {
+        return playerController;
+    }
+
     public Player(String name, int maxHp, PlayerController playerController) {
         this.name = name;
         this.maxHp = maxHp;

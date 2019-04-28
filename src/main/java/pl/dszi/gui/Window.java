@@ -1,6 +1,7 @@
 package pl.dszi.gui;
 
 import pl.dszi.board.BoardGame;
+import pl.dszi.engine.Constants;
 import pl.dszi.engine.KeyInput;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.player.ManualPlayerController;
@@ -12,16 +13,11 @@ import java.util.ArrayList;
 
 public class Window extends JFrame {
 
-    BoardGame boardGame;
-
     public Window(int width, int height, String title,BoardGame boardGame, Renderer renderer) {
-        this.boardGame=boardGame;
         this.add(renderer);
         this.addKeyListener(new KeyInput(boardGame));
         this.setTitle(title);
-        this.setPreferredSize(new Dimension(width, height));
-        this.setMinimumSize(new Dimension(width, height));
-        this.setMaximumSize(new Dimension(width, height));
+        this.setSize(new Dimension(Constants.DEFAULT_GAME_WIDTH+Constants.HALF_DEFAULT_CELL_SIZE_RENDER,Constants.DEFAULT_GAME_HEIGHT+Constants.HALF_DEFAULT_CELL_SIZE));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
