@@ -2,6 +2,7 @@ package pl.dszi.board;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import pl.dszi.engine.Constants;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;
 
@@ -18,9 +19,9 @@ class MovementEngineTest {
         String NOT_IMPORTNANT_NAME="player";
         int NOT_IMPORTANT_HP = 3;
         int NOT_IMPORTANT_SIZE=700;
-        boardGame = new BoardGame(NOT_IMPORTANT_SIZE,NOT_IMPORTANT_SIZE,null);
-        player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController());
-        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController());
+        boardGame = new BoardGame(NOT_IMPORTANT_SIZE,NOT_IMPORTANT_SIZE,new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
+        player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame));
+        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame));
   }
 
     @Test

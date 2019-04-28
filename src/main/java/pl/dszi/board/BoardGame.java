@@ -28,8 +28,12 @@ public class BoardGame implements Cloneable{
         setBoard();
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
-    public List<Player> getPlayers(){
+    private List<Player> getPlayers(){
         List<Player> players = new ArrayList<>();
         map.forEach(((player, point) -> players.add(player)));
         return players;
@@ -55,7 +59,7 @@ public class BoardGame implements Cloneable{
 
     public Player getPlayerByName(String playerName){
       for (Player player:getPlayers()){
-          if(player.getName()==playerName){
+          if(player.getName().equals(playerName)){
               return player;
           }else{
               return null;
@@ -93,17 +97,14 @@ public class BoardGame implements Cloneable{
         }
     }
 
-    public boolean targetSpaceIsInside(Point point) {
-        if (point.x>=Constants.DEFAULT_OFFSET &&
-                point.y>=Constants.DEFAULT_OFFSET &&
-                point.x < Constants.DEFAULT_GAME_WIDTH-Constants.DEFAULT_CELL_SIZE*Constants.DEFAULT_BORDER
-                && point.y < Constants.DEFAULT_GAME_HEIGHT-Constants.DEFAULT_CELL_SIZE*Constants.DEFAULT_BORDER) {
-                return true;
-        } else
-            return false;
+    private boolean targetSpaceIsInside(Point point) {
+        return point.x >= Constants.DEFAULT_OFFSET &&
+                point.y >= Constants.DEFAULT_OFFSET &&
+                point.x < Constants.DEFAULT_GAME_WIDTH - Constants.DEFAULT_CELL_SIZE * Constants.DEFAULT_BORDER
+                && point.y < Constants.DEFAULT_GAME_HEIGHT - Constants.DEFAULT_CELL_SIZE * Constants.DEFAULT_BORDER;
     }
 
-    boolean checkIfFieldIsObstacle(Point point){
+    private boolean checkIfFieldIsObstacle(Point point){
        for(Cell cell[]:cells){
            for(Cell cell1:cell){
                if(cell1.getType() == CellType.CELL_WALL && cell1.getPoint()==point){
@@ -114,7 +115,7 @@ public class BoardGame implements Cloneable{
        }
        return true;
     }
-    boolean checkIfFieldIsEmpty(Point point) {
+    private boolean checkIfFieldIsEmpty(Point point) {
         return !map.containsValue(point);
     }
 }

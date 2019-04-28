@@ -18,7 +18,7 @@ public class Main {
       //  Player p4 = new Player("Player 4", 3);
         BoardGame boardGame = new BoardGame(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
         Player pl = new Player(Constants.player1Name, 3,new ManualPlayerController());
-        Player p2 = new Player(Constants.player2Name, 3,new NoobPlayerController());
+        Player p2 = new Player(Constants.player2Name, 3,new NoobPlayerController(boardGame));
         int spawnOffset = Constants.DEFAULT_OFFSET * 2;
         boardGame.put(pl, new Point(Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE));
         boardGame.put(p2, new Point(Constants.DEFAULT_GAME_WIDTH - spawnOffset, Constants.DEFAULT_GAME_HEIGHT - spawnOffset));
