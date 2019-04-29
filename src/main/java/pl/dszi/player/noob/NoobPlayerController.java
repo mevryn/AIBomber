@@ -7,18 +7,22 @@ import pl.dszi.engine.Constants;
 import pl.dszi.player.Player;
 import pl.dszi.player.PlayerController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.*;
 
 public class NoobPlayerController implements PlayerController {
     private boolean manual = false;
     private BoardGame boardGame;
-
+    private List<Point> enemiesLocation;
     public NoobPlayerController(BoardGame boardGame) {
+        this.enemiesLocation = new ArrayList<>();
         this.boardGame = boardGame;
-
     }
 
+
     public void makeAMove(Cell cell) {
+
         Player player = boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
         Point location = this.boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_2_NAME));
         if (location != cell.getPoint()) {

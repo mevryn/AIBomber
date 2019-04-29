@@ -37,7 +37,7 @@ public class Player {
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.color = new Color((int) (Math.random() * 0x1000000));
-        this.bombAmount = 1;
+        this.bombAmount = 3;
         this.range = 3;
         this.playerController = playerController;
         this.playerController.setPlayer(this);
