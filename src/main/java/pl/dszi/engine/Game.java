@@ -87,6 +87,6 @@ public class Game implements Runnable {
             autoPlayers.get(i).getPlayerController().makeAMove(sampleCell[0][0]);
         }
 
-        System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
+       // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 }

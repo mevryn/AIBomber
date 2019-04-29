@@ -21,6 +21,11 @@ public class ManualPlayerController  implements PlayerController{
     }
 
     @Override
+    public void plantBomb() {
+
+    }
+
+    @Override
     public boolean setPlayer(Player player) {
         return false;
     }

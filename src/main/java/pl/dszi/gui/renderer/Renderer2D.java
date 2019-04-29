@@ -30,7 +30,7 @@ public class Renderer2D extends Renderer {
             return;
         }
         graphics = bufferStrategy.getDrawGraphics();
-        graphics.setColor(Color.BLACK);
+        graphics.setColor(Color.DARK_GRAY);
         graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
     }
 
@@ -60,13 +60,19 @@ public class Renderer2D extends Renderer {
             return;
         }
         graphics = bufferStrategy.getDrawGraphics();
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                graphics.setColor(cells[i][j].getColor());
-                graphics.fillRect(cells[i][j].getPoint().x + Constants.DEFAULT_OFFSET, cells[i][j].getPoint().y + Constants.DEFAULT_OFFSET, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+        for (Cell[] cell : cells) {
+            for (Cell aCell : cell) {
+                graphics.setColor(aCell.getColor());
+                graphics.fillRect(aCell.getPoint().x, aCell.getPoint().y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
             }
         }
     }
+
+    @Override
+    public void renderBomb(Cell cell) {
+
+    }
+
 
     @Override
     public void showGraphic() {

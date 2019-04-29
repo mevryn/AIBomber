@@ -29,6 +29,12 @@ public class Cell {
         return body;
     }
 
+    boolean checkIfPointIsInsideCell(Point aPoint){
+            return aPoint.x > this.body.x &&
+                    aPoint.y > this.body.y &&
+                    aPoint.x < this.body.x+this.body.width &&
+                    aPoint.y < this.body.x+this.body.height;
+        }
     Cell(CellType type, Point point){
         this.point = point;
         this.type = type;

@@ -55,8 +55,8 @@ public class BoardGame implements Cloneable{
                     even = true;
             }
         }
-        for (int i = 1; i < cells.length; i=i+2) {
-            for (int j = 1; j < cells[i].length; j=j+2) {
+        for (int i = 1; i < cells.length-1; i=i+2) {
+            for (int j = 1; j < cells[i].length-1; j=j+2) {
                 this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point((i+1) * Constants.DEFAULT_CELL_SIZE, (j+1) * Constants.DEFAULT_CELL_SIZE));
                 wallCellMap.put(this.cells[i][j],this.cells[i][j].getPoint());
             }
@@ -93,7 +93,7 @@ public class BoardGame implements Cloneable{
     public void move(Player player, Direction direction) {
         try {
             Point newPoint = new Point(map.get(player).x + direction.x, map.get(player).y + direction.y);
-            if (!map.containsValue(newPoint) && targetSpaceIsInsideBoardGame(newPoint)) {
+            if (!map.containsValue(newPoint) && targetSpaceIsInsideBoardGame(newPoint) ) {
                 map.replace(player, newPoint);
                 //return getPlayerPosition(player);
             } else {
@@ -117,10 +117,10 @@ public class BoardGame implements Cloneable{
                         aPoint.y <= rectangle.x+rectangle.height;
     }
     private boolean checkIfFieldIsObstacle(Point point){
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if(cells[i][j].getType()==CellType.CELL_WALL && pointIsInsideBody(point,new Rectangle(cells[i][j].getPoint().x,cells[i][j].getPoint().y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE))){
-                    System.out.println(cells[i][j].getBody());
+        for (Cell[] cell : cells) {
+            for (Cell aCell : cell) {
+                if (aCell.checkIfPointIsInsideCell(point) && aCell.getType() == CellType.CELL_WALL) {
+                    System.out.println(aCell.getBody());
                     return true;
                 }
             }
