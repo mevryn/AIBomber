@@ -4,7 +4,7 @@ public enum CellType {
     CELL_EMPTY(' ',true),
     CELL_WALL('#',false),
     CELL_CRATE('c',false),
-    CELL_BOMB('b',false),
+    CELL_BOMB('b',true),
     CELL_BOOM_LEFT('<',false),
     CELL_BOOM_RIGHT('>',false),
     CELL_BOOM_CENTER('+',false),

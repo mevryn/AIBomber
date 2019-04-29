@@ -105,23 +105,26 @@ public class BoardGame implements Cloneable {
         return null;
     }
 
-    public void move(Player player, Direction direction) {
+    public boolean move(Player player, Direction direction) {
         try {
             Point newPoint = new Point(map.get(player).x + direction.x, map.get(player).y + direction.y);
-            if (!map.containsValue(newPoint) && targetSpaceIsInsideBoardGame(newPoint) && !checkIfFieldIsObstacle(newPoint)) {
+            if (targetSpaceIsInsideBoardGame(newPoint) && !checkIfFieldIsObstacle(newPoint)) {
                 map.replace(player, newPoint);
+                return true;
                 //return getPlayerPosition(player);
             } else {
                 System.err.println("Can't move here. Field is not empty");
+                return false;
                 // return getPlayerPosition(player);
             }
         } catch (NullPointerException nullPointer) {
             nullPointer.printStackTrace();
         }
+        return  false;
     }
 
     private boolean targetSpaceIsInsideBoardGame(Point point) {
-        return pointIsInsideBody(point, new Rectangle(Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE * Constants.DEFAULT_GAME_TILES_HORIZONTALLY, Constants.DEFAULT_CELL_SIZE * Constants.DEFAULT_GAME_TILES_VERTICALLY));
+        return pointIsInsideBody(point, new Rectangle(Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY), Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY)));
 
     }
 
@@ -134,12 +137,22 @@ public class BoardGame implements Cloneable {
         return rectangle1.intersects(rectangle2);
     }
 
-    private boolean checkIfFieldIsObstacle(Point point) {
+    public Cell getCellAt(Point point){
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[i].length; j++) {
+                if (cells[i][j].getBody().contains(point)){
+                    return cells[i][j];
+                }
+            }
+        }
+        return null;
+    }
+    public boolean checkIfFieldIsObstacle(Point point) {
         Rectangle pointToBody = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
 
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
-                if (playerInterfereWithWall(pointToBody, aCell.getBody()) && aCell.getType() == CellType.CELL_WALL) {
+                if (playerInterfereWithWall(pointToBody, aCell.getBody()) && !aCell.getType().walkable) {
                     System.out.println(aCell.getBody());
                     return true;
                 }

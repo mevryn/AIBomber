@@ -8,12 +8,13 @@ public enum Direction {
     WEST(-Constants.DEFAULT_SPEED, 0),
     EAST(Constants.DEFAULT_SPEED, 0);
 
+
     Direction(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    protected int x;
-    protected int y;
+    public int x;
+    public int y;
 
 }
