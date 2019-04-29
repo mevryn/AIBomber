@@ -1,6 +1,7 @@
 package pl.dszi.gui.renderer;
 
 import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.Constants;
 import pl.dszi.engine.KeyInput;
 import pl.dszi.player.Player;
@@ -69,8 +70,25 @@ public class Renderer2D extends Renderer {
     }
 
     @Override
-    public void renderBomb(Cell cell) {
-
+    public void renderBomb(Cell[][] cells) {
+        BufferedImage img=null;
+        try {
+            img = ImageIO.read(getClass().getResource("/images/bomba.png"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        bufferStrategy = getBufferStrategy();
+        if (bufferStrategy == null) {
+            this.createBufferStrategy(3);
+            return;
+        }
+        graphics = bufferStrategy.getDrawGraphics();
+        for (Cell[] cell : cells) {
+            for (Cell aCell : cell) {
+                if(aCell.getType() == CellType.CELL_BOMB)
+                graphics.drawImage(img,aCell.getPoint().x, aCell.getPoint().y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE,this);
+            }
+        }
     }
 
 

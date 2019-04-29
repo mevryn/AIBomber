@@ -8,6 +8,20 @@ public class Player {
     private final int maxHp;
     private int currentHp;
     private final int range;
+    private int bombAmount;
+    private int bombActualyTicking=0;
+    public int getBombAmount() {
+        return bombAmount;
+    }
+
+    public int getBombActualyTicking() {
+        return bombActualyTicking;
+    }
+
+    public void plantBomb(){
+        bombActualyTicking++;
+
+    }
     private final PlayerController playerController;
 
     public String getName() {
@@ -23,7 +37,7 @@ public class Player {
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.color = new Color((int) (Math.random() * 0x1000000));
-
+        this.bombAmount = 1;
         this.range = 3;
         this.playerController = playerController;
         this.playerController.setPlayer(this);

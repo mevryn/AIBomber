@@ -34,6 +34,7 @@ public class NoobPlayerController implements PlayerController {
             }
         }
 
+
     @Override
     public void plantBomb() {
 

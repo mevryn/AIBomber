@@ -26,8 +26,11 @@ public class KeyInput extends KeyAdapter {
             boardGame.move(player,Direction.WEST);
         }else if (key == KeyEvent.VK_D){
             boardGame.move(player,Direction.EAST);
-        }else if(key == KeyEvent.VK_SPACE){
-            //plant bomby tutaj
+        }
+        if(key == KeyEvent.VK_SPACE){
+            if(player.getBombAmount()>player.getBombActualyTicking())
+            boardGame.plantBomb(player);
+            player.plantBomb();
         }
     }
 }
