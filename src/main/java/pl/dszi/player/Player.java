@@ -20,7 +20,6 @@ public class Player {
 
     public void plantBomb(){
         bombActualyTicking++;
-
     }
     private final PlayerController playerController;
 

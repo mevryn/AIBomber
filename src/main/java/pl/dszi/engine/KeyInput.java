@@ -30,7 +30,6 @@ public class KeyInput extends KeyAdapter {
         if(key == KeyEvent.VK_SPACE){
             if(player.getBombAmount()>player.getBombActualyTicking())
             boardGame.plantBomb(player);
-            player.plantBomb();
         }
     }
 }

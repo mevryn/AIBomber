@@ -1,5 +1,6 @@
 package pl.dszi.gui.renderer;
 
+import pl.dszi.board.BombCell;
 import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
 import pl.dszi.engine.Constants;
@@ -12,6 +13,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class Renderer2D extends Renderer {
 
@@ -70,25 +72,25 @@ public class Renderer2D extends Renderer {
     }
 
     @Override
-    public void renderBomb(Cell[][] cells) {
-        BufferedImage img=null;
+    public void renderBomb(Map<BombCell,Rectangle> bombCellPointMap) {
+        final BufferedImage img;
+        BufferedImage temp;
         try {
-            img = ImageIO.read(getClass().getResource("/images/bomba.png"));
+            temp = ImageIO.read(getClass().getResource("/images/bomba.png"));
         } catch (IOException ex) {
             ex.printStackTrace();
+            temp=null;
         }
+        img = temp;
         bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
             this.createBufferStrategy(3);
             return;
         }
         graphics = bufferStrategy.getDrawGraphics();
-        for (Cell[] cell : cells) {
-            for (Cell aCell : cell) {
-                if(aCell.getType() == CellType.CELL_BOMB)
-                graphics.drawImage(img,aCell.getPoint().x, aCell.getPoint().y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE,this);
-            }
-        }
+        bombCellPointMap.forEach(((bombCell, body) -> {
+            graphics.drawImage(img,body.x, body.y, body.width, body.height,this);
+        }));
     }
 
 

@@ -16,10 +16,13 @@ public class NoobPlayerController implements PlayerController {
     private BoardGame boardGame;
     private List<Point> enemiesLocation;
     private Astar astar;
+    private Thread aiPlayerThread;
     public NoobPlayerController(BoardGame boardGame) {
         this.enemiesLocation = new ArrayList<>();
         this.boardGame = boardGame;
         this.astar = new Astar(boardGame.getCells());
+        this.aiPlayerThread = new Thread();
+        this.aiPlayerThread.start();
     }
 
 
@@ -27,7 +30,6 @@ public class NoobPlayerController implements PlayerController {
 
         Player player = boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
         Point location = this.boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_2_NAME));
-        while (boardGame.getPlayerPosition(player)==location) {
         if (location != cell.getPoint()) {
             if (location.x > cell.getPoint().x ) {
                 if(!boardGame.move(player, Direction.WEST)){
@@ -36,12 +38,10 @@ public class NoobPlayerController implements PlayerController {
             } else if (location.x < cell.getPoint().x) {
                 boardGame.move(player, Direction.EAST);
             } else if (location.y > cell.getPoint().y ) {
-                if(!boardGame.move(player, Direction.NORTH)){
-                }
+                boardGame.move(player, Direction.NORTH);
             } else if (location.y < cell.getPoint().y ) {
                 boardGame.move(player, Direction.SOUTH);
             }
-        }
         }
     }
 
