@@ -13,7 +13,6 @@ import java.awt.*;
 public class Main {
     public static void main(final String[] args) {
         int maxHp = 3;
-
        // Player p3 = new Player("Player 3", 3);
       //  Player p4 = new Player("Player 4", 3);
         BoardGame boardGame = new BoardGame(new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);

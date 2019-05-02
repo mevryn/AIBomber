@@ -4,17 +4,19 @@ import pl.dszi.engine.Constants;
 import pl.dszi.player.ManualPlayerController;
 import pl.dszi.player.Player;
 
-import javax.swing.text.html.Option;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BoardGame implements Cloneable {
-    final Cell[][] cells;
+    final private Cell[][] cells;
     private Map<Player, Point> map = new HashMap<>();
     private BoardGameInfo boardGameInfo;
-    private Map<BombCell, Rectangle> bombs = new HashMap<>();
+    private Map<BombCell, Rectangle> bombs = new ConcurrentHashMap<>();
+
     public BoardGame(Cell[][] cells) {
         this.boardGameInfo = new BoardGameInfo();
         this.cells = cells;
@@ -50,7 +52,7 @@ public class BoardGame implements Cloneable {
         boolean even = true;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
-                this.cells[i][j] = new Cell(CellType.CELL_EMPTY, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), even);
+                this.cells[i][j] = new Cell(CellType.CELL_EMPTY, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), even, i, j);
                 if (even)
                     even = false;
                 else
@@ -59,7 +61,7 @@ public class BoardGame implements Cloneable {
         }
         for (int i = 1; i < cells.length - 1; i = i + 2) {
             for (int j = 1; j < cells[i].length - 1; j = j + 2) {
-                this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE));
+                this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), i, j);
             }
         }
     }
@@ -92,12 +94,12 @@ public class BoardGame implements Cloneable {
         return map.get(player);
     }
 
-    private Cell getPlayerPositionCell(Player player) {
+    public Cell getPlayerPositionCell(Player player) {
         Rectangle pointToBody = new Rectangle(getPlayerPosition(player).x, getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
 
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
-                if (this.pointIsInsideBody(new Point((int)pointToBody.getCenterX(),(int)pointToBody.getCenterY()), aCell.getBody())) {
+                if (this.pointIsInsideBody(new Point((int) pointToBody.getCenterX(), (int) pointToBody.getCenterY()), aCell.getBody())) {
                     return aCell;
                 }
             }
@@ -108,7 +110,7 @@ public class BoardGame implements Cloneable {
     public boolean move(Player player, Direction direction) {
         try {
             Point newPoint = new Point(map.get(player).x + direction.x, map.get(player).y + direction.y);
-            if (targetSpaceIsInsideBoardGame(newPoint) && !checkIfFieldIsObstacle(player,newPoint)) {
+            if (targetSpaceIsInsideBoardGame(newPoint) && !checkIfFieldIsObstacle(player, newPoint)) {
                 map.replace(player, newPoint);
                 return true;
                 //return getPlayerPosition(player);
@@ -120,7 +122,7 @@ public class BoardGame implements Cloneable {
         } catch (NullPointerException nullPointer) {
             nullPointer.printStackTrace();
         }
-        return  false;
+        return false;
     }
 
     private boolean targetSpaceIsInsideBoardGame(Point point) {
@@ -142,7 +144,7 @@ public class BoardGame implements Cloneable {
         return bombs;
     }
 
-    public boolean checkIfFieldIsObstacle(Player player,Point point) {
+    public boolean checkIfFieldIsObstacle(Player player, Point point) {
         Rectangle pointToBody = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
@@ -152,32 +154,33 @@ public class BoardGame implements Cloneable {
                 }
             }
         }
-        if(checkIfBombForward(player,pointToBody)){
+        if (checkIfBombForward(player, pointToBody)) {
             return true;
         }
         return false;
     }
 
-    public boolean checkIfBombForward(Player player,Rectangle body){
-        for(BombCell bomb:bombs.keySet()){
-            if(!bomb.body.intersects(body) && bomb.getPlayer()==player){
+    public boolean checkIfBombForward(Player player, Rectangle body) {
+        for (BombCell bomb : bombs.keySet()) {
+            if (!bomb.body.intersects(body) && bomb.getPlayer() == player) {
                 bomb.setPlayerInside(false);
             }
-            if(bomb.body.intersects(body) && bomb.getPlayer()!=player ||(bomb.body.intersects(body) && bomb.getPlayer()==player && !bomb.isPlayerInside())){
+            if (bomb.body.intersects(body) && bomb.getPlayer() != player || (bomb.body.intersects(body) && bomb.getPlayer() == player && !bomb.isPlayerInside())) {
                 return true;
             }
         }
         return false;
     }
-    public void plantBomb(Player player) {
+
+    public synchronized void plantBomb(Player player) {
         try {
             Cell playerPositionCell = getPlayerPositionCell(player);
-            for (int i=0;i<cells.length;i++) {
-                for (int j=0;j<cells[i].length;j++) {
+            for (int i = 0; i < cells.length; i++) {
+                for (int j = 0; j < cells[i].length; j++) {
                     if (cells[i][j].equals(playerPositionCell) && cells[i][j].getType() != CellType.CELL_BOMB) {
                         System.out.println("Bomb Planted");
-                        BombCell bombCell = new BombCell(cells[i][j],player);
-                        bombs.put(bombCell,bombCell.getBody());
+                        BombCell bombCell = new BombCell(cells[i][j], player);
+                        bombs.put(bombCell, bombCell.getBody());
                         player.plantBomb();
                     }
                 }
@@ -191,4 +194,30 @@ public class BoardGame implements Cloneable {
         return !map.containsValue(point);
     }
 
+    public List<Cell> getNeighbors(Cell aCell) {
+        List<Cell> neighbors = new ArrayList<>();
+        int row = 0;
+        int col = 0;
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[i].length; j++) {
+                if (cells[i][j].equals(aCell)) {
+                    row = i;
+                    col = j;
+                    if (row - 1 >= 0) {
+                        neighbors.add(cells[row - 1][col]);
+                    }
+                    if (col - 1 >= 0) {
+                        neighbors.add(cells[row][col - 1]);
+                    }
+                    if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
+                        neighbors.add(cells[row + 1][col]);
+                    }
+                    if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
+                        neighbors.add(cells[row][col + 1]);
+                    }
+                }
+            }
+        }
+        return neighbors;
+    }
 }

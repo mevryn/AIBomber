@@ -11,6 +11,15 @@ public class Cell {
     protected Color color;
     protected final Point point;
     protected   Rectangle body;
+    protected int indexX;
+    protected int indexY;
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "type=" + type +
+                ", body=" + body +
+                '}';
+    }
 
     public Point getPoint() {
         return point;
@@ -20,10 +29,12 @@ public class Cell {
         return type;
     }
 
-    Cell(CellType type, Point point, boolean even) {
+    Cell(CellType type, Point point, boolean even,int indexX, int indexY) {
         this.point = point;
         this.type = type;
         this.color = setColor(even);
+        this.indexX=indexX;
+        this.indexY=indexY;
         this.body = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
     }
 
@@ -32,12 +43,21 @@ public class Cell {
     }
 
 
+    public int getIndexX() {
+        return indexX;
+    }
 
-    public Cell(CellType type, Point point) {
+    public int getIndexY() {
+        return indexY;
+    }
+
+    public Cell(CellType type, Point point, int indexX, int indexY) {
         this.point = point;
         this.type = type;
         if(type==CellType.CELL_WALL)
         this.color = setColor();
+        this.indexX=indexX;
+        this.indexY=indexY;
         this.body = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
     }
 

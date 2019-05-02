@@ -21,6 +21,9 @@ public class Player {
     public void plantBomb(){
         bombActualyTicking++;
     }
+    public void detonateBomb(){
+        bombActualyTicking--;
+    }
     private final PlayerController playerController;
 
     public String getName() {

@@ -30,6 +30,8 @@ public class NoobPlayerController implements PlayerController {
 
         Player player = boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
         Point location = this.boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_2_NAME));
+        System.out.println(boardGame.getNeighbors(boardGame.getPlayerPositionCell(player)));
+        astar.chooseBestWay(boardGame.getPlayerPositionCell(player),cell);
         if (location != cell.getPoint()) {
             if (location.x > cell.getPoint().x ) {
                 if(!boardGame.move(player, Direction.WEST)){

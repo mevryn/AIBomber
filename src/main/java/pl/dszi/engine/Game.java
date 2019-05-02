@@ -1,6 +1,7 @@
 package pl.dszi.engine;
 
 import pl.dszi.board.BoardGame;
+import pl.dszi.board.BombCell;
 import pl.dszi.board.Cell;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
@@ -25,7 +26,7 @@ public class Game implements Runnable {
     public Game(BoardGame boardGame) {
         this.boardGame = boardGame;
         this.renderer = new Renderer2D();
-        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber",this.boardGame, this.renderer);
+        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber", this.boardGame, this.renderer);
         this.start();
     }
 
@@ -82,12 +83,26 @@ public class Game implements Runnable {
     }
 
     private void tick() {
+        aiMovement();
+        checkForBombsToDetonate();
+        // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
+    }
+
+
+    private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
         Cell[][] sampleCell = boardGame.getCells();
-        for(int i = 0; i<autoPlayers.size();i++){
-            autoPlayers.get(i).getPlayerController().makeAMove(sampleCell[0][2]);
+        for (Player autoPlayer : autoPlayers) {
+            autoPlayer.getPlayerController().makeAMove(sampleCell[0][2]);
         }
+    }
 
-       // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
+    private void checkForBombsToDetonate() {
+        for (BombCell entry : boardGame.getBombs().keySet()) {
+            if (entry.isReadyToExplode()) {
+                entry.getPlayer().detonateBomb();
+                boardGame.getBombs().remove(entry);
+            }
+        }
     }
 }
