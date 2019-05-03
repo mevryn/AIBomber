@@ -21,6 +21,11 @@ public class ManualPlayerController  implements PlayerController{
     }
 
     @Override
+    public void pathFinding() {
+
+    }
+
+    @Override
     public void plantBomb() {
 
     }

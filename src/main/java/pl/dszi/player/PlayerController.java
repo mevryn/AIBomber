@@ -7,4 +7,5 @@ public interface PlayerController {
     boolean checkIfManual();
     void makeAMove(Cell cell);
     void plantBomb();
+    void pathFinding();
 }

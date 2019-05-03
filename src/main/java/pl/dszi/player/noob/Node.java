@@ -25,6 +25,19 @@ public class Node {
         this.parent = parent;
     }
 
+    public boolean checkBetterPath(Node currentNode, int cost) {
+        int gCost = currentNode.getG() + cost;
+        if (gCost < getG()) {
+            setNodeData(currentNode);
+            return true;
+        }
+        return false;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
     public void setNodeData(Node currentNode){
         int gCost = currentNode.getG() + Constants.DEFAULT_NODE_COST;
         setParent(currentNode);
@@ -49,4 +62,10 @@ public class Node {
         this.g = 1;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "cell=" + cell +
+                '}';
+    }
 }

@@ -13,13 +13,6 @@ public class Cell {
     protected   Rectangle body;
     protected int indexX;
     protected int indexY;
-    @Override
-    public String toString() {
-        return "Cell{" +
-                "type=" + type +
-                ", body=" + body +
-                '}';
-    }
 
     public Point getPoint() {
         return point;
@@ -36,6 +29,13 @@ public class Cell {
         this.indexX=indexX;
         this.indexY=indexY;
         this.body = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+    }
+
+    @Override
+    public String toString() {
+        return
+                "indexX=" + indexX +
+                ", indexY=" + indexY+"\n";
     }
 
     public Rectangle getBody() {

@@ -12,19 +12,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BoardGame implements Cloneable {
-    final private Cell[][] cells;
+
     private Map<Player, Point> map = new HashMap<>();
     private BoardGameInfo boardGameInfo;
     private Map<BombCell, Rectangle> bombs = new ConcurrentHashMap<>();
 
     public BoardGame(Cell[][] cells) {
-        this.boardGameInfo = new BoardGameInfo();
-        this.cells = cells;
-        setBoard();
-    }
-
-    public Cell[][] getCells() {
-        return cells;
+        this.boardGameInfo = new BoardGameInfo(cells);
     }
 
     @Override
@@ -48,23 +42,6 @@ public class BoardGame implements Cloneable {
         return players;
     }
 
-    private void setBoard() {
-        boolean even = true;
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                this.cells[i][j] = new Cell(CellType.CELL_EMPTY, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), even, i, j);
-                if (even)
-                    even = false;
-                else
-                    even = true;
-            }
-        }
-        for (int i = 1; i < cells.length - 1; i = i + 2) {
-            for (int j = 1; j < cells[i].length - 1; j = j + 2) {
-                this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), i, j);
-            }
-        }
-    }
 
     public Player getPlayerByName(String playerName) {
         for (Player player : getPlayers()) {
@@ -96,10 +73,9 @@ public class BoardGame implements Cloneable {
 
     public Cell getPlayerPositionCell(Player player) {
         Rectangle pointToBody = new Rectangle(getPlayerPosition(player).x, getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
-
-        for (Cell[] cell : cells) {
+        for (Cell[] cell : boardGameInfo.getCells()) {
             for (Cell aCell : cell) {
-                if (this.pointIsInsideBody(new Point((int) pointToBody.getCenterX(), (int) pointToBody.getCenterY()), aCell.getBody())) {
+                if (this.pointIsInsideBody(new Point(pointToBody.x, pointToBody.y), aCell.getBody())) {
                     return aCell;
                 }
             }
@@ -108,26 +84,21 @@ public class BoardGame implements Cloneable {
     }
 
     public boolean move(Player player, Direction direction) {
-        try {
             Point newPoint = new Point(map.get(player).x + direction.x, map.get(player).y + direction.y);
             if (targetSpaceIsInsideBoardGame(newPoint) && !checkIfFieldIsObstacle(player, newPoint)) {
                 map.replace(player, newPoint);
                 return true;
-                //return getPlayerPosition(player);
             } else {
-                System.err.println("Can't move here. Field is not empty");
                 return false;
-                // return getPlayerPosition(player);
             }
-        } catch (NullPointerException nullPointer) {
-            nullPointer.printStackTrace();
-        }
-        return false;
     }
 
     private boolean targetSpaceIsInsideBoardGame(Point point) {
-        return pointIsInsideBody(point, new Rectangle(Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY), Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY)));
-
+        return pointIsInsideBody(point, new Rectangle(Constants.DEFAULT_CELL_SIZE,
+                Constants.DEFAULT_CELL_SIZE,
+                Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY),
+                Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY)
+        ));
     }
 
 
@@ -146,10 +117,10 @@ public class BoardGame implements Cloneable {
 
     public boolean checkIfFieldIsObstacle(Player player, Point point) {
         Rectangle pointToBody = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
-        for (Cell[] cell : cells) {
+        for (Cell[] cell : boardGameInfo.getCells()) {
             for (Cell aCell : cell) {
                 if (playerInterfereWithWall(pointToBody, aCell.getBody()) && !aCell.getType().walkable) {
-                    System.out.println(aCell.getBody());
+                    System.out.println(aCell);
                     return true;
                 }
             }
@@ -175,11 +146,11 @@ public class BoardGame implements Cloneable {
     public synchronized void plantBomb(Player player) {
         try {
             Cell playerPositionCell = getPlayerPositionCell(player);
-            for (int i = 0; i < cells.length; i++) {
-                for (int j = 0; j < cells[i].length; j++) {
-                    if (cells[i][j].equals(playerPositionCell) && cells[i][j].getType() != CellType.CELL_BOMB) {
+            for (int i = 0; i < boardGameInfo.getCells().length; i++) {
+                for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
+                    if (boardGameInfo.getCells()[i][j].equals(playerPositionCell) && boardGameInfo.getCells()[i][j].getType() != CellType.CELL_BOMB) {
                         System.out.println("Bomb Planted");
-                        BombCell bombCell = new BombCell(cells[i][j], player);
+                        BombCell bombCell = new BombCell(boardGameInfo.getCells()[i][j], player);
                         bombs.put(bombCell, bombCell.getBody());
                         player.plantBomb();
                     }
@@ -190,6 +161,9 @@ public class BoardGame implements Cloneable {
         }
     }
 
+    public Cell[][] getCells(){
+        return boardGameInfo.getCells();
+    }
     private boolean checkIfFieldIsEmpty(Point point) {
         return !map.containsValue(point);
     }
@@ -198,22 +172,22 @@ public class BoardGame implements Cloneable {
         List<Cell> neighbors = new ArrayList<>();
         int row = 0;
         int col = 0;
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].equals(aCell)) {
+        for (int i = 0; i < boardGameInfo.getCells().length; i++) {
+            for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
+                if (boardGameInfo.getCells()[i][j].equals(aCell)) {
                     row = i;
                     col = j;
                     if (row - 1 >= 0) {
-                        neighbors.add(cells[row - 1][col]);
+                        neighbors.add(boardGameInfo.getCells()[row - 1][col]);
                     }
                     if (col - 1 >= 0) {
-                        neighbors.add(cells[row][col - 1]);
+                        neighbors.add(boardGameInfo.getCells()[row][col - 1]);
                     }
                     if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
-                        neighbors.add(cells[row + 1][col]);
+                        neighbors.add(boardGameInfo.getCells()[row + 1][col]);
                     }
                     if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
-                        neighbors.add(cells[row][col + 1]);
+                        neighbors.add(boardGameInfo.getCells()[row][col + 1]);
                     }
                 }
             }

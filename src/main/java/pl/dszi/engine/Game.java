@@ -7,6 +7,7 @@ import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
 import pl.dszi.player.Player;
+import pl.dszi.player.noob.NoobPlayerController;
 
 import java.util.List;
 
@@ -83,17 +84,17 @@ public class Game implements Runnable {
     }
 
     private void tick() {
-        aiMovement();
-        checkForBombsToDetonate();
+        this.aiMovement();
+        this.checkForBombsToDetonate();
         // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 
 
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
-        Cell[][] sampleCell = boardGame.getCells();
+
         for (Player autoPlayer : autoPlayers) {
-            autoPlayer.getPlayerController().makeAMove(sampleCell[0][2]);
+            autoPlayer.getPlayerController().pathFinding();
         }
     }
 
