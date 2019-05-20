@@ -42,6 +42,9 @@ public class BoardGame implements Cloneable {
         return players;
     }
 
+    public BoardGameInfo getInfo() {
+        return boardGameInfo;
+    }
 
     public Player getPlayerByName(String playerName) {
         for (Player player : getPlayers()) {
@@ -128,9 +131,23 @@ public class BoardGame implements Cloneable {
         if (checkIfBombForward(player, pointToBody)) {
             return true;
         }
+        if(checkIfCrateForward(pointToBody))
+        {
+            return true;
+        }
         return false;
     }
 
+    public boolean checkIfCrateForward(Rectangle body){
+       for(CrateCell[] crateCells:getInfo().getCrates()){
+           for(CrateCell crateCell:crateCells){
+               if(crateCell!=null && crateCell.getBody().intersects(body)){
+                   return true;
+               }
+           }
+       }
+        return false;
+    }
     public boolean checkIfBombForward(Player player, Rectangle body) {
         for (BombCell bomb : bombs.keySet()) {
             if (!bomb.body.intersects(body) && bomb.getPlayer() == player) {

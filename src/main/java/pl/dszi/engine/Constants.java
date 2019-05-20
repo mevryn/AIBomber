@@ -17,5 +17,5 @@ public class Constants {
     public static String PLAYER_2_NAME = "Player 2";
     public static String PLAYER_3_NAME = "Player 3";
     public static String PLAYER_4_NAME = "Player 4";
-    public static final int DEFAULT_SPEED = 2;
+    public static final int DEFAULT_SPEED = 4;
 }

@@ -1,6 +1,7 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
+import pl.dszi.board.Direction;
 import pl.dszi.engine.Constants;
 
 public class Node {
@@ -8,6 +9,7 @@ public class Node {
     private int g;
     private int h;
     private int f;
+    private Direction direction;
     private Node parent;
     public int getF() {
         return f;
@@ -57,8 +59,24 @@ public class Node {
         this.f = g+h;
     }
 
+    public Node(Direction direction) {
+        this.direction = direction;
+    }
+
+    public void setDirection(Direction direction) {
+
+        this.direction = direction;
+    }
+
+    public Direction getDirection() {
+
+        return direction;
+    }
+
     public Node(Cell cell) {
         this.cell = cell;
+        this.direction = Direction.DEFAULT;
+
         this.g = 1;
     }
 

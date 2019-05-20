@@ -2,6 +2,7 @@ package pl.dszi.gui.renderer;
 
 import pl.dszi.board.BombCell;
 import pl.dszi.board.Cell;
+import pl.dszi.board.CrateCell;
 import pl.dszi.player.Player;
 
 import java.awt.*;
@@ -15,6 +16,8 @@ public abstract class Renderer extends Canvas {
     public abstract void showGraphic();
 
     public abstract void renderBoardGame(Cell[][] cells);
+
+    public abstract void renderCrates(CrateCell[][] crates);
 
     public abstract void renderBomb(Map<BombCell,Rectangle> bombCellPointMap);
 }

@@ -77,7 +77,8 @@ public class Game implements Runnable {
 
     private void render() {
         renderer.render();
-        renderer.renderBoardGame(boardGame.getCells());
+        renderer.renderBoardGame(boardGame.getInfo().getCells());
+        renderer.renderCrates(boardGame.getInfo().getCrates());
         renderer.renderBomb(boardGame.getBombs());
         boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();

@@ -3,6 +3,7 @@ package pl.dszi.gui.renderer;
 import pl.dszi.board.BombCell;
 import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
+import pl.dszi.board.CrateCell;
 import pl.dszi.engine.Constants;
 import pl.dszi.engine.KeyInput;
 import pl.dszi.player.Player;
@@ -93,6 +94,32 @@ public class Renderer2D extends Renderer {
         }));
     }
 
+
+    @Override
+    public void renderCrates(CrateCell[][] crateCells){
+        final BufferedImage img;
+        BufferedImage temp;
+        try {
+            temp = ImageIO.read(getClass().getResource("/images/crate.png"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            temp=null;
+        }
+        img = temp;
+        bufferStrategy = getBufferStrategy();
+        if (bufferStrategy == null) {
+            this.createBufferStrategy(3);
+            return;
+        }
+        graphics = bufferStrategy.getDrawGraphics();
+        for (CrateCell[] crateCells1 : crateCells) {
+            for (Cell aCrateCell : crateCells1) {
+                if(aCrateCell!=null) {
+                    graphics.drawImage(img, aCrateCell.getBody().x, aCrateCell.getBody().y, aCrateCell.getBody().width, aCrateCell.getBody().height, this);
+                }
+            }
+        }
+    }
 
     @Override
     public void showGraphic() {

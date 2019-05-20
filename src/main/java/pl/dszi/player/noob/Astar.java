@@ -1,6 +1,7 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
+import pl.dszi.board.Direction;
 import pl.dszi.engine.Constants;
 
 import java.util.*;
@@ -42,10 +43,10 @@ public class Astar {
         return nodeEnd;
     }
 
-    public List<Cell> chooseBestWay(Cell start, Cell end) {
+    public List<Node> chooseBestWay(Cell start,Direction direction, Cell end) {
         nodeStart = getNodeFromCell(start);
         nodeEnd = getNodeFromCell(end);
-
+        nodeStart.setDirection(direction);
         setAllHeuristic(nodeEnd);
         openList.add(nodeStart);
         while (!isEmpty(openList)) {
@@ -60,7 +61,7 @@ public class Astar {
         return new ArrayList<>();
     }
 
-    private List<Cell> getPath(Node currentNode) {
+    private List<Node> getPath(Node currentNode) {
         List<Node> path = new ArrayList<>();
         path.add(currentNode);
         Node parent;
@@ -68,12 +69,7 @@ public class Astar {
             path.add(0, parent);
             currentNode = parent;
         }
-        List<Cell> parsedPath = new ArrayList<>();
-        for (Node node : path) {
-            parsedPath.add(node.getCell());
-        }
-        parsedPath.remove(0);
-        return parsedPath;
+        return path;
     }
 
     private boolean isFinalNode(Node currentNode) {
