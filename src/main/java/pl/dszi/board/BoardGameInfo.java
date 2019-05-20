@@ -81,7 +81,11 @@ public class BoardGameInfo {
         }
         return false;
     }
-
+//    private void randomizeCrateCells() {
+//        for (int i = 0; i < Constants.DEFAULT_GAME_TILES_VERTICALLY; i++) {
+//                    this.crates[8][i] = new CrateCell(CellType.CELL_CRATE, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (8 + 1) * Constants.DEFAULT_CELL_SIZE), i, 8);
+//        }
+//    }
     private void randomizeCrateCells() {
         Random random = new Random();
 

@@ -10,6 +10,11 @@ public class Player {
     private final int range;
     private int bombAmount;
     private int bombActualyTicking=0;
+
+    public int getRange() {
+        return range;
+    }
+
     public int getBombAmount() {
         return bombAmount;
     }

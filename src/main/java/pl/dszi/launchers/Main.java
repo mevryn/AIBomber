@@ -7,6 +7,7 @@ import pl.dszi.engine.Game;
 import pl.dszi.player.ManualPlayerController;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;
+import pl.dszi.player.noob.NoobRossaAI;
 
 import java.awt.*;
 
@@ -17,7 +18,7 @@ public class Main {
       //  Player p4 = new Player("Player 4", 3);
         BoardGame boardGame = new BoardGame(new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
         Player pl = new Player(Constants.PLAYER_1_NAME, 3,new ManualPlayerController());
-        Player p2 = new Player(Constants.PLAYER_2_NAME, 3,new NoobPlayerController(boardGame));
+        Player p2 = new Player(Constants.PLAYER_2_NAME, 3,new NoobPlayerController(boardGame,new NoobRossaAI()));
         int spawnOffset = Constants.DEFAULT_OFFSET * 2;
         boardGame.put(pl, new Point(Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE));
         boardGame.put(p2, new Point(Constants.DEFAULT_GAME_WIDTH - spawnOffset, Constants.DEFAULT_GAME_HEIGHT - spawnOffset));
