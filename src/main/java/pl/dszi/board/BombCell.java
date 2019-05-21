@@ -13,11 +13,11 @@ public class BombCell extends Cell {
     private boolean playerInside;
     private boolean explodeMe;
 
-    public boolean isPlayerInside() {
+    boolean isPlayerInside() {
         return playerInside;
     }
 
-    public void setPlayerInside(boolean playerInside) {
+    void setPlayerInside(boolean playerInside) {
         this.playerInside = playerInside;
     }
 
@@ -32,7 +32,7 @@ public class BombCell extends Cell {
         this.ExplodeAfterTime();
     }
 
-    void ExplodeAfterTime() {
+    private void ExplodeAfterTime() {
         ScheduledExecutorService scheduler
                 = Executors.newSingleThreadScheduledExecutor();
 

@@ -10,12 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BoardGame implements Cloneable {
 
     private Map<Player, Point> map = new HashMap<>();
     private BoardGameInfo boardGameInfo;
     private Map<BombCell, Rectangle> bombs = new ConcurrentHashMap<>();
+    private List<ExplosionCell> explosionCells = new CopyOnWriteArrayList<>();
 
     public BoardGame(Cell[][] cells) {
         this.boardGameInfo = new BoardGameInfo(cells);
@@ -189,10 +191,15 @@ public class BoardGame implements Cloneable {
         return new Point(0, 0);
     }
 
-    public void detonateBomb(BombCell bombCell) {
-        Point centerOfExplosion = new Point();
-        centerOfExplosion = getCellCoordByBomb(bombCell);
+    public List<ExplosionCell> getExplosionCells() {
+        return explosionCells;
+    }
 
+    public void detonateBomb(BombCell bombCell) {
+        Point centerOfExplosion;
+        centerOfExplosion = getCellCoordByBomb(bombCell);
+        ExplosionCell explosionCell = new ExplosionCell(CellType.CELL_BOOM_CENTER,bombCell.point,centerOfExplosion.x,centerOfExplosion.y);
+        explosionCells.add(explosionCell);
     }
 
     public Cell[][] getCells() {

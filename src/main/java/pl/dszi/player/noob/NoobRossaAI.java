@@ -21,12 +21,7 @@ public class NoobRossaAI implements NoobAI {
             return false;
         }else if(boardGame.getPlayerPositionCell(player).getType().walkable){
             if(boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCell(player))){
-                if(player.getBombAmount()>player.getBombActualyTicking()) {
-                    return true;
-                }else
-                {
-                    return false;
-                }
+                return player.getBombAmount() > player.getBombActualyTicking();
             }
             return false;
         }else{

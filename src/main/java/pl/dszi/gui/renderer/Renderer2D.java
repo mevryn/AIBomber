@@ -1,9 +1,6 @@
 package pl.dszi.gui.renderer;
 
-import pl.dszi.board.BombCell;
-import pl.dszi.board.Cell;
-import pl.dszi.board.CellType;
-import pl.dszi.board.CrateCell;
+import pl.dszi.board.*;
 import pl.dszi.engine.Constants;
 import pl.dszi.engine.KeyInput;
 import pl.dszi.player.Player;
@@ -14,6 +11,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class Renderer2D extends Renderer {
@@ -118,6 +116,28 @@ public class Renderer2D extends Renderer {
                     graphics.drawImage(img, aCrateCell.getBody().x, aCrateCell.getBody().y, aCrateCell.getBody().width, aCrateCell.getBody().height, this);
                 }
             }
+        }
+    }
+
+    @Override
+    public void renderExplosions(List<ExplosionCell> explosionCellList) {
+        final BufferedImage img;
+        BufferedImage temp;
+        try {
+            temp = ImageIO.read(getClass().getResource("/images/explosion.png"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            temp=null;
+        }
+        img = temp;
+        bufferStrategy = getBufferStrategy();
+        if (bufferStrategy == null) {
+            this.createBufferStrategy(3);
+            return;
+        }
+        graphics = bufferStrategy.getDrawGraphics();
+        for (ExplosionCell explosionCell: explosionCellList){
+            graphics.drawImage(img, explosionCell.getPoint().x,explosionCell.getPoint().y,explosionCell.getBody().width,explosionCell.getBody().height,this);
         }
     }
 

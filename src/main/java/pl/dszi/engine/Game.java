@@ -3,6 +3,7 @@ package pl.dszi.engine;
 import pl.dszi.board.BoardGame;
 import pl.dszi.board.BombCell;
 import pl.dszi.board.Cell;
+import pl.dszi.board.ExplosionCell;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
@@ -80,6 +81,7 @@ public class Game implements Runnable {
         renderer.renderBoardGame(boardGame.getInfo().getCells());
         renderer.renderCrates(boardGame.getInfo().getCrates());
         renderer.renderBomb(boardGame.getBombs());
+        renderer.renderExplosions(boardGame.getExplosionCells());
         boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();
     }
@@ -87,15 +89,23 @@ public class Game implements Runnable {
     private void tick() {
         this.aiMovement();
         this.checkForBombsToDetonate();
+        this.checkForExplosionToEstinguish();
         // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 
 
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
-
         for (Player autoPlayer : autoPlayers) {
             autoPlayer.getPlayerController().pathFinding();
+        }
+    }
+
+    private void checkForExplosionToEstinguish(){
+        for(ExplosionCell explosionCell:boardGame.getExplosionCells()){
+            if (!explosionCell.isBurning()){
+                boardGame.getExplosionCells().remove(explosionCell);
+            }
         }
     }
 
@@ -103,6 +113,7 @@ public class Game implements Runnable {
         for (BombCell entry : boardGame.getBombs().keySet()) {
             if (entry.isReadyToExplode()) {
                 entry.getPlayer().detonateBomb();
+                boardGame.detonateBomb(entry);
                 boardGame.getBombs().remove(entry);
             }
         }
