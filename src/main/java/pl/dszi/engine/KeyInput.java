@@ -18,18 +18,22 @@ public class KeyInput extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         Player player = boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
         int key = e.getKeyCode();
-        if (key == KeyEvent.VK_W) {
-            boardGame.move(player, Direction.NORTH);
-        } else if (key == KeyEvent.VK_S) {
-            boardGame.move(player, Direction.SOUTH);
-        } else if (key == KeyEvent.VK_A) {
-            boardGame.move(player, Direction.WEST);
-        } else if (key == KeyEvent.VK_D) {
-            boardGame.move(player, Direction.EAST);
-        }
-        if (key == KeyEvent.VK_SPACE) {
-            if (player.getBombAmount() > player.getBombActualyTicking())
-                boardGame.plantBomb(player);
+        try {
+            if (key == KeyEvent.VK_W) {
+                boardGame.move(player, Direction.NORTH);
+            } else if (key == KeyEvent.VK_S) {
+                boardGame.move(player, Direction.SOUTH);
+            } else if (key == KeyEvent.VK_A) {
+                boardGame.move(player, Direction.WEST);
+            } else if (key == KeyEvent.VK_D) {
+                boardGame.move(player, Direction.EAST);
+            }
+            if (key == KeyEvent.VK_SPACE) {
+                if (player.getBombAmount() > player.getBombActualyTicking())
+                    boardGame.plantBomb(player);
+            }
+        }catch(NullPointerException nullPointerException){
+            System.out.println("You are dead");
         }
     }
 }

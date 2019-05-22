@@ -22,7 +22,7 @@ public abstract class Renderer extends Canvas {
 
     public abstract void renderCrates(CrateCell[][] crates);
 
-    public abstract void renderBomb(Map<BombCell,Rectangle> bombCellPointMap);
+    public abstract void renderBomb(List<BombCell> bombCells);
 
     public abstract void renderExplosions(List<ExplosionCell> explosionCellList);
 }

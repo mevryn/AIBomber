@@ -14,6 +14,7 @@ public class Constants {
     public static final int BASIC_BOMB_EXPLOSION_TIMER = 4;
     public static final int BASIC_BOMB_EXPLOSION_BURNING_TIMER=2;
     public static final int DEFAULT_NODE_COST = 1;
+    public static final int IMMORTALITY_TIMER = 3;
     public static String PLAYER_1_NAME = "Player 1";
     public static String PLAYER_2_NAME = "Player 2";
     public static String PLAYER_3_NAME = "Player 3";

@@ -10,6 +10,7 @@ import pl.dszi.gui.renderer.Renderer2D;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;
 
+import java.awt.*;
 import java.util.List;
 
 public class Game implements Runnable {
@@ -89,12 +90,37 @@ public class Game implements Runnable {
     private void tick() {
         this.aiMovement();
         this.checkForBombsToDetonate();
+        this.checkForExplosionCollideWithPlayer();
         this.checkForExplosionToEstinguish();
+        this.checkIfPlayersAreAlive();
         this.boardGame.deleteCrateOnExplosion();
+        if(boardGame.getPlayerByName(Constants.PLAYER_2_NAME).getCurrentHp()<=0){
+            System.out.println("dupa");
+        }
         // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 
+    private void checkForExplosionCollideWithPlayer(){
+        for(int i=0;i<boardGame.getExplosionCells().size();i++){
+            for(Player player: boardGame.getMap().keySet()){
+                Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE);
+                if(boardGame.getExplosionCells().get(i).getBody().intersects(playerBody) &&
+                        !boardGame.getExplosionCells().get(i).checkIfPlayerWasAlreadyDamaged(player)&&
+                            player.isMortal()){
+                    boardGame.getExplosionCells().get(i).addAlreadyDamagedPlayer(player);
+                    player.damagePlayer();
+                }
+            }
+        }
+    }
 
+    private void checkIfPlayersAreAlive(){
+        for(Player player:boardGame.getMap().keySet()){
+            if(player.getCurrentHp()<=0){
+                boardGame.getMap().remove(player);
+            }
+        }
+    }
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
         for (Player autoPlayer : autoPlayers) {
@@ -111,7 +137,7 @@ public class Game implements Runnable {
     }
 
     private void checkForBombsToDetonate() {
-        for (BombCell entry : boardGame.getBombs().keySet()) {
+        for (BombCell entry : boardGame.getBombs()) {
             if (entry.isReadyToExplode()) {
                 entry.getPlayer().detonateBomb();
                 boardGame.detonateBomb(entry);

@@ -71,7 +71,7 @@ public class Renderer2D extends Renderer {
     }
 
     @Override
-    public void renderBomb(Map<BombCell,Rectangle> bombCellPointMap) {
+    public void renderBomb(List<BombCell> bombCells) {
         final BufferedImage img;
         BufferedImage temp;
         try {
@@ -87,8 +87,8 @@ public class Renderer2D extends Renderer {
             return;
         }
         graphics = bufferStrategy.getDrawGraphics();
-        bombCellPointMap.forEach(((bombCell, body) -> {
-            graphics.drawImage(img,body.x, body.y, body.width, body.height,this);
+        bombCells.forEach(((bombCell) -> {
+            graphics.drawImage(img,bombCell.getBody().x, bombCell.getBody().y, bombCell.getBody().width, bombCell.getBody().height,this);
         }));
     }
 

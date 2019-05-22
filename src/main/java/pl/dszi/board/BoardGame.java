@@ -14,9 +14,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BoardGame implements Cloneable {
 
-    private Map<Player, Point> map = new HashMap<>();
+    private Map<Player, Point> map = new ConcurrentHashMap<>();
     private BoardGameInfo boardGameInfo;
-    private Map<BombCell, Rectangle> bombs = new ConcurrentHashMap<>();
+    private List<BombCell> bombs = new CopyOnWriteArrayList();
     private List<ExplosionCell> explosionCells = new CopyOnWriteArrayList<>();
 
     public BoardGame(Cell[][] cells) {
@@ -73,7 +73,10 @@ public class BoardGame implements Cloneable {
     }
 
     public Point getPlayerPosition(Player player) {
-        return map.get(player);
+        Point translatedPoint= new Point();
+        translatedPoint.x = map.get(player).x+(Constants.DEFAULT_CELL_SIZE/2);
+        translatedPoint.y = map.get(player).y+(Constants.DEFAULT_CELL_SIZE/2);
+        return translatedPoint;
     }
 
     public Cell getPlayerPositionCell(Player player) {
@@ -116,7 +119,7 @@ public class BoardGame implements Cloneable {
     }
 
 
-    public Map<BombCell, Rectangle> getBombs() {
+    public List<BombCell> getBombs() {
         return bombs;
     }
 
@@ -149,15 +152,13 @@ public class BoardGame implements Cloneable {
         }
         return false;
     }
-    public boolean checkIfCrateAtSpecificIndex(Point aCoord){
-        if(boardGameInfo.getCrates()[aCoord.x][aCoord.y]!=null){
-            return true;
-        }else
-            return  false;
+
+    private boolean checkIfCrateAtSpecificIndex(Point aCoord) {
+        return boardGameInfo.getCrates()[aCoord.x][aCoord.y] != null;
     }
 
     public boolean checkIfBombForward(Player player, Rectangle body) {
-        for (BombCell bomb : bombs.keySet()) {
+        for (BombCell bomb : bombs) {
             if (!bomb.body.intersects(body) && bomb.getPlayer() == player) {
                 bomb.setPlayerInside(false);
             }
@@ -168,16 +169,25 @@ public class BoardGame implements Cloneable {
         return false;
     }
 
+    public boolean checkIfBombOnSpecificLocation(Point aCoord) {
+        for (BombCell bombCell : getBombs()) {
+            return getCellCoordByBomb(bombCell).equals(aCoord);
+        }
+        return false;
+    }
+
     public synchronized void plantBomb(Player player) {
         try {
             Cell playerPositionCell = getPlayerPositionCell(player);
             for (int i = 0; i < boardGameInfo.getCells().length; i++) {
                 for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
-                    if (boardGameInfo.getCells()[i][j].equals(playerPositionCell) && boardGameInfo.getCells()[i][j].getType() != CellType.CELL_BOMB) {
-                        System.out.println("Bomb Planted");
+                    if (boardGameInfo.getCells()[i][j].body.contains(getPlayerPosition(player)) && boardGameInfo.getCells()[i][j].getType() != CellType.CELL_BOMB) {
                         BombCell bombCell = new BombCell(boardGameInfo.getCells()[i][j], player);
-                        bombs.put(bombCell, bombCell.getBody());
-                        player.plantBomb();
+                        if(!checkIfBombOnSpecificLocation(new Point(bombCell.indexX,bombCell.indexY))) {
+                            bombs.add(bombCell);
+                            System.out.println("Bomb Planted");
+                            player.plantBomb();
+                        }
                     }
                 }
             }
@@ -217,9 +227,8 @@ public class BoardGame implements Cloneable {
         return !map.containsValue(point);
     }
 
-    public List<Cell> getCellsToExplosion(BombCell bombCell, Point point) {
-        List<Cell> cells = new ArrayList<>();
-        cells.addAll(getNeighbors(getInfo().getCells()[point.x][point.y], bombCell.getPlayer().getRange()));
+    private List<Cell> getCellsToExplosion(BombCell bombCell, Point point) {
+        List<Cell> cells = new ArrayList<>(getNeighbors(getInfo().getCells()[point.x][point.y], bombCell.getPlayer().getRange()));
         for (int i = 1; i < bombCell.getPlayer().getRange() - 1; i++) {
             //implementation of bombExplosion
         }
@@ -256,16 +265,17 @@ public class BoardGame implements Cloneable {
         for (int i = 0; i < boardGameInfo.getCells().length; i++) {
             for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
                 if (boardGameInfo.getCrates()[i][j] != null) {
-                    for(int explosionCellIterator = 0; explosionCellIterator<explosionCells.size();explosionCellIterator++){
-                        if(explosionCells.get(explosionCellIterator).indexX==i&&explosionCells.get(explosionCellIterator).indexY==j){
-                            boardGameInfo.getCrates()[i][j]=null;
+                    for (ExplosionCell explosionCell : explosionCells) {
+                        if (explosionCell.indexX == i && explosionCell.indexY == j) {
+                            boardGameInfo.getCrates()[i][j] = null;
                         }
                     }
                 }
             }
         }
     }
-    public List<Cell> getNeighbors(Cell aCell, int range) {
+
+    private List<Cell> getNeighbors(Cell aCell, int range) {
         List<Cell> neighbors = new ArrayList<>();
         boolean north = true;
         boolean west = true;
@@ -279,12 +289,12 @@ public class BoardGame implements Cloneable {
                     if (boardGameInfo.getCells()[i][j].equals(aCell)) {
                         row = i;
                         col = j;
-                        if (west&&
+                        if (west &&
                                 row - rangeChecker >= 0 &&
                                 boardGameInfo.getCells()[row - rangeChecker][col].getType().walkable) {
                             neighbors.add(boardGameInfo.getCells()[row - rangeChecker][col]);
-                            if(checkIfCrateAtSpecificIndex(new Point(row - rangeChecker,col))){
-                                west =false;
+                            if (checkIfCrateAtSpecificIndex(new Point(row - rangeChecker, col))) {
+                                west = false;
                             }
                         } else
                             west = false;
@@ -293,16 +303,16 @@ public class BoardGame implements Cloneable {
 
                                 boardGameInfo.getCells()[row][col - rangeChecker].getType().walkable) {
                             neighbors.add(boardGameInfo.getCells()[row][col - rangeChecker]);
-                            if(  checkIfCrateAtSpecificIndex(new Point(row,col-rangeChecker)))
-                                north=false;
+                            if (checkIfCrateAtSpecificIndex(new Point(row, col - rangeChecker)))
+                                north = false;
                         } else
                             north = false;
                         if (east &&
                                 row + rangeChecker < Constants.DEFAULT_GAME_TILES_HORIZONTALLY &&
                                 boardGameInfo.getCells()[row + rangeChecker][col].getType().walkable) {
                             neighbors.add(boardGameInfo.getCells()[row + rangeChecker][col]);
-                            if(checkIfCrateAtSpecificIndex(new Point(row + rangeChecker,col))){
-                                east=false;
+                            if (checkIfCrateAtSpecificIndex(new Point(row + rangeChecker, col))) {
+                                east = false;
                             }
                         } else
                             east = false;
@@ -311,8 +321,8 @@ public class BoardGame implements Cloneable {
 
                                 boardGameInfo.getCells()[row][col + rangeChecker].getType().walkable) {
                             neighbors.add(boardGameInfo.getCells()[row][col + rangeChecker]);
-                            if(        checkIfCrateAtSpecificIndex(new Point(row,col+rangeChecker))){
-                                south=false;
+                            if (checkIfCrateAtSpecificIndex(new Point(row, col + rangeChecker))) {
+                                south = false;
                             }
                         } else
                             south = false;
