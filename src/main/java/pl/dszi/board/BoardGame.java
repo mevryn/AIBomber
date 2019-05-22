@@ -149,7 +149,12 @@ public class BoardGame implements Cloneable {
         }
         return false;
     }
-
+    public boolean checkIfCrateAtSpecificIndex(Point aCoord){
+        if(boardGameInfo.getCrates()[aCoord.x][aCoord.y]!=null){
+            return true;
+        }else
+            return  false;
+    }
 
     public boolean checkIfBombForward(Player player, Rectangle body) {
         for (BombCell bomb : bombs.keySet()) {
@@ -198,8 +203,10 @@ public class BoardGame implements Cloneable {
     public void detonateBomb(BombCell bombCell) {
         Point centerOfExplosion;
         centerOfExplosion = getCellCoordByBomb(bombCell);
-        ExplosionCell explosionCell = new ExplosionCell(CellType.CELL_BOOM_CENTER,bombCell.point,centerOfExplosion.x,centerOfExplosion.y);
+        ExplosionCell explosionCell = new ExplosionCell(CellType.CELL_BOOM_CENTER, bombCell.point, centerOfExplosion.x, centerOfExplosion.y);
         explosionCells.add(explosionCell);
+        List<Cell> cellsToExplode = getCellsToExplosion(bombCell, getCellCoordByBomb(bombCell));
+        cellsToExplode.forEach(cell -> explosionCells.add(new ExplosionCell(cell)));
     }
 
     public Cell[][] getCells() {
@@ -212,7 +219,7 @@ public class BoardGame implements Cloneable {
 
     public List<Cell> getCellsToExplosion(BombCell bombCell, Point point) {
         List<Cell> cells = new ArrayList<>();
-        cells.addAll(getNeighbors(getInfo().getCells()[point.x][point.y]));
+        cells.addAll(getNeighbors(getInfo().getCells()[point.x][point.y], bombCell.getPlayer().getRange()));
         for (int i = 1; i < bombCell.getPlayer().getRange() - 1; i++) {
             //implementation of bombExplosion
         }
@@ -245,26 +252,70 @@ public class BoardGame implements Cloneable {
         return false;
     }
 
-    public List<Cell> getNeighbors(Cell aCell) {
+    public void deleteCrateOnExplosion() {
+        for (int i = 0; i < boardGameInfo.getCells().length; i++) {
+            for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
+                if (boardGameInfo.getCrates()[i][j] != null) {
+                    for(int explosionCellIterator = 0; explosionCellIterator<explosionCells.size();explosionCellIterator++){
+                        if(explosionCells.get(explosionCellIterator).indexX==i&&explosionCells.get(explosionCellIterator).indexY==j){
+                            boardGameInfo.getCrates()[i][j]=null;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public List<Cell> getNeighbors(Cell aCell, int range) {
         List<Cell> neighbors = new ArrayList<>();
+        boolean north = true;
+        boolean west = true;
+        boolean east = true;
+        boolean south = true;
         int row = 0;
         int col = 0;
         for (int i = 0; i < boardGameInfo.getCells().length; i++) {
             for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
-                if (boardGameInfo.getCells()[i][j].equals(aCell)) {
-                    row = i;
-                    col = j;
-                    if (row - 1 >= 0) {
-                        neighbors.add(boardGameInfo.getCells()[row - 1][col]);
-                    }
-                    if (col - 1 >= 0) {
-                        neighbors.add(boardGameInfo.getCells()[row][col - 1]);
-                    }
-                    if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
-                        neighbors.add(boardGameInfo.getCells()[row + 1][col]);
-                    }
-                    if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
-                        neighbors.add(boardGameInfo.getCells()[row][col + 1]);
+                for (int rangeChecker = 1; rangeChecker < range; rangeChecker++) {
+                    if (boardGameInfo.getCells()[i][j].equals(aCell)) {
+                        row = i;
+                        col = j;
+                        if (west&&
+                                row - rangeChecker >= 0 &&
+                                boardGameInfo.getCells()[row - rangeChecker][col].getType().walkable) {
+                            neighbors.add(boardGameInfo.getCells()[row - rangeChecker][col]);
+                            if(checkIfCrateAtSpecificIndex(new Point(row - rangeChecker,col))){
+                                west =false;
+                            }
+                        } else
+                            west = false;
+                        if (north &&
+                                col - rangeChecker >= 0 &&
+
+                                boardGameInfo.getCells()[row][col - rangeChecker].getType().walkable) {
+                            neighbors.add(boardGameInfo.getCells()[row][col - rangeChecker]);
+                            if(  checkIfCrateAtSpecificIndex(new Point(row,col-rangeChecker)))
+                                north=false;
+                        } else
+                            north = false;
+                        if (east &&
+                                row + rangeChecker < Constants.DEFAULT_GAME_TILES_HORIZONTALLY &&
+                                boardGameInfo.getCells()[row + rangeChecker][col].getType().walkable) {
+                            neighbors.add(boardGameInfo.getCells()[row + rangeChecker][col]);
+                            if(checkIfCrateAtSpecificIndex(new Point(row + rangeChecker,col))){
+                                east=false;
+                            }
+                        } else
+                            east = false;
+                        if (south &&
+                                col + rangeChecker < Constants.DEFAULT_GAME_TILES_VERTICALLY &&
+
+                                boardGameInfo.getCells()[row][col + rangeChecker].getType().walkable) {
+                            neighbors.add(boardGameInfo.getCells()[row][col + rangeChecker]);
+                            if(        checkIfCrateAtSpecificIndex(new Point(row,col+rangeChecker))){
+                                south=false;
+                            }
+                        } else
+                            south = false;
                     }
                 }
             }

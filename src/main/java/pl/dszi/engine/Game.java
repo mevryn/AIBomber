@@ -90,6 +90,7 @@ public class Game implements Runnable {
         this.aiMovement();
         this.checkForBombsToDetonate();
         this.checkForExplosionToEstinguish();
+        this.boardGame.deleteCrateOnExplosion();
         // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 
