@@ -1,7 +1,7 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class Astar {
     }
 
     public Node getNodeFromCell(Cell cell) {
-        return nodes[cell.getIndexX()][cell.getIndexY()];
+        return nodes[cell.getPoint().x][cell.getPoint().y];
     }
 
     public void setAllHeuristic(Node destinationNode) {
@@ -72,7 +72,6 @@ public class Astar {
         for (Node node : path) {
             parsedPath.add(node.getCell());
         }
-        parsedPath.remove(0);
         return parsedPath;
     }
 
@@ -124,11 +123,11 @@ public class Astar {
         }
     }
 
-    public PriorityQueue<Node> getOpenList() {
+    private PriorityQueue<Node> getOpenList() {
         return openList;
     }
 
-    public Set<Node> getClosedSet() {
+    private Set<Node> getClosedSet() {
         return closedSet;
 
     }

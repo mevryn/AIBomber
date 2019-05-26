@@ -1,18 +1,16 @@
 package pl.dszi.gui.renderer;
 
 import pl.dszi.board.*;
-import pl.dszi.engine.Constants;
-import pl.dszi.engine.KeyInput;
+import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Resource;
 import pl.dszi.player.Player;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class Renderer2D extends Renderer {
 
@@ -41,7 +39,7 @@ public class Renderer2D extends Renderer {
         bufferStrategy = getBufferStrategy();
         BufferedImage img=null;
         try {
-            img = ImageIO.read(getClass().getResource("/images/BOMBI.png"));
+            img = ImageIO.read(getClass().getResource(Resource.CHARACTERPATH.getPath()));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -61,85 +59,51 @@ public class Renderer2D extends Renderer {
             this.createBufferStrategy(3);
             return;
         }
+        final BufferedImage crateImg;
+        final BufferedImage explosionImg;
+        final BufferedImage bombImg;
+        BufferedImage temp;
+        try {
+            temp = ImageIO.read(getClass().getResource(Resource.CRATEPATH.getPath()));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            temp = null;
+        }
+        crateImg = temp;
+        try {
+            temp = ImageIO.read(getClass().getResource(Resource.EXPLOSIONPATH.getPath()));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            temp = null;
+        }
+        explosionImg = temp;
+        try {
+            temp = ImageIO.read(getClass().getResource(Resource.BOMBPATH.getPath()));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            temp = null;
+        }
+        bombImg = temp;
         graphics = bufferStrategy.getDrawGraphics();
+        graphics.setColor(Color.LIGHT_GRAY);
+        graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
-                graphics.setColor(aCell.getColor());
-                graphics.fillRect(aCell.getPoint().x, aCell.getPoint().y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
-            }
-        }
-    }
-
-    @Override
-    public void renderBomb(List<BombCell> bombCells) {
-        final BufferedImage img;
-        BufferedImage temp;
-        try {
-            temp = ImageIO.read(getClass().getResource("/images/bomba.png"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp=null;
-        }
-        img = temp;
-        bufferStrategy = getBufferStrategy();
-        if (bufferStrategy == null) {
-            this.createBufferStrategy(3);
-            return;
-        }
-        graphics = bufferStrategy.getDrawGraphics();
-        bombCells.forEach(((bombCell) -> {
-            graphics.drawImage(img,bombCell.getBody().x, bombCell.getBody().y, bombCell.getBody().width, bombCell.getBody().height,this);
-        }));
-    }
-
-
-    @Override
-    public void renderCrates(CrateCell[][] crateCells){
-        final BufferedImage img;
-        BufferedImage temp;
-        try {
-            temp = ImageIO.read(getClass().getResource("/images/crate.png"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp=null;
-        }
-        img = temp;
-        bufferStrategy = getBufferStrategy();
-        if (bufferStrategy == null) {
-            this.createBufferStrategy(3);
-            return;
-        }
-        graphics = bufferStrategy.getDrawGraphics();
-        for (CrateCell[] crateCells1 : crateCells) {
-            for (Cell aCrateCell : crateCells1) {
-                if(aCrateCell!=null) {
-                    graphics.drawImage(img, aCrateCell.getBody().x, aCrateCell.getBody().y, aCrateCell.getBody().width, aCrateCell.getBody().height, this);
+                graphics.setColor(Color.LIGHT_GRAY);
+                if (aCell.getType() == CellType.CELL_WALL) {
+                    graphics.setColor(Color.BLACK);
+                    graphics.fillRect(aCell.getBody().x, aCell.getBody().y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+                }else if (aCell.getType() == CellType.CELL_CRATE) {
+                    graphics.drawImage(crateImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
+                }else if (aCell.getType() == CellType.CELL_BOOM_CENTER) {
+                    graphics.drawImage(explosionImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
+                }else if (aCell.getType() == CellType.CELL_BOMB) {
+                    graphics.drawImage(bombImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
                 }
             }
         }
     }
 
-    @Override
-    public void renderExplosions(List<ExplosionCell> explosionCellList) {
-        final BufferedImage img;
-        BufferedImage temp;
-        try {
-            temp = ImageIO.read(getClass().getResource("/images/explosion.png"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp=null;
-        }
-        img = temp;
-        bufferStrategy = getBufferStrategy();
-        if (bufferStrategy == null) {
-            this.createBufferStrategy(3);
-            return;
-        }
-        graphics = bufferStrategy.getDrawGraphics();
-        for (ExplosionCell explosionCell: explosionCellList){
-            graphics.drawImage(img, explosionCell.getPoint().x,explosionCell.getPoint().y,explosionCell.getBody().width,explosionCell.getBody().height,this);
-        }
-    }
 
     @Override
     public void showGraphic() {

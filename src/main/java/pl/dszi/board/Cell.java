@@ -1,7 +1,6 @@
 package pl.dszi.board;
 
-import pl.dszi.engine.Constants;
-import pl.dszi.player.Player;
+import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
 
@@ -10,10 +9,7 @@ public class Cell {
     protected CellType type;
     protected Color color;
     protected final Point point;
-    protected   Rectangle body;
-    protected int indexX;
-    protected int indexY;
-
+    private   Rectangle body;
     public Point getPoint() {
         return point;
     }
@@ -22,43 +18,19 @@ public class Cell {
         return type;
     }
 
-    Cell(CellType type, Point point, boolean even,int indexX, int indexY) {
+    Cell(CellType type, Point point) {
         this.point = point;
         this.type = type;
-        this.color = setColor(even);
-        this.indexX=indexX;
-        this.indexY=indexY;
-        this.body = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+        if(type == CellType.CELL_WALL){
+            color = Color.BLACK;
+        }else
+            color = Color.LIGHT_GRAY;
+        this.body = new Rectangle(point.x*Constants.DEFAULT_CELL_SIZE, point.y*Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
     }
 
-    @Override
-    public String toString() {
-        return
-                "indexX=" + indexX +
-                ", indexY=" + indexY+"\n";
-    }
 
     public Rectangle getBody() {
         return body;
-    }
-
-
-    public int getIndexX() {
-        return indexX;
-    }
-
-    public int getIndexY() {
-        return indexY;
-    }
-
-    public Cell(CellType type, Point point, int indexX, int indexY) {
-        this.point = point;
-        this.type = type;
-        if(type==CellType.CELL_WALL)
-        this.color = setColor();
-        this.indexX=indexX;
-        this.indexY=indexY;
-        this.body = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
     }
 
 

@@ -2,7 +2,7 @@ package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
 import pl.dszi.board.Direction;
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 
 public class Node {
     private Cell cell;

@@ -1,7 +1,7 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.BoardGame;
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.Player;
 
 import java.awt.*;

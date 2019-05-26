@@ -1,6 +1,6 @@
 package pl.dszi.player;
 
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
 import java.util.concurrent.Executors;
@@ -16,6 +16,26 @@ public class Player {
     private int bombAmount;
     private int bombActualyTicking=0;
     private boolean mortal = true;
+    private boolean insideBomb = false;
+    private boolean alive = true;
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public boolean isInsideBomb() {
+
+        return insideBomb;
+    }
+
+    public void setInsideBomb(boolean insideBomb) {
+        this.insideBomb = insideBomb;
+    }
+
     public int getRange() {
         return range;
     }
@@ -30,6 +50,7 @@ public class Player {
 
     public void plantBomb(){
         bombActualyTicking++;
+        this.setInsideBomb(true);
     }
     public void detonateBomb(){
         bombActualyTicking--;
@@ -77,6 +98,21 @@ public class Player {
         scheduler.schedule(task, delay, TimeUnit.SECONDS);
         scheduler.shutdown();
     }
+    public void restoreBombAmountEvent(){
+        ScheduledExecutorService scheduler
+                = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable task = new Runnable() {
+            public void run() {
+                bombActualyTicking--;
+            }
+        };
+
+        int delay = Constants.BASIC_BOMB_EXPLOSION_TIMER;
+        scheduler.schedule(task, delay, TimeUnit.SECONDS);
+        scheduler.shutdown();
+    }
+
     public void damagePlayer(){
         currentHp--;
         mortal=false;

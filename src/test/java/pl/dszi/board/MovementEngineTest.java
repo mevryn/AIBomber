@@ -2,7 +2,7 @@ package pl.dszi.board;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.ManualPlayerController;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;

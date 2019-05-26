@@ -2,6 +2,7 @@ package pl.dszi.engine;
 
 import pl.dszi.board.BoardGame;
 import pl.dszi.board.Direction;
+import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.Player;
 
 import java.awt.event.KeyAdapter;

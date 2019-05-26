@@ -1,9 +1,6 @@
 package pl.dszi.gui.renderer;
 
-import pl.dszi.board.BombCell;
 import pl.dszi.board.Cell;
-import pl.dszi.board.CrateCell;
-import pl.dszi.board.ExplosionCell;
 import pl.dszi.player.Player;
 
 import java.util.List;
@@ -20,9 +17,5 @@ public abstract class Renderer extends Canvas {
 
     public abstract void renderBoardGame(Cell[][] cells);
 
-    public abstract void renderCrates(CrateCell[][] crates);
 
-    public abstract void renderBomb(List<BombCell> bombCells);
-
-    public abstract void renderExplosions(List<ExplosionCell> explosionCellList);
 }

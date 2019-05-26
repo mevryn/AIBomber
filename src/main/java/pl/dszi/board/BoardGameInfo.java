@@ -1,6 +1,6 @@
 package pl.dszi.board;
 
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -9,23 +9,21 @@ import java.util.Random;
 
 public class BoardGameInfo {
     private Cell[][] cells;
-    private CrateCell[][] crates;
     private final List<Point> startingPoints;
 
     public BoardGameInfo(Cell[][] cells) {
         startingPoints = new ArrayList<>();
         initalizeStartingPoints();
         this.cells = cells;
-        this.crates = new CrateCell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY];
         setBoard();
-        randomizeCrateCells();
+
     }
 
     private void setBoard() {
         boolean even = true;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
-                this.cells[i][j] = new Cell(CellType.CELL_EMPTY, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), even, i, j);
+                this.cells[i][j] = new Cell(CellType.CELL_EMPTY, new Point(i,j));
                 if (even)
                     even = false;
                 else
@@ -34,9 +32,10 @@ public class BoardGameInfo {
         }
         for (int i = 1; i < cells.length - 1; i = i + 2) {
             for (int j = 1; j < cells[i].length - 1; j = j + 2) {
-                this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), i, j);
+                this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point(i,j));
             }
         }
+        randomizeCrateCells();
     }
 
     public void initalizeStartingPoints(){
@@ -69,7 +68,15 @@ public class BoardGameInfo {
         return cells;
     }
 
-    public CrateCell[][] getCrates() {
+    public List<Cell> getCrates() {
+        List<Cell> crates = new ArrayList<>();
+        for(Cell[] cell:cells){
+            for(Cell cell1:cell){
+                if(cell1.getType()==CellType.CELL_CRATE){
+                    crates.add(cell1);
+                }
+            }
+        }
         return crates;
     }
 
@@ -81,18 +88,12 @@ public class BoardGameInfo {
         }
         return false;
     }
-//    private void randomizeCrateCells() {
-//        for (int i = 0; i < Constants.DEFAULT_GAME_TILES_VERTICALLY; i++) {
-//                    this.crates[8][i] = new CrateCell(CellType.CELL_CRATE, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (8 + 1) * Constants.DEFAULT_CELL_SIZE), i, 8);
-//        }
-//    }
     private void randomizeCrateCells() {
         Random random = new Random();
-
-        for (int i = 0; i < crates.length; i++) {
-            for (int j = 0; j < crates[i].length; j++) {
+        for (int i = 0; i <cells.length; i++) {
+            for (int j = 0; j < cells[i].length; j++) {
                 if (random.nextBoolean() && cells[i][j].getType() != CellType.CELL_WALL && !checkIfIsNotStartingPoint(new Point(i,j))) {
-                    this.crates[i][j] = new CrateCell(CellType.CELL_CRATE, new Point((i + 1) * Constants.DEFAULT_CELL_SIZE, (j + 1) * Constants.DEFAULT_CELL_SIZE), i, j);
+                    this.cells[i][j] = new Cell(CellType.CELL_CRATE, new Point(i,j));
                 }
             }
         }

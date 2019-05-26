@@ -10,6 +10,6 @@ class Distances {
     }
 
     protected int returnManhattanDistance(){
-        return Math.abs(Node1.getCell().getIndexX()-Node2.getCell().getIndexX())+Math.abs(Node1.getCell().getIndexY()-Node2.getCell().getIndexY());
+        return Math.abs(Node1.getCell().getPoint().x-Node2.getCell().getPoint().x)+Math.abs(Node1.getCell().getPoint().y-Node2.getCell().getPoint().y);
     }
 }

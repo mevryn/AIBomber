@@ -1,14 +1,11 @@
 package pl.dszi.engine;
 
-import pl.dszi.board.BoardGame;
-import pl.dszi.board.BombCell;
-import pl.dszi.board.Cell;
-import pl.dszi.board.ExplosionCell;
+import pl.dszi.board.*;
+import pl.dszi.engine.constant.Constants;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
 import pl.dszi.player.Player;
-import pl.dszi.player.noob.NoobPlayerController;
 
 import java.awt.*;
 import java.util.List;
@@ -16,13 +13,12 @@ import java.util.List;
 public class Game implements Runnable {
 
 
-    private Thread thread;
     private Boolean running = false;
 
     private Renderer renderer;
     private BoardGame boardGame;
 
-    public BoardGame getBoardGame() {
+    private BoardGame getBoardGame() {
         return boardGame;
     }
 
@@ -63,13 +59,13 @@ public class Game implements Runnable {
         stop();
     }
 
-    void start() {
-        thread = new Thread(this);
+    private void start() {
+        Thread thread = new Thread(this);
         thread.start();
         running = true;
     }
 
-    void stop() {
+    private void stop() {
         try {
             running = false;
         } catch (Exception e) {
@@ -80,35 +76,31 @@ public class Game implements Runnable {
     private void render() {
         renderer.render();
         renderer.renderBoardGame(boardGame.getInfo().getCells());
-        renderer.renderCrates(boardGame.getInfo().getCrates());
-        renderer.renderBomb(boardGame.getBombs());
-        renderer.renderExplosions(boardGame.getExplosionCells());
         boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();
     }
 
     private void tick() {
-        this.aiMovement();
-        this.checkForBombsToDetonate();
-        this.checkForExplosionCollideWithPlayer();
-        this.checkForExplosionToEstinguish();
         this.checkIfPlayersAreAlive();
-        this.boardGame.deleteCrateOnExplosion();
+        this.aiMovement();
+        this.checkForExplosionCollideWithPlayer();
+
+
         if(boardGame.getPlayerByName(Constants.PLAYER_2_NAME).getCurrentHp()<=0){
             System.out.println("dupa");
         }
-        // System.out.println(boardGame.getPlayerPosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME)));
     }
 
     private void checkForExplosionCollideWithPlayer(){
-        for(int i=0;i<boardGame.getExplosionCells().size();i++){
-            for(Player player: boardGame.getMap().keySet()){
-                Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE);
-                if(boardGame.getExplosionCells().get(i).getBody().intersects(playerBody) &&
-                        !boardGame.getExplosionCells().get(i).checkIfPlayerWasAlreadyDamaged(player)&&
-                            player.isMortal()){
-                    boardGame.getExplosionCells().get(i).addAlreadyDamagedPlayer(player);
-                    player.damagePlayer();
+        for (Cell[] cells:getBoardGame().getInfo().getCells()) {
+            for(Cell aCell:cells){
+                if(aCell.getType()==CellType.CELL_BOOM_CENTER){
+                    for(Player player: boardGame.getMap().keySet()) {
+                        Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE);
+                        if(aCell.getBody().intersects(playerBody) && player.isMortal()){
+                            player.damagePlayer();
+                        }
+                    }
                 }
             }
         }
@@ -117,32 +109,12 @@ public class Game implements Runnable {
     private void checkIfPlayersAreAlive(){
         for(Player player:boardGame.getMap().keySet()){
             if(player.getCurrentHp()<=0){
-                boardGame.getMap().remove(player);
+                player.setAlive(false);
             }
         }
     }
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
-        for (Player autoPlayer : autoPlayers) {
-            autoPlayer.getPlayerController().pathFinding();
-        }
-    }
-
-    private void checkForExplosionToEstinguish(){
-        for(ExplosionCell explosionCell:boardGame.getExplosionCells()){
-            if (!explosionCell.isBurning()){
-                boardGame.getExplosionCells().remove(explosionCell);
-            }
-        }
-    }
-
-    private void checkForBombsToDetonate() {
-        for (BombCell entry : boardGame.getBombs()) {
-            if (entry.isReadyToExplode()) {
-                entry.getPlayer().detonateBomb();
-                boardGame.detonateBomb(entry);
-                boardGame.getBombs().remove(entry);
-            }
-        }
+        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().pathFinding());
     }
 }

@@ -1,6 +1,6 @@
 package pl.dszi.board;
 
-import pl.dszi.engine.Constants;
+import pl.dszi.engine.constant.Constants;
 
 public enum Direction {
     NORTH(0, -Constants.DEFAULT_SPEED),
