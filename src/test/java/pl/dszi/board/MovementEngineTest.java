@@ -20,7 +20,6 @@ class MovementEngineTest {
     void init() {
         String NOT_IMPORTNANT_NAME="player";
         int NOT_IMPORTANT_HP = 3;
-        int NOT_IMPORTANT_SIZE=700;
         boardGame = new BoardGame(new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
         player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new ManualPlayerController());
         player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame,new NoobRossaAI()));

@@ -6,9 +6,9 @@ import java.awt.*;
 
 public class Cell {
 
-    protected CellType type;
-    protected Color color;
-    protected final Point point;
+    private CellType type;
+    private Color color;
+    final Point point;
     private   Rectangle body;
     public Point getPoint() {
         return point;
@@ -34,7 +34,7 @@ public class Cell {
     }
 
 
-    public void setType(CellType type) {
+    void setType(CellType type) {
         this.type = type;
     }
 

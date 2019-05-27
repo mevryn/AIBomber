@@ -108,9 +108,7 @@ public class Game implements Runnable {
 
     private void checkIfPlayersAreAlive(){
         for(Player player:boardGame.getMap().keySet()){
-            if(player.getCurrentHp()<=0){
-                player.setAlive(false);
-            }
+            player.setAlive();
         }
     }
     private void aiMovement() {

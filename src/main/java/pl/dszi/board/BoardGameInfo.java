@@ -68,18 +68,6 @@ public class BoardGameInfo {
         return cells;
     }
 
-    public List<Cell> getCrates() {
-        List<Cell> crates = new ArrayList<>();
-        for(Cell[] cell:cells){
-            for(Cell cell1:cell){
-                if(cell1.getType()==CellType.CELL_CRATE){
-                    crates.add(cell1);
-                }
-            }
-        }
-        return crates;
-    }
-
     private boolean checkIfIsNotStartingPoint(Point point){
         for (Point points:startingPoints) {
             if(point.equals(points)){

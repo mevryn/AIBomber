@@ -73,13 +73,14 @@ public class BoardGame implements Cloneable {
         return null;
     }
 
-    public boolean move(Player player, Direction direction) {
+    public void move(Player player, Direction direction) {
         Point newPoint = new Point(map.get(player).x + direction.x, map.get(player).y + direction.y);
+        if(!player.isAlive()){
+            System.out.println(player.getName()+" is dead");
+            return;
+        }
         if (targetSpaceIsInsideBoardGame(newPoint) && !checkIfFieldIsObstacle(player, newPoint)) {
             map.replace(player, newPoint);
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -101,7 +102,7 @@ public class BoardGame implements Cloneable {
     }
 
 
-    public boolean checkIfFieldIsObstacle(Player player, Point point) {
+    private boolean checkIfFieldIsObstacle(Player player, Point point) {
         Rectangle pointToBody = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
         for (Cell[] cell : boardGameInfo.getCells()) {
             for (Cell aCell : cell) {
@@ -117,7 +118,7 @@ public class BoardGame implements Cloneable {
         return checkIfCrateForward(pointToBody);
     }
 
-    public boolean checkIfCrateForward(Rectangle body) {
+    private boolean checkIfCrateForward(Rectangle body) {
         for (Cell[] crateCells : getInfo().getCells()) {
             for (Cell crateCell : crateCells) {
                 if (crateCell.getType() == CellType.CELL_CRATE && crateCell.getBody().intersects(body)) {
@@ -141,12 +142,16 @@ public class BoardGame implements Cloneable {
         return false;
     }
 
-    public boolean checkIfBombOnSpecificLocation(Point aCoord) {
+    private boolean checkIfBombOnSpecificLocation(Point aCoord) {
         return getInfo().getCells()[aCoord.x][aCoord.y].getType() == CellType.CELL_BOMB;
     }
 
-    public synchronized void plantBomb(Player player) {
+    public void plantBomb(Player player) {
         try {
+            if(!player.isAlive()){
+                System.out.println(player.getName()+" is dead");
+                return;
+            }
             for (int i = 0; i < boardGameInfo.getCells().length; i++) {
                 for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
                     if (boardGameInfo.getCells()[i][j].getBody().contains(getPlayerPosition(player))&& boardGameInfo.getCells()[i][j].getType() == CellType.CELL_EMPTY) {
@@ -175,7 +180,7 @@ public class BoardGame implements Cloneable {
 
 
 
-    public void detonateBomb(Cell bombCell) {
+    private void detonateBomb(Cell bombCell) {
         List<Cell> cellsToExplode = getCellsToExplosion(getCellCordByBomb(bombCell));
         cellsToExplode.forEach(cell -> {
             boardGameInfo.getCells()[cell.getPoint().x][cell.getPoint().y].setType(CellType.CELL_BOOM_CENTER);
@@ -250,19 +255,15 @@ public class BoardGame implements Cloneable {
         boolean south = true;
         int row = 0;
         int col = 0;
-        for (int i = 0; i < boardGameInfo.getCells().length; i++) {
-            for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
                 for (int rangeChecker = 1; rangeChecker < Constants.DEFAULT_RANGE; rangeChecker++) {
-                    if (boardGameInfo.getCells()[i][j].equals(aCell)) {
-                        row = i;
-                        col = j;
-                        if (west &&
+                        row = aCell.getPoint().x;
+                        col = aCell.getPoint().y;
+                        if ( west &&
                                 row - rangeChecker >= 0 &&
-                                boardGameInfo.getCells()[row - rangeChecker][col].getType() != CellType.CELL_WALL &&
-                                boardGameInfo.getCells()[row - rangeChecker][col].getType() != CellType.CELL_BOMB) {
+                                boardGameInfo.getCells()[row-rangeChecker][col].getType()!= CellType.CELL_WALL &&
+                                boardGameInfo.getCells()[row-rangeChecker][col].getType()!= CellType.CELL_BOMB) {
                             neighbors.add(boardGameInfo.getCells()[row - rangeChecker][col]);
                             if (checkIfCrateAtSpecificIndex(new Point(row - rangeChecker, col))) {
-                                neighbors.add(boardGameInfo.getCells()[row - rangeChecker][col]);
                                 west = false;
                             }
                         } else
@@ -274,7 +275,6 @@ public class BoardGame implements Cloneable {
                             neighbors.add(boardGameInfo.getCells()[row][col - rangeChecker]);
                             if (checkIfCrateAtSpecificIndex(new Point(row, col - rangeChecker))){
                                 north = false;
-                                neighbors.add(boardGameInfo.getCells()[row][col - rangeChecker]);
                             }
                         } else
                             north = false;
@@ -284,7 +284,6 @@ public class BoardGame implements Cloneable {
                                 boardGameInfo.getCells()[row + rangeChecker][col].getType() != CellType.CELL_BOMB) {
                             neighbors.add(boardGameInfo.getCells()[row + rangeChecker][col]);
                             if (checkIfCrateAtSpecificIndex(new Point(row + rangeChecker, col))) {
-                                neighbors.add(boardGameInfo.getCells()[row + rangeChecker][col]);
                                 east = false;
                             }
                         } else
@@ -295,15 +294,11 @@ public class BoardGame implements Cloneable {
                                 boardGameInfo.getCells()[row][col + rangeChecker].getType() != CellType.CELL_BOMB ) {
                             neighbors.add(boardGameInfo.getCells()[row][col + rangeChecker]);
                             if (checkIfCrateAtSpecificIndex(new Point(row, col + rangeChecker))) {
-                                neighbors.add(boardGameInfo.getCells()[row + rangeChecker][col]);
                                 south = false;
                             }
                         } else
                             south = false;
                     }
-                }
-            }
-        }
         return neighbors;
     }
 }

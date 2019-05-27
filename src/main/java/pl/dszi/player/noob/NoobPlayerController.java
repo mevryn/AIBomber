@@ -43,8 +43,6 @@ public class NoobPlayerController implements PlayerController {
         }else
             if(way.size()>0)
                 makeAMove(way.get(0));
-
-
     }
 
 

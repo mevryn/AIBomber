@@ -19,8 +19,8 @@ public class Player {
     private boolean insideBomb = false;
     private boolean alive = true;
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
+    public void setAlive() {
+        alive = currentHp > 0;
     }
 
     public boolean isAlive() {
@@ -52,7 +52,7 @@ public class Player {
         bombActualyTicking++;
         this.setInsideBomb(true);
     }
-    public void detonateBomb(){
+    private void detonateBomb(){
         bombActualyTicking--;
     }
     private final PlayerController playerController;
@@ -103,8 +103,7 @@ public class Player {
                 = Executors.newSingleThreadScheduledExecutor();
 
         Runnable task = new Runnable() {
-            public void run() {
-                bombActualyTicking--;
+            public void run() {detonateBomb();
             }
         };
 
@@ -115,6 +114,7 @@ public class Player {
 
     public void damagePlayer(){
         currentHp--;
+        System.out.println(currentHp);
         mortal=false;
         makeMortalAgain();
     }
