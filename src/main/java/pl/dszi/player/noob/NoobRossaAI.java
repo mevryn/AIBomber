@@ -7,7 +7,7 @@ import pl.dszi.player.Player;
 import java.awt.*;
 
 public class NoobRossaAI implements NoobAI {
-    Player player;
+    private Player player;
 
     @Override
     public void setPlayer(Player player) {

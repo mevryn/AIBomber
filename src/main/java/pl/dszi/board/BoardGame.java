@@ -1,5 +1,6 @@
 package pl.dszi.board;
 
+import pl.dszi.engine.Time;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.ManualPlayerController;
 import pl.dszi.player.Player;
@@ -7,9 +8,6 @@ import pl.dszi.player.Player;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class BoardGame implements Cloneable {
@@ -79,7 +77,6 @@ public class BoardGame implements Cloneable {
 
     public void move(Player player, Direction direction) {
         if (!player.isAlive()) {
-            System.out.println(player.getName() + " is dead");
             return;
         }
         Point newPoint = new Point(map.get(player).x + direction.x, map.get(player).y + direction.y);
@@ -212,19 +209,13 @@ public class BoardGame implements Cloneable {
     }
 
     private void setEstinguishTimer(Cell cell) {
-        scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER);
+        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER);
     }
 
-    private void scheduleTimer(Runnable task, int delay) {
-        ScheduledExecutorService scheduler
-                = Executors.newSingleThreadScheduledExecutor();
 
-        scheduler.schedule(task, delay, TimeUnit.SECONDS);
-        scheduler.shutdown();
-    }
 
     private void detonateTimer(Cell cell) {
-        scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER);
+        Time.scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
     public Cell[][] getCells() {

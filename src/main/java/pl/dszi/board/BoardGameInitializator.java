@@ -20,7 +20,7 @@ class BoardGameInitializator {
                 boardGameInfo.getCells()[i][j] = new Cell(CellType.CELL_WALL, new Point(i, j));
             }
         }
-        // randomizeCrateCells(boardGameInfo.getCells(),boardGameInfo);
+         randomizeCrateCells(boardGameInfo.getCells(),boardGameInfo);
     }
 
     private static void randomizeCrateCells(Cell[][] cells, BoardGameInfo boardGameInfo) {

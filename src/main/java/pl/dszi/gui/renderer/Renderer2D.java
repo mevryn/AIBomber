@@ -2,6 +2,7 @@ package pl.dszi.gui.renderer;
 
 import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
+import pl.dszi.engine.Time;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.engine.constant.Resource;
 import pl.dszi.player.Player;
@@ -58,7 +59,7 @@ public class Renderer2D extends Renderer {
         }
         graphics = bufferStrategy.getDrawGraphics();
         if (!player.isMortal() && player.isAlive()) {
-            scheduleTimer(this::blinkImageBool, 0);
+            Time.scheduleTimer(this::blinkImageBool, 0);
             if (switcher) {
                 graphics.drawImage(img, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
             }
@@ -71,15 +72,6 @@ public class Renderer2D extends Renderer {
     private void blinkImageBool() {
         switcher = !switcher;
     }
-
-    private void scheduleTimer(Runnable task, int delay) {
-        ScheduledExecutorService scheduler
-                = Executors.newSingleThreadScheduledExecutor();
-
-        scheduler.schedule(task, delay, TimeUnit.SECONDS);
-        scheduler.shutdown();
-    }
-
     private void initializeImg() {
         BufferedImage temp;
         try {

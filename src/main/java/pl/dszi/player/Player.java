@@ -1,6 +1,6 @@
 package pl.dszi.player;
 
-import pl.dszi.board.Cell;
+import pl.dszi.engine.Time;
 import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
@@ -20,15 +20,6 @@ public class Player {
     private boolean insideBomb = false;
     private boolean alive = true;
 
-    private Cell lastPlantedBomb;
-
-    public Cell getLastPlantedBomb() {
-        return lastPlantedBomb;
-    }
-
-    public void setLastPlantedBomb(Cell lastPlantedBomb) {
-        this.lastPlantedBomb = lastPlantedBomb;
-    }
 
     public void setAlive() {
         alive = currentHp > 0;
@@ -47,9 +38,6 @@ public class Player {
         this.insideBomb = insideBomb;
     }
 
-    public int getRange() {
-        return range;
-    }
 
     public int getBombAmount() {
         return bombAmount;
@@ -100,33 +88,22 @@ public class Player {
     private void makeMortalAgain() {
         ScheduledExecutorService scheduler
                 = Executors.newSingleThreadScheduledExecutor();
-
         Runnable task = () -> mortal = true;
-
         int delay = Constants.IMMORTALITY_TIMER;
         scheduler.schedule(task, delay, TimeUnit.SECONDS);
         scheduler.shutdown();
     }
 
+
     public void restoreBombAmountEvent() {
-        ScheduledExecutorService scheduler
-                = Executors.newSingleThreadScheduledExecutor();
-
-        Runnable task = new Runnable() {
-            public void run() {
-                detonateBomb();
-            }
-        };
-
-        int delay = Constants.BASIC_BOMB_EXPLOSION_TIMER;
-        scheduler.schedule(task, delay, TimeUnit.SECONDS);
-        scheduler.shutdown();
+        Time.scheduleTimer(this::detonateBomb, Constants.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
     public void damagePlayer() {
         currentHp--;
         System.out.println(currentHp);
         mortal = false;
+        Time.scheduleTimer(() -> mortal = true, Constants.IMMORTALITY_TIMER);
         makeMortalAgain();
     }
 
