@@ -36,5 +36,5 @@ public class KeyInput extends KeyAdapter {
         }catch(NullPointerException nullPointerException){
             System.out.println("You are dead");
         }
-    }
+  }
 }

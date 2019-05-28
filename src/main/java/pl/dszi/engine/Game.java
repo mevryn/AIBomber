@@ -1,6 +1,8 @@
 package pl.dszi.engine;
 
-import pl.dszi.board.*;
+import pl.dszi.board.BoardGame;
+import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
@@ -9,6 +11,9 @@ import pl.dszi.player.Player;
 
 import java.awt.*;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Game implements Runnable {
 
@@ -25,7 +30,7 @@ public class Game implements Runnable {
     public Game(BoardGame boardGame) {
         this.boardGame = boardGame;
         this.renderer = new Renderer2D();
-        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber", this.boardGame, this.renderer);
+        new Window("AiBomber", this.boardGame, this.renderer);
         this.start();
     }
 
@@ -86,18 +91,18 @@ public class Game implements Runnable {
         this.checkForExplosionCollideWithPlayer();
 
 
-        if(boardGame.getPlayerByName(Constants.PLAYER_2_NAME).getCurrentHp()<=0){
+        if (boardGame.getPlayerByName(Constants.PLAYER_2_NAME).getCurrentHp() <= 0) {
             System.out.println("dupa");
         }
     }
 
-    private void checkForExplosionCollideWithPlayer(){
-        for (Cell[] cells:getBoardGame().getInfo().getCells()) {
-            for(Cell aCell:cells){
-                if(aCell.getType()==CellType.CELL_BOOM_CENTER){
-                    for(Player player: boardGame.getMap().keySet()) {
-                        Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE);
-                        if(aCell.getBody().intersects(playerBody) && player.isMortal()){
+    private void checkForExplosionCollideWithPlayer() {
+        for (Cell[] cells : getBoardGame().getInfo().getCells()) {
+            for (Cell aCell : cells) {
+                if (aCell.getType() == CellType.CELL_BOOM_CENTER) {
+                    for (Player player : boardGame.getMap().keySet()) {
+                        Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x, boardGame.getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+                        if (aCell.getBody().intersects(playerBody) && player.isMortal()) {
                             player.damagePlayer();
                         }
                     }
@@ -106,11 +111,13 @@ public class Game implements Runnable {
         }
     }
 
-    private void checkIfPlayersAreAlive(){
-        for(Player player:boardGame.getMap().keySet()){
+
+    private void checkIfPlayersAreAlive() {
+        for (Player player : boardGame.getMap().keySet()) {
             player.setAlive();
         }
     }
+
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
         autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().pathFinding());

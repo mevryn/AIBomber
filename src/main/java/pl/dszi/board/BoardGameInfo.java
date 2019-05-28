@@ -11,34 +11,15 @@ public class BoardGameInfo {
     private Cell[][] cells;
     private final List<Point> startingPoints;
 
-    public BoardGameInfo(Cell[][] cells) {
+    BoardGameInfo(Cell[][] cells) {
         startingPoints = new ArrayList<>();
         initalizeStartingPoints();
         this.cells = cells;
-        setBoard();
-
     }
 
-    private void setBoard() {
-        boolean even = true;
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                this.cells[i][j] = new Cell(CellType.CELL_EMPTY, new Point(i,j));
-                if (even)
-                    even = false;
-                else
-                    even = true;
-            }
-        }
-        for (int i = 1; i < cells.length - 1; i = i + 2) {
-            for (int j = 1; j < cells[i].length - 1; j = j + 2) {
-                this.cells[i][j] = new Cell(CellType.CELL_WALL, new Point(i,j));
-            }
-        }
-        randomizeCrateCells();
-    }
 
-    public void initalizeStartingPoints(){
+
+    private void initalizeStartingPoints(){
         startingPoints.add(new Point(0,0));
         startingPoints.add(new Point(0,1));
         startingPoints.add(new Point(0,2));
@@ -68,22 +49,12 @@ public class BoardGameInfo {
         return cells;
     }
 
-    private boolean checkIfIsNotStartingPoint(Point point){
+    boolean checkIfIsNotStartingPoint(Point point){
         for (Point points:startingPoints) {
             if(point.equals(points)){
                 return true;
             }
         }
         return false;
-    }
-    private void randomizeCrateCells() {
-        Random random = new Random();
-        for (int i = 0; i <cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if (random.nextBoolean() && cells[i][j].getType() != CellType.CELL_WALL && !checkIfIsNotStartingPoint(new Point(i,j))) {
-                    this.cells[i][j] = new Cell(CellType.CELL_CRATE, new Point(i,j));
-                }
-            }
-        }
     }
 }

@@ -14,7 +14,7 @@ public class Astar {
     private Node nodeEnd;
 
 
-    public Astar(Cell[][] cells) {
+    Astar(Cell[][] cells) {
         this.cells = cells;
         this.nodes = new Node[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY];
         this.openList = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
@@ -26,14 +26,14 @@ public class Astar {
         closedSet = new HashSet<>();
     }
 
-    public Node getNodeFromCell(Cell cell) {
+    private Node getNodeFromCell(Cell cell) {
         return nodes[cell.getPoint().x][cell.getPoint().y];
     }
 
-    public void setAllHeuristic(Node destinationNode) {
-        for (int i = 0; i < nodes.length; i++) {
-            for (int j = 0; j < nodes[i].length; j++) {
-                nodes[i][j].setH(destinationNode);
+    private void setAllHeuristic(Node destinationNode) {
+        for (Node[] node : nodes) {
+            for (Node aNode : node) {
+                aNode.setH(destinationNode);
             }
         }
     }
@@ -42,7 +42,7 @@ public class Astar {
         return nodeEnd;
     }
 
-    public List<Cell> chooseBestWay(Cell start, Cell end) {
+    List<Cell> chooseBestWay(Cell start, Cell end) {
         nodeStart = getNodeFromCell(start);
         nodeEnd = getNodeFromCell(end);
 
@@ -51,10 +51,10 @@ public class Astar {
         while (!isEmpty(openList)) {
             Node currentNode = openList.poll();
             closedSet.add(currentNode);
+            assert currentNode != null;
             if (isFinalNode(currentNode)) {
                 return getPath(currentNode);
-            }
-            else
+            } else
                 getNeighbors(currentNode);
         }
         return new ArrayList<>();
@@ -80,7 +80,7 @@ public class Astar {
     }
 
 
-    public List<Node> getNeighbors(Node aNode) {
+    private List<Node> getNeighbors(Node aNode) {
         List<Node> neighbors = new ArrayList<>();
         int row = 0;
         int col = 0;
@@ -90,16 +90,16 @@ public class Astar {
                     row = i;
                     col = j;
                     if (row - 1 >= 0) {
-                        checkNode(aNode,row-1,col,1);
+                        checkNode(aNode, row - 1, col, 1);
                     }
                     if (col - 1 >= 0) {
-                        checkNode(aNode,row,col-1,1);
+                        checkNode(aNode, row, col - 1, 1);
                     }
                     if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
-                        checkNode(aNode,row+1,col,1);
+                        checkNode(aNode, row + 1, col, 1);
                     }
                     if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
-                        checkNode(aNode,row,col+1,1);
+                        checkNode(aNode, row, col + 1, 1);
                     }
                 }
             }

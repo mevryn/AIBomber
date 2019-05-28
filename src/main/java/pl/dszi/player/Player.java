@@ -1,5 +1,6 @@
 package pl.dszi.player;
 
+import pl.dszi.board.Cell;
 import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
@@ -14,10 +15,20 @@ public class Player {
     private int currentHp;
     private final int range;
     private int bombAmount;
-    private int bombActualyTicking=0;
+    private int bombActualyTicking = 0;
     private boolean mortal = true;
     private boolean insideBomb = false;
     private boolean alive = true;
+
+    private Cell lastPlantedBomb;
+
+    public Cell getLastPlantedBomb() {
+        return lastPlantedBomb;
+    }
+
+    public void setLastPlantedBomb(Cell lastPlantedBomb) {
+        this.lastPlantedBomb = lastPlantedBomb;
+    }
 
     public void setAlive() {
         alive = currentHp > 0;
@@ -48,13 +59,15 @@ public class Player {
         return bombActualyTicking;
     }
 
-    public void plantBomb(){
+    public void plantBomb() {
         bombActualyTicking++;
         this.setInsideBomb(true);
     }
-    private void detonateBomb(){
+
+    private void detonateBomb() {
         bombActualyTicking--;
     }
+
     private final PlayerController playerController;
 
     public String getName() {
@@ -84,26 +97,24 @@ public class Player {
         return mortal;
     }
 
-    private void makeMortalAgain(){
+    private void makeMortalAgain() {
         ScheduledExecutorService scheduler
                 = Executors.newSingleThreadScheduledExecutor();
 
-        Runnable task = new Runnable() {
-            public void run() {
-                mortal = true;
-            }
-        };
+        Runnable task = () -> mortal = true;
 
         int delay = Constants.IMMORTALITY_TIMER;
         scheduler.schedule(task, delay, TimeUnit.SECONDS);
         scheduler.shutdown();
     }
-    public void restoreBombAmountEvent(){
+
+    public void restoreBombAmountEvent() {
         ScheduledExecutorService scheduler
                 = Executors.newSingleThreadScheduledExecutor();
 
         Runnable task = new Runnable() {
-            public void run() {detonateBomb();
+            public void run() {
+                detonateBomb();
             }
         };
 
@@ -112,15 +123,17 @@ public class Player {
         scheduler.shutdown();
     }
 
-    public void damagePlayer(){
+    public void damagePlayer() {
         currentHp--;
         System.out.println(currentHp);
-        mortal=false;
+        mortal = false;
         makeMortalAgain();
     }
-    public boolean getIfManual(){
-       return this.playerController.checkIfManual();
+
+    public boolean getIfManual() {
+        return this.playerController.checkIfManual();
     }
+
     public Color getColor() {
         return color;
     }

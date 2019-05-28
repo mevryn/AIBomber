@@ -17,14 +17,14 @@ public class NoobRossaAI implements NoobAI {
     @Override
     public boolean makeDecision(BoardGame boardGame) {
         player = boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
-        if(boardGame.checkIfBombForward(player,new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE))){
+        if (boardGame.checkIfBombForward(player, new Rectangle(boardGame.getPlayerPosition(player).x, boardGame.getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE))) {
             return false;
-        }else if(boardGame.getPlayerPositionCell(player).getType().walkable){
-            if(boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCell(player))){
+        } else if (boardGame.getPlayerPositionCell(player).getType().walkable) {
+            if (boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCell(player))) {
                 return player.getBombAmount() > player.getBombActualyTicking();
             }
             return false;
-        }else{
+        } else {
             return false;
         }
     }

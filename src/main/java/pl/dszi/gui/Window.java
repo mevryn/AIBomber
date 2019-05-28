@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class Window extends JFrame {
 
-    public Window(int width, int height, String title, BoardGame boardGame, Renderer renderer) {
+    public Window(String title, BoardGame boardGame, Renderer renderer) {
         this.add(renderer);
         this.addKeyListener(new KeyInput(boardGame));
         this.setTitle(title);

@@ -11,23 +11,24 @@ public class Node {
     private int f;
     private Direction direction;
     private Node parent;
-    public int getF() {
+
+    int getF() {
         return f;
     }
 
-    public void setG(int g) {
+    private void setG(int g) {
         this.g = g;
     }
 
-    public int getG() {
+    private int getG() {
         return g;
     }
 
-    public void setParent(Node parent) {
+    private void setParent(Node parent) {
         this.parent = parent;
     }
 
-    public boolean checkBetterPath(Node currentNode, int cost) {
+    boolean checkBetterPath(Node currentNode, int cost) {
         int gCost = currentNode.getG() + cost;
         if (gCost < getG()) {
             setNodeData(currentNode);
@@ -36,18 +37,19 @@ public class Node {
         return false;
     }
 
-    public Node getParent() {
+    Node getParent() {
         return parent;
     }
 
-    public void setNodeData(Node currentNode){
+    void setNodeData(Node currentNode) {
         int gCost = currentNode.getG() + Constants.DEFAULT_NODE_COST;
         setParent(currentNode);
         setG(gCost);
         calculateFinalCost();
     }
-    public void setH(Node destinationNode) {
-        Distances distances = new Distances(this,destinationNode);
+
+    void setH(Node destinationNode) {
+        Distances distances = new Distances(this, destinationNode);
         this.h = distances.returnManhattanDistance();
     }
 
@@ -55,8 +57,8 @@ public class Node {
         return cell;
     }
 
-    public void calculateFinalCost(){
-        this.f = g+h;
+    private void calculateFinalCost() {
+        this.f = g + h;
     }
 
     public Node(Direction direction) {
@@ -73,7 +75,7 @@ public class Node {
         return direction;
     }
 
-    public Node(Cell cell) {
+    Node(Cell cell) {
         this.cell = cell;
         this.direction = Direction.DEFAULT;
 

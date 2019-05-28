@@ -1,6 +1,7 @@
 package pl.dszi.gui.renderer;
 
-import pl.dszi.board.*;
+import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.engine.constant.Resource;
 import pl.dszi.player.Player;
@@ -10,16 +11,24 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Renderer2D extends Renderer {
 
     private BufferStrategy bufferStrategy;
     private Graphics graphics;
 
+    private BufferedImage crateImg;
+    private BufferedImage explosionImg;
+    private BufferedImage bombImg;
+    private BufferedImage wallImg;
 
+    private boolean switcher = true;
 
     public Renderer2D() {
+        initializeImg();
     }
 
     @Override
@@ -37,7 +46,7 @@ public class Renderer2D extends Renderer {
     @Override
     public void renderPlayer(Player player, Point point) {
         bufferStrategy = getBufferStrategy();
-        BufferedImage img=null;
+        BufferedImage img = null;
         try {
             img = ImageIO.read(getClass().getResource(Resource.CHARACTERPATH.getPath()));
         } catch (IOException ex) {
@@ -48,20 +57,30 @@ public class Renderer2D extends Renderer {
             return;
         }
         graphics = bufferStrategy.getDrawGraphics();
-        graphics.setColor(player.getColor());
-        graphics.drawImage(img,point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE,this);
+        if (!player.isMortal() && player.isAlive()) {
+            scheduleTimer(this::blinkImageBool, 0);
+            if (switcher) {
+                graphics.drawImage(img, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
+            }
+        } else if (player.isAlive()) {
+            graphics.setColor(player.getColor());
+            graphics.drawImage(img, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
+        }
     }
 
-    @Override
-    public void renderBoardGame(Cell[][] cells) {
-        bufferStrategy = getBufferStrategy();
-        if (bufferStrategy == null) {
-            this.createBufferStrategy(3);
-            return;
-        }
-        final BufferedImage crateImg;
-        final BufferedImage explosionImg;
-        final BufferedImage bombImg;
+    private void blinkImageBool() {
+        switcher = !switcher;
+    }
+
+    private void scheduleTimer(Runnable task, int delay) {
+        ScheduledExecutorService scheduler
+                = Executors.newSingleThreadScheduledExecutor();
+
+        scheduler.schedule(task, delay, TimeUnit.SECONDS);
+        scheduler.shutdown();
+    }
+
+    private void initializeImg() {
         BufferedImage temp;
         try {
             temp = ImageIO.read(getClass().getResource(Resource.CRATEPATH.getPath()));
@@ -84,20 +103,35 @@ public class Renderer2D extends Renderer {
             temp = null;
         }
         bombImg = temp;
+        try {
+            temp = ImageIO.read(getClass().getResource(Resource.WALLPATH.getPath()));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            temp = null;
+        }
+        wallImg = temp;
+    }
+
+    @Override
+    public void renderBoardGame(Cell[][] cells) {
+        bufferStrategy = getBufferStrategy();
+        if (bufferStrategy == null) {
+            this.createBufferStrategy(3);
+            return;
+        }
         graphics = bufferStrategy.getDrawGraphics();
-        graphics.setColor(Color.LIGHT_GRAY);
+        graphics.setColor(new Color(34, 139, 34));
         graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
                 graphics.setColor(Color.LIGHT_GRAY);
                 if (aCell.getType() == CellType.CELL_WALL) {
-                    graphics.setColor(Color.BLACK);
-                    graphics.fillRect(aCell.getBody().x, aCell.getBody().y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
-                }else if (aCell.getType() == CellType.CELL_CRATE) {
+                    graphics.drawImage(wallImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
+                } else if (aCell.getType() == CellType.CELL_CRATE) {
                     graphics.drawImage(crateImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
-                }else if (aCell.getType() == CellType.CELL_BOOM_CENTER) {
+                } else if (aCell.getType() == CellType.CELL_BOOM_CENTER) {
                     graphics.drawImage(explosionImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
-                }else if (aCell.getType() == CellType.CELL_BOMB) {
+                } else if (aCell.getType() == CellType.CELL_BOMB) {
                     graphics.drawImage(bombImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
                 }
             }
