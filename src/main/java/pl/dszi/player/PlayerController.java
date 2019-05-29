@@ -1,6 +1,7 @@
 package pl.dszi.player;
 
 import pl.dszi.board.Cell;
+import pl.dszi.player.noob.NoobAI;
 
 public interface PlayerController {
     void setPlayer(Player player);
@@ -12,4 +13,6 @@ public interface PlayerController {
     void plantBomb();
 
     void pathFinding();
+
+    NoobAI getNoobAI();
 }

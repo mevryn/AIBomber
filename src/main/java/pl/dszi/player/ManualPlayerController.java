@@ -1,6 +1,7 @@
 package pl.dszi.player;
 
 import pl.dszi.board.Cell;
+import pl.dszi.player.noob.NoobAI;
 
 public class ManualPlayerController implements PlayerController {
 
@@ -18,6 +19,11 @@ public class ManualPlayerController implements PlayerController {
     @Override
     public void pathFinding() {
 
+    }
+
+    @Override
+    public NoobAI getNoobAI() {
+        return null;
     }
 
     @Override

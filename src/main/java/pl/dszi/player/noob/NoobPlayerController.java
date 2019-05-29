@@ -23,9 +23,14 @@ public class NoobPlayerController implements PlayerController {
     private NoobAI noobAI;
 
     public NoobPlayerController(BoardGame boardGame, NoobAI noobAI) {
-        this.noobAI = noobAI;
         this.boardGame = boardGame;
+        this.noobAI = noobAI;
         this.direction = Direction.SOUTH;
+    }
+
+    @Override
+    public NoobAI getNoobAI() {
+        return noobAI;
     }
 
     @Override
@@ -44,9 +49,11 @@ public class NoobPlayerController implements PlayerController {
             makeAMove(way.get(0));
     }
 
+
     private void setPlayer() {
         Optional<Player> playerOptional = boardGame.getMap().keySet().stream().filter(player1 -> player1.getPlayerController().equals(this)).findAny();
         playerOptional.ifPresent(this::setPlayer);
+        playerOptional.ifPresent(noobAI::setPlayer);
     }
 
     private Player getClosestPlayer() {
