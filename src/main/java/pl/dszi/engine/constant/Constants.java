@@ -25,7 +25,7 @@ public class Constants {
     public static String PLAYER_3_NAME = "Player 3";
     public static String PLAYER_4_NAME = "Player 4";
     public static final int DEFAULT_SPEED = 4;
-    public static final int DEFAULT_RANGE = 3;
+    public static final int DEFAULT_RANGE = 4;
     public static final Point player1StartingLocation = new Point(0, 0);
     public static final Point player2StartingLocation = new Point(DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY - 1), DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY - 1));
     public static final Point player3StartingLocation = new Point(DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY - 1), 0);

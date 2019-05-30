@@ -7,10 +7,9 @@ import pl.dszi.player.Player;
 import pl.dszi.player.PlayerController;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class NoobPlayerController implements PlayerController {
     private boolean manual = false;
@@ -41,10 +40,12 @@ public class NoobPlayerController implements PlayerController {
         if (noobAI.makeDecision(boardGame)) {
             boardGame.plantBomb(player);
         }
-        if (way.size() == 0)
+        if(boardGame.getPlayerPositionCell(player).getBody().getLocation().equals(playerLocation))
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer()));
         if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
             way.remove(0);
+            if(way.size()>0)
+            makeAMove(way.get(0));
         } else if (way.size() > 0)
             makeAMove(way.get(0));
     }
@@ -57,13 +58,18 @@ public class NoobPlayerController implements PlayerController {
     }
 
     private Player getClosestPlayer() {
-        Optional<Map.Entry<Player, Point>> playerOptional = boardGame.getMap().entrySet().stream().filter(playerPointEntry -> !playerPointEntry.getKey().equals(player)).min((o1, o2) -> (int) Math.round(Point.distance(o1.getValue().x, o1.getValue().y, o2.getValue().x, o2.getValue().y)));
-        if (playerOptional.isPresent()) {
-            return playerOptional.get().getKey();
-        } else {
-            System.err.println("Any other player not present for some reason. Programmer fault.");
-            return null;
+        int min = Integer.MAX_VALUE;
+        Player returnPlayer= player;
+        for(Player playerEntry:boardGame.getMap().keySet()){
+            if(!playerEntry.equals(player)){
+               int distance = Distances.returnManhattaDistanceOfTwoCells(playerLocation,boardGame.getMap().get(playerEntry));
+                if(distance<min){
+                    returnPlayer = playerEntry;
+                    min = distance;
+                }
+            }
         }
+       return returnPlayer;
     }
 
     public void makeAMove(Cell cell) {

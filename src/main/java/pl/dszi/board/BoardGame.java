@@ -138,8 +138,8 @@ public class BoardGame implements Cloneable {
         intersectsBombs = intersectsBombs.stream().filter(cell -> cell.getType() == CellType.CELL_BOMB && body.intersects(cell.getBody())).collect(Collectors.toList());
         if (intersectsBombs.size() == 0 && player.isInsideBomb()) {
             player.setInsideBomb(false);
-            return false;
-        }
+        return false;
+    }
         return !player.isInsideBomb() && intersectsBombs.size() > 0;
     }
 

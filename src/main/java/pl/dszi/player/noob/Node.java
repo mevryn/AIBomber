@@ -77,8 +77,6 @@ public class Node {
 
     Node(Cell cell) {
         this.cell = cell;
-        this.direction = Direction.DEFAULT;
-
         this.g = 1;
     }
 

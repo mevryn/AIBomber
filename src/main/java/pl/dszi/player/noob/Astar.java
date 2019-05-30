@@ -45,7 +45,6 @@ public class Astar {
     List<Cell> chooseBestWay(Cell start, Cell end) {
         nodeStart = getNodeFromCell(start);
         nodeEnd = getNodeFromCell(end);
-
         setAllHeuristic(nodeEnd);
         openList.add(nodeStart);
         while (!isEmpty(openList)) {
@@ -80,7 +79,7 @@ public class Astar {
     }
 
 
-    private List<Node> getNeighbors(Node aNode) {
+    private void getNeighbors(Node aNode) {
         List<Node> neighbors = new ArrayList<>();
         int row = 0;
         int col = 0;
@@ -104,7 +103,6 @@ public class Astar {
                 }
             }
         }
-        return neighbors;
     }
 
     private void checkNode(Node currentNode, int row, int col, int cost) {
