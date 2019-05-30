@@ -9,10 +9,9 @@ import java.util.Optional;
 
 public class NoobRossaAI implements NoobAI {
 
-    protected Player player;
 
     @Override
-    public boolean makeDecision(BoardGame boardGame) {
+    public boolean makeDecision(BoardGame boardGame, Player player) {
         if (boardGame.checkIfBombForward(player, new Rectangle(boardGame.getPlayerPosition(player).x, boardGame.getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE))) {
             return false;
         } else if (boardGame.getPlayerPositionCell(player).getType().walkable) {
@@ -23,10 +22,6 @@ public class NoobRossaAI implements NoobAI {
         } else {
             return false;
         }
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
 

@@ -74,7 +74,6 @@ public class Player {
         this.bombAmount = 2;
         this.range = 3;
         this.playerController = playerController;
-        this.playerController.setPlayer(this);
     }
 
     public int getCurrentHp() {

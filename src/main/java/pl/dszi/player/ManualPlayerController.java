@@ -12,26 +12,25 @@ public class ManualPlayerController implements PlayerController {
     }
 
     @Override
-    public void makeAMove(Cell cell) {
+    public void makeAMove(Cell cell, Player player) {
 
     }
 
     @Override
-    public void pathFinding() {
+    public void plantBomb(Player player) {
 
     }
+
+    @Override
+    public void pathFinding(Player player) {
+
+    }
+
 
     @Override
     public NoobAI getNoobAI() {
         return null;
     }
 
-    @Override
-    public void plantBomb() {
 
-    }
-
-    @Override
-    public void setPlayer(Player player) {
-    }
 }

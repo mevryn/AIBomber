@@ -120,6 +120,6 @@ public class Game implements Runnable {
 
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
-        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().pathFinding());
+        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().pathFinding(player));
     }
 }

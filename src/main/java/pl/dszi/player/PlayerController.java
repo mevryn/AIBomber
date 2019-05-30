@@ -4,15 +4,14 @@ import pl.dszi.board.Cell;
 import pl.dszi.player.noob.NoobAI;
 
 public interface PlayerController {
-    void setPlayer(Player player);
 
     boolean checkIfManual();
 
-    void makeAMove(Cell cell);
+    void makeAMove(Cell cell,Player player);
 
-    void plantBomb();
+    void plantBomb(Player player);
 
-    void pathFinding();
+    void pathFinding(Player player);
 
     NoobAI getNoobAI();
 }

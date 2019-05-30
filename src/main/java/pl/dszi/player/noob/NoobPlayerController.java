@@ -16,7 +16,6 @@ public class NoobPlayerController implements PlayerController {
     private BoardGame boardGame;
     private Astar astar;
     private Point playerLocation;
-    private Player player;
     private Direction direction;
     private List<Cell> way = new ArrayList<>();
     private NoobAI noobAI;
@@ -33,31 +32,24 @@ public class NoobPlayerController implements PlayerController {
     }
 
     @Override
-    public void pathFinding() {
-        setPlayer();
+    public void pathFinding(Player player) {
         playerLocation = boardGame.getPlayerPosition(player);
         this.astar = new Astar(boardGame.getCells());
-        if (noobAI.makeDecision(boardGame)) {
+        if (noobAI.makeDecision(boardGame,player)) {
             boardGame.plantBomb(player);
         }
         if(boardGame.getPlayerPositionCell(player).getBody().getLocation().equals(playerLocation))
-            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer()));
+            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
         if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
             way.remove(0);
             if(way.size()>0)
-            makeAMove(way.get(0));
+            makeAMove(way.get(0),player);
         } else if (way.size() > 0)
-            makeAMove(way.get(0));
+            makeAMove(way.get(0),player);
     }
 
 
-    private void setPlayer() {
-        Optional<Player> playerOptional = boardGame.getMap().keySet().stream().filter(player1 -> player1.getPlayerController().equals(this)).findAny();
-        playerOptional.ifPresent(this::setPlayer);
-        playerOptional.ifPresent(noobAI::setPlayer);
-    }
-
-    private Player getClosestPlayer() {
+    private Player getClosestPlayer(Player player) {
         int min = Integer.MAX_VALUE;
         Player returnPlayer= player;
         for(Player playerEntry:boardGame.getMap().keySet()){
@@ -72,7 +64,7 @@ public class NoobPlayerController implements PlayerController {
        return returnPlayer;
     }
 
-    public void makeAMove(Cell cell) {
+    public void makeAMove(Cell cell,Player player) {
         if (playerLocation.x > cell.getBody().x) {
             boardGame.move(player, Direction.WEST);
         } else if (playerLocation.x < cell.getBody().x) {
@@ -85,13 +77,8 @@ public class NoobPlayerController implements PlayerController {
     }
 
     @Override
-    public void plantBomb() {
+    public void plantBomb(Player player) {
         boardGame.plantBomb(player);
-    }
-
-    @Override
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     @Override
