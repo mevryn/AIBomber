@@ -15,17 +15,7 @@ class BoardGameInitializator {
                 boardGameInfo.getCells()[i][j] = new Cell(CellType.CELL_WALL, new Point(i, j));
             }
         }
-         randomizeCrateCells(boardGameInfo.getCells(),boardGameInfo);
-    }
-
-    private static void randomizeCrateCells(Cell[][] cells, BoardGameInfo boardGameInfo) {
-        Random random = new Random();
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if (random.nextBoolean() && cells[i][j].getType() != CellType.CELL_WALL && !boardGameInfo.checkIfIsNotStartingPoint(new Point(i, j))) {
-                    cells[i][j] = new Cell(CellType.CELL_CRATE, new Point(i, j));
-                }
-            }
-        }
+        CrateGenerator crateGenerator= new CrateGenerator(50);
+        crateGenerator.randomizeCrateCells(boardGameInfo.getCells(),boardGameInfo);
     }
 }

@@ -177,7 +177,7 @@ public class BoardGame implements Cloneable {
             }
             Cell playerPosition = getPlayerPositionCellByCenter(player);
             assert playerPosition != null;
-            if (playerPosition.getType() == CellType.CELL_EMPTY) {
+            if (player.canPlantBomb()&&playerPosition.getType() == CellType.CELL_EMPTY) {
                 playerPosition.setType(CellType.CELL_BOMB);
                 setInterectionWithBomb(playerPosition);
                 detonateTimer(playerPosition);

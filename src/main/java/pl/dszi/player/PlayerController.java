@@ -11,7 +11,7 @@ public interface PlayerController {
 
     void plantBomb(Player player);
 
-    void pathFinding(Player player);
+    void AIPlaning(Player player);
 
     NoobAI getNoobAI();
 }

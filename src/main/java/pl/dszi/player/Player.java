@@ -67,7 +67,7 @@ public class Player {
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.color = new Color((int) (Math.random() * 0x1000000));
-        this.bombAmount = 2;
+        this.bombAmount = 1;
         this.range = 3;
         this.playerController = playerController;
     }
@@ -102,6 +102,9 @@ public class Player {
         makeMortalAgain();
     }
 
+    public boolean canPlantBomb(){
+        return bombActualyTicking<bombAmount;
+    }
     public boolean getIfManual() {
         return this.playerController.checkIfManual();
     }

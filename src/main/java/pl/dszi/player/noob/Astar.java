@@ -60,7 +60,7 @@ public class Astar {
     }
 
     private List<Cell> getPath(Node currentNode) {
-        List<Node> path = new ArrayList<>();
+        List<Node> path = new LinkedList<>();
         path.add(currentNode);
         Node parent;
         while ((parent = currentNode.getParent()) != null) {

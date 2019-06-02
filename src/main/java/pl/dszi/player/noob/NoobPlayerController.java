@@ -20,7 +20,7 @@ public class NoobPlayerController implements PlayerController {
     private List<Cell> way = new ArrayList<>();
     private NoobAI noobAI;
     private Astar astar;
-
+    private Set<Cell> bombs= new HashSet<>();
     public NoobPlayerController(BoardGame boardGame, NoobAI noobAI) {
         this.boardGame = boardGame;
         this.noobAI = noobAI;
@@ -33,28 +33,31 @@ public class NoobPlayerController implements PlayerController {
     }
 
     @Override
-    public void pathFinding(Player player) {
+    public void AIPlaning(Player player) {
         playerLocation = boardGame.getPlayerPosition(player);
         astar = new Astar(boardGame.getCells());
-        if (noobAI.shouldPlantBomb(boardGame,player)) {
-            boardGame.plantBomb(player);
-        }
-
+//        if (noobAI.shouldPlantBomb(boardGame,player)) {
+//            boardGame.plantBomb(player);
+//        }
         if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
             way.remove(0);
             if(way.size()>0)
-            makeAMove(way.get(0),player);
+                makeAMove(way.get(0),player);
         } else if (way.size() > 0)
             makeAMove(way.get(0),player);
-            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
-        if(checkIfPlayerInRangeOfExplosions(player)){
-            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestSafeCell(player));
-        }
-        else if (way.size()==0 && !boardGame.getPlayerPositionCell(player).equals(boardGame.getPlayerPositionCell(getClosestPlayer(player)))){
+        way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
+//        if(checkIfPlayerInRangeOfExplosions(player)){
+//            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestSafeCell(player));
+//        }
+        if (way.size()==0 && !boardGame.getPlayerPositionCell(player).equals(boardGame.getPlayerPositionCell(getClosestPlayer(player)))){
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))));
+            if(boardGame.getPlayerPositionCell(player).equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))))){
+                boardGame.plantBomb(player);
+            }
         }
         System.out.println(way);
-    }
+        }
+
 
     private Cell getClosestCellToEnemy (Cell closestPlayerCell){
         int min = Integer.MAX_VALUE;
@@ -68,8 +71,15 @@ public class NoobPlayerController implements PlayerController {
             }
             return  returnCell;
     }
+
+    private void getBombs(){
+        bombs=boardGame.getInfo().getAllBombs();
+    }
     private boolean checkIfPlayerInRangeOfExplosions(Player player){
-        for (Cell bomb: boardGame.getInfo().getAllBombs()) {
+        if(bombs.size()!=0)
+        bombs.clear();
+        getBombs();
+        for (Cell bomb: bombs) {
             Set<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb,4);
             if(explosionBombRange.stream().anyMatch(e-> e.getBody().intersects(boardGame.getPlayerBody(player)))){
                 return true;
@@ -79,8 +89,6 @@ public class NoobPlayerController implements PlayerController {
     }
 
     private Cell getClosestSafeCell(Player player){
-        int min = Integer.MAX_VALUE;
-        Cell returnCell = boardGame.getPlayerPositionCellByCenter(player);
         Set<Node> safeCellsNode = astar.getClosedSet().stream().filter(node -> node.getCell().getType()!=CellType.CELL_BOOM_CENTER).collect(Collectors.toSet());
         Set<Cell> safeCells = new HashSet<>();
         safeCellsNode.forEach(node -> safeCells.add(node.getCell()));
@@ -90,16 +98,15 @@ public class NoobPlayerController implements PlayerController {
             safeCells.removeAll(explosionBombRange);
             safeCells.remove(bomb);
         }
-
         return getClosestCellFromCollection(player,safeCells);
     }
 
 
     private Cell getClosestCellFromCollection(Player player,Collection<Cell> cells){
         int min = Integer.MAX_VALUE;
-        Cell returnCell= boardGame.getPlayerPositionCellByCenter(player);
+        Cell returnCell= boardGame.getPlayerPositionCell(player);
         for(Cell cell:cells){
-            int distance = Distances.returnManhattaDistanceOfTwoCells(cell.getPoint(),boardGame.getPlayerPositionCellByCenter(player).getPoint());
+            int distance = Distances.returnManhattaDistanceOfTwoCells(cell.getPoint(),boardGame.getPlayerPositionCell(player).getPoint());
             if(distance<min){
                 min = distance;
                 returnCell = cell;

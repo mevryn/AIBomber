@@ -1,15 +1,11 @@
 package pl.dszi.engine;
 
 import pl.dszi.board.BoardGame;
-import pl.dszi.board.Cell;
-import pl.dszi.board.CellType;
-import pl.dszi.engine.constant.Constants;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
 import pl.dszi.player.Player;
 
-import java.awt.*;
 import java.util.List;
 
 public class Game implements Runnable {
@@ -82,6 +78,6 @@ public class Game implements Runnable {
 
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
-        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().pathFinding(player));
+        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().AIPlaning(player));
     }
 }

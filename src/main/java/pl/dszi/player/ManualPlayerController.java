@@ -20,7 +20,7 @@ public class ManualPlayerController implements PlayerController {
     }
 
     @Override
-    public void pathFinding(Player player) {
+    public void AIPlaning(Player player) {
 
     }
 
