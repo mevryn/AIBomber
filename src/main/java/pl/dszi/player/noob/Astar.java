@@ -1,13 +1,13 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.constant.Constants;
 
 import java.util.*;
 
 public class Astar {
     private Node[][] nodes;
-    private Cell[][] cells;
     private PriorityQueue<Node> openList;
     private Set<Node> closedSet;
     private Node nodeStart;
@@ -15,7 +15,6 @@ public class Astar {
 
 
     Astar(Cell[][] cells) {
-        this.cells = cells;
         this.nodes = new Node[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY];
         this.openList = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
         for (int i = 0; i < cells.length; i++) {
@@ -43,6 +42,7 @@ public class Astar {
     }
 
     List<Cell> chooseBestWay(Cell start, Cell end) {
+        closedSet.clear();
         nodeStart = getNodeFromCell(start);
         nodeEnd = getNodeFromCell(end);
         setAllHeuristic(nodeEnd);
@@ -80,9 +80,8 @@ public class Astar {
 
 
     private void getNeighbors(Node aNode) {
-        List<Node> neighbors = new ArrayList<>();
-        int row = 0;
-        int col = 0;
+        int row;
+        int col;
         for (int i = 0; i < nodes.length; i++) {
             for (int j = 0; j < nodes[i].length; j++) {
                 if (nodes[i][j].equals(aNode)) {
@@ -125,7 +124,7 @@ public class Astar {
         return openList;
     }
 
-    private Set<Node> getClosedSet() {
+    Set<Node> getClosedSet() {
         return closedSet;
 
     }

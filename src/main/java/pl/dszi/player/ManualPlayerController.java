@@ -5,10 +5,8 @@ import pl.dszi.player.noob.NoobAI;
 
 public class ManualPlayerController implements PlayerController {
 
-    private boolean manual = true;
-
     public boolean checkIfManual() {
-        return manual;
+        return true;
     }
 
     @Override

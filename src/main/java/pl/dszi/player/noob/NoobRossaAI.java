@@ -10,12 +10,11 @@ import java.util.Optional;
 public class NoobRossaAI implements NoobAI {
 
 
-    @Override
-    public boolean makeDecision(BoardGame boardGame, Player player) {
+    public boolean shouldPlantBomb(BoardGame boardGame, Player player) {
         if (boardGame.checkIfBombForward(player, new Rectangle(boardGame.getPlayerPosition(player).x, boardGame.getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE))) {
             return false;
-        } else if (boardGame.getPlayerPositionCell(player).getType().walkable) {
-            if (boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCell(player))) {
+        } else if (boardGame.getPlayerPositionCellByCenter(player).getType().walkable) {
+            if (boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCellByCenter(player))) {
                 return player.getBombAmount() > player.getBombActualyTicking();
             }
             return false;

@@ -8,7 +8,6 @@ import java.awt.*;
 public class Cell {
 
     private CellType type;
-    private Color color;
     final Point point;
     private Rectangle body;
     private Player player;
@@ -33,10 +32,6 @@ public class Cell {
         this.point = point;
         this.type = type;
         this.player = Constants.godPlayer;
-        if (type == CellType.CELL_WALL) {
-            color = Color.BLACK;
-        } else
-            color = Color.LIGHT_GRAY;
         this.body = new Rectangle(point.x * Constants.DEFAULT_CELL_SIZE, point.y * Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
     }
 
@@ -45,25 +40,12 @@ public class Cell {
         return body;
     }
 
+    @Override
+    public String toString() {
+        return "x: "+point.x+"\n"+"y: "+point.y+"\n";
+    }
 
-    void setType(CellType type) {
+    public void setType(CellType type) {
         this.type = type;
     }
-
-    private Color setColor() {
-        return Color.BLACK;
-    }
-
-
-    private Color setColor(boolean even) {
-        if (even) {
-            return Color.GRAY;
-        } else
-            return Color.LIGHT_GRAY;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
 }

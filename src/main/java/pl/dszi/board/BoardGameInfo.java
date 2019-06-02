@@ -3,9 +3,9 @@ package pl.dszi.board;
 import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 public class BoardGameInfo {
     private Cell[][] cells;
@@ -50,11 +50,27 @@ public class BoardGameInfo {
     }
 
     boolean checkIfIsNotStartingPoint(Point point){
-        for (Point points:startingPoints) {
-            if(point.equals(points)){
-                return true;
+        return startingPoints.stream().anyMatch(point1 -> point1.equals(point));
+    }
+    public Set<Cell> getAllBombs (){
+        Set<Cell> bombs = new HashSet<>();
+        for(Cell[] columns:cells){
+            for(Cell cell:columns){
+                if(cell.getType()==CellType.CELL_BOMB)
+                    bombs.add(cell);
             }
         }
-        return false;
+        return bombs;
     }
+    public Set<Cell> getAllCrates (){
+        Set<Cell> crates = new HashSet<>();
+        for(Cell[] columns:cells){
+            for(Cell cell:columns){
+                if(cell.getType()==CellType.CELL_CRATE)
+                crates.add(cell);
+            }
+        }
+        return crates;
+    }
+
 }

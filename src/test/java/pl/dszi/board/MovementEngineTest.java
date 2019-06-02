@@ -37,7 +37,7 @@ class MovementEngineTest {
     void playerShouldMoveOnePointToEast() {
         boardGame.put(player1,new Point(0,0));
         boardGame.move(player1,Direction.EAST);
-        assertEquals(new Point(1, 0), boardGame.getPlayerPosition(player1));
+        assertEquals(new Point(4, 0), boardGame.getPlayerPosition(player1));
     }
     @Test
     void playerCantMoveOutOfBoard(){
@@ -45,24 +45,17 @@ class MovementEngineTest {
         boardGame.move(player1,Direction.NORTH);
         assertEquals(new Point(0, 0), boardGame.getPlayerPosition(player1));
     }
+
     @Test
-    void playerCantMoveToTakenPlace(){
-        boardGame.put(player1,new Point(0,0));
-        boardGame.put(player2,new Point(64,64));
+    void playerCantMoverAfterReachingZeroLife() {
+        Point NOT_IMPORTANT_POINT = new Point(0,0);
+        boardGame.put(player1,NOT_IMPORTANT_POINT);
+        player1.damagePlayer();
+        player1.damagePlayer();
+        player1.damagePlayer();
+        Point oldPosition = boardGame.getPlayerPosition(player1);
         boardGame.move(player1,Direction.SOUTH);
-        assertEquals(new Point(0, 0), boardGame.getPlayerPosition(player1));
-    }
-
-    @Test
-    void gameDimensionNeedToBeDevidedBySpeed(){
-
-        boolean divisible;
-        if(Constants.DEFAULT_GAME_WIDTH%Constants.DEFAULT_SPEED==0 && Constants.DEFAULT_GAME_HEIGHT%Constants.DEFAULT_SPEED==0) {
-            divisible = true;
-        } else
-        {
-            divisible = false;
-        }
-        assertTrue(divisible);
+        Point newPosition = boardGame.getPlayerPosition(player1);
+        assertEquals(oldPosition,newPosition);
     }
 }

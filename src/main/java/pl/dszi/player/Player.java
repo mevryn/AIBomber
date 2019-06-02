@@ -18,15 +18,11 @@ public class Player {
     private int bombActualyTicking = 0;
     private boolean mortal = true;
     private boolean insideBomb = false;
-    private boolean alive = true;
 
 
-    public void setAlive() {
-        alive = currentHp > 0;
-    }
 
     public boolean isAlive() {
-        return alive;
+        return currentHp>0;
     }
 
     public boolean isInsideBomb() {

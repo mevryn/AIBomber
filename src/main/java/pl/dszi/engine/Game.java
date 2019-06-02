@@ -11,22 +11,14 @@ import pl.dszi.player.Player;
 
 import java.awt.*;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Game implements Runnable {
 
 
-    private Boolean running = false;
+    private GameStatus gameStatus = GameStatus.STOP;
 
     private Renderer renderer;
     private BoardGame boardGame;
-
-    private BoardGame getBoardGame() {
-        return boardGame;
-    }
-
     public Game(BoardGame boardGame) {
         this.boardGame = boardGame;
         this.renderer = new Renderer2D();
@@ -43,7 +35,7 @@ public class Game implements Runnable {
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
-        while (running) {
+        while (gameStatus==GameStatus.RUNNING || gameStatus == GameStatus.TESTING) {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
@@ -51,7 +43,7 @@ public class Game implements Runnable {
                 tick();
                 delta--;
             }
-            if (running) {
+            if (gameStatus== GameStatus.RUNNING || gameStatus == GameStatus.TESTING) {
                 render();
             }
             frames++;
@@ -67,15 +59,11 @@ public class Game implements Runnable {
     private void start() {
         Thread thread = new Thread(this);
         thread.start();
-        running = true;
+        gameStatus=GameStatus.TESTING;
     }
 
     private void stop() {
-        try {
-            running = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            gameStatus= GameStatus.STOP;
     }
 
     private void render() {
@@ -86,37 +74,11 @@ public class Game implements Runnable {
     }
 
     private void tick() {
-        this.checkIfPlayersAreAlive();
         this.aiMovement();
-        this.checkForExplosionCollideWithPlayer();
-
-
-        if (boardGame.getPlayerByName(Constants.PLAYER_2_NAME).getCurrentHp() <= 0) {
-            System.out.println("dupa");
-        }
+        if(gameStatus==GameStatus.RUNNING)
+        boardGame.damageAllPlayersIntersectingWithExplosion();
     }
 
-    private void checkForExplosionCollideWithPlayer() {
-        for (Cell[] cells : getBoardGame().getInfo().getCells()) {
-            for (Cell aCell : cells) {
-                if (aCell.getType() == CellType.CELL_BOOM_CENTER) {
-                    for (Player player : boardGame.getMap().keySet()) {
-                        Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x, boardGame.getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
-                        if (aCell.getBody().intersects(playerBody) && player.isMortal()) {
-                            player.damagePlayer();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    private void checkIfPlayersAreAlive() {
-        for (Player player : boardGame.getMap().keySet()) {
-            player.setAlive();
-        }
-    }
 
     private void aiMovement() {
         List<Player> autoPlayers = boardGame.getAllNonManualPlayers();

@@ -114,8 +114,8 @@ public class Renderer2D extends Renderer {
         graphics = bufferStrategy.getDrawGraphics();
         graphics.setColor(new Color(34, 139, 34));
         graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
-        for (Cell[] cell : cells) {
-            for (Cell aCell : cell) {
+        for (Cell[] columns : cells) {
+            for (Cell aCell : columns) {
                 graphics.setColor(Color.LIGHT_GRAY);
                 if (aCell.getType() == CellType.CELL_WALL) {
                     graphics.drawImage(wallImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);

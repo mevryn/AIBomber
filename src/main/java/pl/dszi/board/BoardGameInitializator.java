@@ -5,14 +5,9 @@ import java.util.Random;
 
 class BoardGameInitializator {
     static void initializeBoard(BoardGameInfo boardGameInfo) {
-        boolean even = true;
         for (int i = 0; i < boardGameInfo.getCells().length; i++) {
             for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
                 boardGameInfo.getCells()[i][j] = new Cell(CellType.CELL_EMPTY, new Point(i, j));
-                if (even)
-                    even = false;
-                else
-                    even = true;
             }
         }
         for (int i = 1; i < boardGameInfo.getCells().length - 1; i = i + 2) {
