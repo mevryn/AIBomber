@@ -1,6 +1,8 @@
 package pl.dszi.engine;
 
 import pl.dszi.board.BoardGame;
+import pl.dszi.board.BoardGameController;
+import pl.dszi.engine.constant.Constants;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
@@ -14,11 +16,11 @@ public class Game implements Runnable {
     private GameStatus gameStatus = GameStatus.STOP;
 
     private Renderer renderer;
-    private BoardGame boardGame;
-    public Game(BoardGame boardGame) {
-        this.boardGame = boardGame;
+    private BoardGameController boardGameController;
+    public Game(BoardGameController boardGameController) {
+        this.boardGameController = boardGameController;
         this.renderer = new Renderer2D();
-        new Window("AiBomber", this.boardGame, this.renderer);
+        new Window("AiBomber", this.boardGameController.getBoardGame(), this.renderer);
         this.start();
     }
 
@@ -45,7 +47,7 @@ public class Game implements Runnable {
             frames++;
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println("FPS: " + frames);
+             //   System.out.println("FPS: " + frames);
                 frames = 0;
             }
         }
@@ -64,20 +66,23 @@ public class Game implements Runnable {
 
     private void render() {
         renderer.render();
-        renderer.renderBoardGame(boardGame.getInfo().getCells());
-        boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
+        renderer.renderBoardGame(boardGameController.getBoardGame().getInfo().getCells());
+        boardGameController.getBoardGame().getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();
     }
 
     private void tick() {
         this.aiMovement();
         if(gameStatus==GameStatus.RUNNING)
-        boardGame.damageAllPlayersIntersectingWithExplosion();
+        boardGameController.getBoardGame().damageAllPlayersIntersectingWithExplosion();
+        if(boardGameController.checkIfPlayersOnSamePosition(boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_1_NAME),boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_2_NAME))){
+            boardGameController.resetGameWithNewCrates();
+        }
     }
 
 
     private void aiMovement() {
-        List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
+        List<Player> autoPlayers = boardGameController.getBoardGame().getAllNonManualPlayers();
         autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().AIPlaning(player));
     }
 }

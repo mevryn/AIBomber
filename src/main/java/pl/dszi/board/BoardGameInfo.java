@@ -50,7 +50,7 @@ public class BoardGameInfo {
     }
 
     boolean checkIfIsNotStartingPoint(Point point){
-        return startingPoints.stream().anyMatch(point1 -> point1.equals(point));
+        return startingPoints.stream().noneMatch(point1 -> point1.equals(point));
     }
     public Set<Cell> getAllBombs (){
         Set<Cell> bombs = new HashSet<>();

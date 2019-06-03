@@ -30,5 +30,15 @@ public class ManualPlayerController implements PlayerController {
         return null;
     }
 
+    @Override
+    public void setActionCounter(int actionCounter) {
+
+    }
+
+    @Override
+    public int getActionCounter() {
+        return 0;
+    }
+
 
 }

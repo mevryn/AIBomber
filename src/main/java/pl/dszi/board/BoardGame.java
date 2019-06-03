@@ -169,11 +169,11 @@ public class BoardGame implements Cloneable {
         return !player.isInsideBomb() && intersectsBombs.size() > 0;
     }
 
-    public void plantBomb(Player player) {
+    public boolean plantBomb(Player player) {
         try {
             if (!player.isAlive()) {
                 System.out.println(player.getName() + " is dead");
-                return;
+                return false;
             }
             Cell playerPosition = getPlayerPositionCellByCenter(player);
             assert playerPosition != null;
@@ -181,13 +181,15 @@ public class BoardGame implements Cloneable {
                 playerPosition.setType(CellType.CELL_BOMB);
                 setInterectionWithBomb(playerPosition);
                 detonateTimer(playerPosition);
-                System.out.println("Bomb Planted");
+               // System.out.println("Bomb Planted");
                 player.plantBomb();
                 player.restoreBombAmountEvent();
+                return true;
             }
         } catch (NullPointerException exception) {
             System.err.println("Cant plant bomb for some reason");
         }
+        return false;
     }
 
     private Rectangle getBodyFromPoint(Point point) {
@@ -235,13 +237,13 @@ public class BoardGame implements Cloneable {
     }
 
     private void setEstinguishTimer(Cell cell) {
-        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER);
+        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER*100);
     }
 
 
 
     private void detonateTimer(Cell cell) {
-        Time.scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER);
+        Time.scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER*100);
     }
 
     public Cell[][] getCells() {

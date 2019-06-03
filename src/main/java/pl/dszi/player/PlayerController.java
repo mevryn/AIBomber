@@ -14,4 +14,8 @@ public interface PlayerController {
     void AIPlaning(Player player);
 
     NoobAI getNoobAI();
+
+    public void setActionCounter(int actionCounter);
+
+    public int getActionCounter();
 }

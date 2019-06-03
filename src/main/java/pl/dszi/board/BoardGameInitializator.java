@@ -15,7 +15,5 @@ class BoardGameInitializator {
                 boardGameInfo.getCells()[i][j] = new Cell(CellType.CELL_WALL, new Point(i, j));
             }
         }
-        CrateGenerator crateGenerator= new CrateGenerator(50);
-        crateGenerator.randomizeCrateCells(boardGameInfo.getCells(),boardGameInfo);
     }
 }

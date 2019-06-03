@@ -5,12 +5,14 @@ import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
 import pl.dszi.board.Direction;
 import pl.dszi.engine.constant.Constants;
+import pl.dszi.launchers.Main;
 import pl.dszi.player.Player;
 import pl.dszi.player.PlayerController;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class NoobPlayerController implements PlayerController {
@@ -21,6 +23,10 @@ public class NoobPlayerController implements PlayerController {
     private NoobAI noobAI;
     private Astar astar;
     private Set<Cell> bombs= new HashSet<>();
+
+
+
+    private int actionCounter=0;
     public NoobPlayerController(BoardGame boardGame, NoobAI noobAI) {
         this.boardGame = boardGame;
         this.noobAI = noobAI;
@@ -36,34 +42,31 @@ public class NoobPlayerController implements PlayerController {
     public void AIPlaning(Player player) {
         playerLocation = boardGame.getPlayerPosition(player);
         astar = new Astar(boardGame.getCells());
-//        if (noobAI.shouldPlantBomb(boardGame,player)) {
-//            boardGame.plantBomb(player);
-//        }
-        if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
-            way.remove(0);
-            if(way.size()>0)
-                makeAMove(way.get(0),player);
-        } else if (way.size() > 0)
-            makeAMove(way.get(0),player);
-        way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
-//        if(checkIfPlayerInRangeOfExplosions(player)){
-//            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestSafeCell(player));
-//        }
-        if (way.size()==0 && !boardGame.getPlayerPositionCell(player).equals(boardGame.getPlayerPositionCell(getClosestPlayer(player)))){
-            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))));
-            if(boardGame.getPlayerPositionCell(player).equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))))){
-                boardGame.plantBomb(player);
-            }
+        if (way.size() == 0)
+            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
+        if (!playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player).getBody().getLocation())) {
+            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player));
+            if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
+                way.remove(0);
+                if (way.size() > 0)
+                    makeAMove(way.get(0), player);
+            } else if (way.size() > 0)
+                makeAMove(way.get(0), player);
         }
-        System.out.println(way);
+        if (playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player).getBody().getLocation())) {
+            if(boardGame.plantBomb(player))
+                actionCounter++;
         }
+    }
 
-
-    private Cell getClosestCellToEnemy (Cell closestPlayerCell){
+    private Cell getClosestCellToEnemy (Cell closestPlayerCell,Player player){
         int min = Integer.MAX_VALUE;
+        int distance=0;
         Cell returnCell = closestPlayerCell;
-        for(Node node:astar.getClosedSet()){
-            int distance = Distances.returnManhattaDistanceOfTwoCells(node.getCell().getPoint(),closestPlayerCell.getPoint());
+        List<Node> closedSetList = new ArrayList<>(astar.getClosedSet());
+        closedSetList.sort(Comparator.comparingInt(o -> o.getCell().getPoint().x));
+        for(Node node:closedSetList){
+            distance = Distances.returnManhattaDistanceOfTwoCells(node.getCell().getPoint(),closestPlayerCell.getPoint());
                 if(distance<min){
                     returnCell = node.getCell();
                     min = distance;
@@ -130,15 +133,17 @@ public class NoobPlayerController implements PlayerController {
     }
 
     public void makeAMove(Cell cell,Player player) {
-        if (playerLocation.x > cell.getBody().x) {
-            boardGame.move(player, Direction.WEST);
-        } else if (playerLocation.x < cell.getBody().x) {
-            boardGame.move(player, Direction.EAST);
-        } else if (playerLocation.y > cell.getBody().y) {
-            boardGame.move(player, Direction.NORTH);
-        } else if (playerLocation.y < cell.getBody().y) {
-            boardGame.move(player, Direction.SOUTH);
-        }
+            if (playerLocation.x > cell.getBody().x && playerLocation.y == cell.getBody().y ) {
+                boardGame.move(player, Direction.WEST);
+            } else if (playerLocation.x < cell.getBody().x && playerLocation.y == cell.getBody().y  ) {
+                boardGame.move(player, Direction.EAST);
+            } else if (playerLocation.y > cell.getBody().y && playerLocation.x == cell.getBody().x ) {
+                boardGame.move(player, Direction.NORTH);
+            } else if (playerLocation.y < cell.getBody().y && playerLocation.x == cell.getBody().x ) {
+                boardGame.move(player, Direction.SOUTH);
+            }
+            actionCounter++;
+
     }
 
     @Override
@@ -151,7 +156,15 @@ public class NoobPlayerController implements PlayerController {
         return false;
     }
 
+    @Override
+    public int getActionCounter() {
+        return actionCounter;
+    }
 
+    @Override
+    public void setActionCounter(int actionCounter) {
+        this.actionCounter = actionCounter;
+    }
 
 }
 
