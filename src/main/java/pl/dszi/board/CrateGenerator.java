@@ -1,5 +1,6 @@
 package pl.dszi.board;
 
+import javafx.util.Pair;
 import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
@@ -13,6 +14,8 @@ public class CrateGenerator {
     private List<int[]> listOfPopulations = new ArrayList<>();
     private Map<Integer, Integer> populationScores = new HashMap<>();
 
+
+    private int[] bestGen;
     CrateGenerator(int numberOfCrates) {
         this.numberOfCrates = numberOfCrates;
         if (this.numberOfCrates > Constants.MAXIMUM_CRATE_AMOUNT) {
@@ -35,6 +38,16 @@ public class CrateGenerator {
         populationScores.put(9, 0);
     }
 
+    public int[] getBestGen() {
+        return bestGen;
+    }
+    public int[] returnRandomCrates(){
+        int[] crates = new int[numberOfCrates];
+        for(int i = 0; i<crates.length;i++){
+            crates[i]=new Random().nextInt(Constants.MAXIMUM_CRATE_AMOUNT);
+        }
+        return crates;
+    }
     private void randomizeInitialPopulation() {
         listOfPopulations.add(new int[numberOfCrates]);
         listOfPopulations.add(new int[numberOfCrates]);
@@ -60,19 +73,11 @@ public class CrateGenerator {
         for (int i = 0; i < numberOfCrates; i++) {
             int col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = population[i] / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
-            boolean randomized = false;
-            while (!randomized) {
                 if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() == CellType.CELL_EMPTY) {
                     cells[col][row].setType(CellType.CELL_CRATE);
-                    randomized = true;
-                } else {
-                    population[i] = new Random().nextInt(Constants.MAXIMUM_CRATE_AMOUNT);
-                    col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
-                    row = population[i] / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
+                }
                 }
             }
-        }
-    }
 
     void setPopulationScore(int population, int actionAmount) {
         populationScores.replace(population, actionAmount);
@@ -81,11 +86,11 @@ public class CrateGenerator {
     Parents makeSelectionWithRanking() {
         List<Integer> rankingList = new ArrayList<>(populationScores.values());
         rankingList.sort((o1, o2) -> o2 - o1);
+        bestGen= listOfPopulations.get(getIndexOfScorePopulation(0));
         return new Parents(getIndexOfScorePopulation(rankingList.get(0)),getIndexOfScorePopulation(rankingList.get(1)));
-    }
+}
 
     void reproduction(Parents parents) {
-
         crossing(parents);
         mutation();
     }
@@ -101,9 +106,14 @@ public class CrateGenerator {
     private void crossing(Parents parents) {
         List<Integer> croppingIndexes = new ArrayList<>();
         for (int i = 0; i < listOfPopulations.size(); i++) {
-            int randomIndex = new Random().nextInt(numberOfCrates);
-            if (!croppingIndexes.contains(randomIndex))
-                croppingIndexes.add(randomIndex);
+            boolean randomized = false;
+            while (!randomized) {
+                int randomIndex = new Random().nextInt(numberOfCrates);
+                if (!croppingIndexes.contains(randomIndex)) {
+                    croppingIndexes.add(randomIndex);
+                    randomized = true;
+                }
+            }
         }
         for (int iterator = 0; iterator < listOfPopulations.size()-1; iterator++) {
             listOfPopulations.set(iterator,cropPopulation(parents,croppingIndexes.get(iterator)));

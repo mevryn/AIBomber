@@ -55,7 +55,7 @@ public class NoobPlayerController implements PlayerController {
         }
         if (playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player).getBody().getLocation())) {
             if(boardGame.plantBomb(player))
-                actionCounter++;
+                actionCounter=actionCounter+5;
         }
     }
 

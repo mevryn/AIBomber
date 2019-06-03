@@ -9,14 +9,16 @@ import java.util.Collection;
 public class BoardGameController {
     private BoardGame boardGame;
     private CrateGenerator crateGenerator;
-    private int beatenPopulation=0;
+    private int beatenGens=0;
+    private int beatPop=0;
+
     public BoardGameController(BoardGame boardGame) {
         this.boardGame = boardGame;
-        this.crateGenerator= new CrateGenerator(75);
+        this.crateGenerator= new CrateGenerator(50);
     }
 
     public void initializeCrates(){
-        this.crateGenerator.randomizeCrateCells(boardGame.getCells(),boardGame.getInfo(),beatenPopulation);
+        this.crateGenerator.randomizeCrateCells(boardGame.getCells(),boardGame.getInfo(),beatenGens);
     }
 
     public boolean checkIfPlayersOnSamePosition(Player player1, Player player2){
@@ -35,23 +37,30 @@ public class BoardGameController {
             }
         }
     }
-    public void resetGameWithNewCrates(){
+
+
+    public int[] resetGameWithNewCrates(){
         Player player1=boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
         Player player2=boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
-        if(beatenPopulation>=9){
+        if(beatPop>=3){
+            return crateGenerator.getBestGen();
+        }
+        if(beatenGens>9){
             crateGenerator.reproduction(crateGenerator.makeSelectionWithRanking());
-            beatenPopulation=0;
+            beatenGens=0;
+            beatPop++;
         }
         if(checkIfPlayersOnSamePosition(boardGame.getPlayerByName(Constants.PLAYER_1_NAME),boardGame.getPlayerByName(Constants.PLAYER_2_NAME)))
         {
             boardGame.getMap().replace(player1,Constants.PLAYER_1_STARTINGLOCATION);
             boardGame.getMap().replace(player2,Constants.PLAYER_2_STARTINGLOCATION);
           setAllCellsEmpty();
-          crateGenerator.setPopulationScore(beatenPopulation,player2.getPlayerController().getActionCounter());
-          System.out.println(beatenPopulation+": "+player2.getPlayerController().getActionCounter());
+          crateGenerator.setPopulationScore(beatenGens,player2.getPlayerController().getActionCounter());
+          System.out.println(beatenGens+": "+player2.getPlayerController().getActionCounter());
           initializeCrates();
             player2.getPlayerController().setActionCounter(0);
-            beatenPopulation++;
+            beatenGens++;
         }
+        return crateGenerator.returnRandomCrates();
     }
 }
