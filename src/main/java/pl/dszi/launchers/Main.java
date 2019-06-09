@@ -24,10 +24,9 @@ public class Main {
         //Player p3 = new Player(Constants.PLAYER_3_NAME, 3,new NoobPlayerController(boardGame,new NoobRossaAI()));
         //Player p4 = new Player(Constants.PLAYER_4_NAME, 3,new NoobPlayerController(boardGame,new NoobRossaAI()));
         boardGame.put(pl, Constants.PLAYER_1_STARTINGLOCATION);
-        boardGame.put(p2,Constants.PLAYER_2_STARTINGLOCATION);
+        boardGame.put(p2, Constants.PLAYER_2_STARTINGLOCATION);
         //boardGame.put(p3,Constants.player3StartingLocation);
         //boardGame.put(p4,Constants.player4StartingLocation);
-        System.out.println(Direction.NORTH.turnSide(false));
         BoardGameController boardGameController=new BoardGameController(boardGame);
         boardGameController.initializeCrates();
         Game game = new Game(boardGameController);

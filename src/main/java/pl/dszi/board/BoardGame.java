@@ -147,8 +147,8 @@ public class BoardGame implements Cloneable {
                         Boosters = GA.EvolvePopulation(Boosters);
                     }
                     Booster booster = Boosters.GetFittest();
-                    System.out.println("Aktywowano booster " + booster.GetBoosterType() + " na " + booster.GetTimerDelay() + "ms o wartości " + booster.GetValue());
                     booster.SetPlayer(player);
+                    System.out.println("Aktywowano booster " + booster.GetBoosterType() + " na " + booster.GetTimerDelay() + "ms o wartości " + booster.GetValue() + " przez " + booster.GetPlayer().getName());
                     aCell.setType(CellType.CELL_EMPTY);
                 }
             }
