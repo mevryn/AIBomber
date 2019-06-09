@@ -27,7 +27,6 @@ public class Population {
 
     public Booster GetFittest() {
         Booster fittest = Boosters[0];
-        // Loop through individuals to find fittest
         int index = 0;
         for (int i = 0; i < Boosters.length; i++) {
             if (fittest.GetFitness() <= GetBooster(i).GetFitness()) {

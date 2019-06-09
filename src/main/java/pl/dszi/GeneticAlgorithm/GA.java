@@ -22,7 +22,7 @@ public class GA {
             newPopulation.SaveBooster(i, newIndividual);
         }
         for(int i = elitismOffset; i < population.GetPopulationLength(); i++){
-            population.SaveBooster(i,Mutate(population.GetBooster(i)));
+            newPopulation.SaveBooster(i,Mutate(newPopulation.GetBooster(i)));
         }
         return newPopulation;
     }
