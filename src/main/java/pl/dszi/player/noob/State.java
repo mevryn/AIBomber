@@ -27,7 +27,8 @@ public class State {
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
-    int getF(){
+
+    int getF() {
         return place.getF();
     }
 }

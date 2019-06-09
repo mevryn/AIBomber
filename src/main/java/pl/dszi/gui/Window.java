@@ -10,12 +10,12 @@ import java.awt.*;
 
 public class Window extends JFrame {
 
-    public Window(int width, int height, String title, BoardGame boardGame, Renderer renderer) {
+    public Window(String title, BoardGame boardGame, Renderer renderer) {
         this.add(renderer);
         this.addKeyListener(new KeyInput(boardGame));
         this.setTitle(title);
         this.setSize(new Dimension(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT));
-        this.getContentPane().setPreferredSize(new Dimension(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT));
+        this.getContentPane().setPreferredSize(new Dimension(Constants.DEFAULT_GAME_WIDTH-12, Constants.DEFAULT_GAME_HEIGHT-12));
         this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);

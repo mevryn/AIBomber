@@ -1,37 +1,44 @@
 package pl.dszi.player;
 
-import pl.dszi.board.BoardGame;
 import pl.dszi.board.Cell;
-import pl.dszi.board.Direction;
+import pl.dszi.player.noob.NoobAI;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-public class ManualPlayerController  implements PlayerController{
-
-    private boolean manual=true;
+public class ManualPlayerController implements PlayerController {
 
     public boolean checkIfManual() {
-        return manual;
+        return true;
     }
 
     @Override
-    public void makeAMove(Cell cell) {
-
-    }
-
-    @Override
-    public void pathFinding() {
+    public void makeAMove(Cell cell, Player player) {
 
     }
 
     @Override
-    public void plantBomb() {
+    public void plantBomb(Player player) {
 
     }
 
     @Override
-    public boolean setPlayer(Player player) {
-        return false;
+    public void AIPlaning(Player player) {
+
     }
+
+
+    @Override
+    public NoobAI getNoobAI() {
+        return null;
+    }
+
+    @Override
+    public void setActionCounter(int actionCounter) {
+
+    }
+
+    @Override
+    public int getActionCounter() {
+        return 0;
+    }
+
+
 }

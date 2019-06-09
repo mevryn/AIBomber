@@ -1,31 +1,26 @@
 package pl.dszi.engine;
 
-import pl.dszi.board.*;
+import pl.dszi.board.BoardGame;
+import pl.dszi.board.BoardGameController;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
 import pl.dszi.player.Player;
 
-import java.awt.*;
 import java.util.List;
 
 public class Game implements Runnable {
 
 
-    private Boolean running = false;
+    private GameStatus gameStatus = GameStatus.STOP;
 
     private Renderer renderer;
-    private BoardGame boardGame;
-
-    private BoardGame getBoardGame() {
-        return boardGame;
-    }
-
-    public Game(BoardGame boardGame) {
-        this.boardGame = boardGame;
+    private BoardGameController boardGameController;
+    public Game(BoardGameController boardGameController) {
+        this.boardGameController = boardGameController;
         this.renderer = new Renderer2D();
-        new Window(Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT, "AiBomber", this.boardGame, this.renderer);
+        new Window("AiBomber", this.boardGameController.getBoardGame(), this.renderer);
         this.start();
     }
 
@@ -38,7 +33,7 @@ public class Game implements Runnable {
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
-        while (running) {
+        while (gameStatus==GameStatus.RUNNING || gameStatus == GameStatus.TESTING) {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
@@ -46,13 +41,13 @@ public class Game implements Runnable {
                 tick();
                 delta--;
             }
-            if (running) {
+            if (gameStatus== GameStatus.RUNNING || gameStatus == GameStatus.TESTING) {
                 render();
             }
             frames++;
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println("FPS: " + frames);
+             //   System.out.println("FPS: " + frames);
                 frames = 0;
             }
         }
@@ -62,57 +57,32 @@ public class Game implements Runnable {
     private void start() {
         Thread thread = new Thread(this);
         thread.start();
-        running = true;
+        gameStatus=GameStatus.TESTING;
     }
 
     private void stop() {
-        try {
-            running = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            gameStatus= GameStatus.STOP;
     }
 
     private void render() {
         renderer.render();
-        renderer.renderBoardGame(boardGame.getInfo().getCells());
-        boardGame.getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
+        renderer.renderBoardGame(boardGameController.getBoardGame().getInfo().getCells());
+        boardGameController.getBoardGame().getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();
     }
 
     private void tick() {
-        this.checkIfPlayersAreAlive();
         this.aiMovement();
-        this.checkForExplosionCollideWithPlayer();
-
-
-        if(boardGame.getPlayerByName(Constants.PLAYER_2_NAME).getCurrentHp()<=0){
-            System.out.println("dupa");
+        if(gameStatus==GameStatus.RUNNING)
+        boardGameController.getBoardGame().damageAllPlayersIntersectingWithExplosion();
+        if(boardGameController.checkIfPlayersOnSamePosition(boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_1_NAME),boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_2_NAME))){
+            boardGameController.resetGameWithNewCrates();
         }
     }
 
-    private void checkForExplosionCollideWithPlayer(){
-        for (Cell[] cells:getBoardGame().getInfo().getCells()) {
-            for(Cell aCell:cells){
-                if(aCell.getType()==CellType.CELL_BOOM_CENTER){
-                    for(Player player: boardGame.getMap().keySet()) {
-                        Rectangle playerBody = new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE);
-                        if(aCell.getBody().intersects(playerBody) && player.isMortal()){
-                            player.damagePlayer();
-                        }
-                    }
-                }
-            }
-        }
-    }
 
-    private void checkIfPlayersAreAlive(){
-        for(Player player:boardGame.getMap().keySet()){
-            player.setAlive();
-        }
-    }
     private void aiMovement() {
-        List<Player> autoPlayers = boardGame.getAllNonManualPlayers();
-        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().pathFinding());
+        List<Player> autoPlayers = boardGameController.getBoardGame().getAllNonManualPlayers();
+        autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getPlayerController().AIPlaning(player));
     }
 }

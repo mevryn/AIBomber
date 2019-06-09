@@ -33,6 +33,10 @@ public enum CellType {
         return destroyable;
     }
 
+    public void setWalkable(boolean walkable) {
+        this.walkable = walkable;
+    }
+
     public void setBombPlayerOwner(Player bombPlayerOwner) {
 
         this.bombPlayerOwner = bombPlayerOwner;

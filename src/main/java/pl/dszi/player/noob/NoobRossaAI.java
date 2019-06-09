@@ -5,27 +5,23 @@ import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.Player;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class NoobRossaAI implements NoobAI {
-    Player player;
 
-    @Override
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
-    @Override
-    public boolean makeDecision(BoardGame boardGame) {
-        player = boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
-        if(boardGame.checkIfBombForward(player,new Rectangle(boardGame.getPlayerPosition(player).x,boardGame.getPlayerPosition(player).y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE))){
+    public boolean shouldPlantBomb(BoardGame boardGame, Player player) {
+        if (boardGame.checkIfBombForward(player, new Rectangle(boardGame.getPlayerPosition(player).x, boardGame.getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE))) {
             return false;
-        }else if(boardGame.getPlayerPositionCell(player).getType().walkable){
-            if(boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCell(player))){
+        } else if (boardGame.getPlayerPositionCellByCenter(player).getType().walkable) {
+            if (boardGame.checkIfNeighborIsCrate(boardGame.getPlayerPositionCellByCenter(player))) {
                 return player.getBombAmount() > player.getBombActualyTicking();
             }
             return false;
-        }else{
+        } else {
             return false;
         }
     }
+
+
 }

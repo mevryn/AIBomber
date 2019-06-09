@@ -1,21 +1,20 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.constant.Constants;
 
 import java.util.*;
 
 public class Astar {
     private Node[][] nodes;
-    private Cell[][] cells;
     private PriorityQueue<Node> openList;
     private Set<Node> closedSet;
     private Node nodeStart;
     private Node nodeEnd;
 
 
-    public Astar(Cell[][] cells) {
-        this.cells = cells;
+    Astar(Cell[][] cells) {
         this.nodes = new Node[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY];
         this.openList = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
         for (int i = 0; i < cells.length; i++) {
@@ -26,14 +25,14 @@ public class Astar {
         closedSet = new HashSet<>();
     }
 
-    public Node getNodeFromCell(Cell cell) {
+    private Node getNodeFromCell(Cell cell) {
         return nodes[cell.getPoint().x][cell.getPoint().y];
     }
 
-    public void setAllHeuristic(Node destinationNode) {
-        for (int i = 0; i < nodes.length; i++) {
-            for (int j = 0; j < nodes[i].length; j++) {
-                nodes[i][j].setH(destinationNode);
+    private void setAllHeuristic(Node destinationNode) {
+        for (Node[] node : nodes) {
+            for (Node aNode : node) {
+                aNode.setH(destinationNode);
             }
         }
     }
@@ -42,26 +41,26 @@ public class Astar {
         return nodeEnd;
     }
 
-    public List<Cell> chooseBestWay(Cell start, Cell end) {
+    List<Cell> chooseBestWay(Cell start, Cell end) {
+        closedSet.clear();
         nodeStart = getNodeFromCell(start);
         nodeEnd = getNodeFromCell(end);
-
         setAllHeuristic(nodeEnd);
         openList.add(nodeStart);
         while (!isEmpty(openList)) {
             Node currentNode = openList.poll();
             closedSet.add(currentNode);
+            assert currentNode != null;
             if (isFinalNode(currentNode)) {
                 return getPath(currentNode);
-            }
-            else
+            } else
                 getNeighbors(currentNode);
         }
         return new ArrayList<>();
     }
 
     private List<Cell> getPath(Node currentNode) {
-        List<Node> path = new ArrayList<>();
+        List<Node> path = new LinkedList<>();
         path.add(currentNode);
         Node parent;
         while ((parent = currentNode.getParent()) != null) {
@@ -80,31 +79,29 @@ public class Astar {
     }
 
 
-    public List<Node> getNeighbors(Node aNode) {
-        List<Node> neighbors = new ArrayList<>();
-        int row = 0;
-        int col = 0;
+    private void getNeighbors(Node aNode) {
+        int row;
+        int col;
         for (int i = 0; i < nodes.length; i++) {
             for (int j = 0; j < nodes[i].length; j++) {
                 if (nodes[i][j].equals(aNode)) {
                     row = i;
                     col = j;
                     if (row - 1 >= 0) {
-                        checkNode(aNode,row-1,col,1);
+                        checkNode(aNode, row - 1, col, 1);
                     }
                     if (col - 1 >= 0) {
-                        checkNode(aNode,row,col-1,1);
+                        checkNode(aNode, row, col - 1, 1);
                     }
                     if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
-                        checkNode(aNode,row+1,col,1);
+                        checkNode(aNode, row + 1, col, 1);
                     }
                     if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
-                        checkNode(aNode,row,col+1,1);
+                        checkNode(aNode, row, col + 1, 1);
                     }
                 }
             }
         }
-        return neighbors;
     }
 
     private void checkNode(Node currentNode, int row, int col, int cost) {
@@ -127,7 +124,7 @@ public class Astar {
         return openList;
     }
 
-    private Set<Node> getClosedSet() {
+    Set<Node> getClosedSet() {
         return closedSet;
 
     }
