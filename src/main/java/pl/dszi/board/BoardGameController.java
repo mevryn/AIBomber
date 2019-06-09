@@ -42,6 +42,9 @@ public class BoardGameController {
     }
 
 
+    public void generateFinalCrates(){
+        crateGenerator.createCrates(boardGame.getCells(),boardGame.getInfo(),crateGenerator.getBestGen());
+    }
     public int[] resetGameWithNewCrates(){
         Player player1=boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
         Player player2=boardGame.getPlayerByName(Constants.PLAYER_2_NAME);

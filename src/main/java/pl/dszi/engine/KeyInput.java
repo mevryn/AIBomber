@@ -23,7 +23,7 @@ public class KeyInput extends KeyAdapter {
             if (key == KeyEvent.VK_W) {
                 boardGame.move(player, Direction.NORTH);
             } else if (key == KeyEvent.VK_S) {
-                boardGame.move(player, Direction.SOUTH);
+                boardGame.move(player,Direction.SOUTH);
             } else if (key == KeyEvent.VK_A) {
                 boardGame.move(player, Direction.WEST);
             } else if (key == KeyEvent.VK_D) {

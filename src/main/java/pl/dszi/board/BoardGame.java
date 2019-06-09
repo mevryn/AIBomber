@@ -237,13 +237,13 @@ public class BoardGame implements Cloneable {
     }
 
     private void setEstinguishTimer(Cell cell) {
-        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER*100);
+        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER);
     }
 
 
 
     private void detonateTimer(Cell cell) {
-        Time.scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER*100);
+        Time.scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
     public Cell[][] getCells() {

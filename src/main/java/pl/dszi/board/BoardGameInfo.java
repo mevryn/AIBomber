@@ -62,6 +62,15 @@ public class BoardGameInfo {
         }
         return bombs;
     }
+
+    public void setAllCellsToEmpty(){
+        for(Cell[] columns:cells){
+            for(Cell cell:columns){
+                if(cell.getType()==CellType.CELL_CRATE)
+                    cell.setType(CellType.CELL_EMPTY);
+            }
+        }
+    }
     public Set<Cell> getAllCrates (){
         Set<Cell> crates = new HashSet<>();
         for(Cell[] columns:cells){

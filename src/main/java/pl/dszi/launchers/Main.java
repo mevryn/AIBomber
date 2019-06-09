@@ -19,6 +19,8 @@ public class Main {
     public static void main(final String[] args) {
         int maxHp = 3;
         BoardGame boardGame = new BoardGame(new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
+        Constants.BASIC_BOMB_EXPLOSION_TIMER=0;
+        Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER=0;
         Player pl = new Player(Constants.PLAYER_1_NAME, 3,new ManualPlayerController());
         Player p2 = new Player(Constants.PLAYER_2_NAME, 3,new NoobPlayerController(boardGame,new NoobRossaAI( )));
         //Player p3 = new Player(Constants.PLAYER_3_NAME, 3,new NoobPlayerController(boardGame,new NoobRossaAI()));

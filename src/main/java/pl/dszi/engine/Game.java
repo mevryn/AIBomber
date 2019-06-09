@@ -23,6 +23,7 @@ public class Game implements Runnable {
     private int[] crates;
 
     public Game(BoardGameController boardGameController) {
+
         this.boardGameController = boardGameController;
         this.renderer = new Renderer2D();
         new Window("AiBomber", this.boardGameController.getBoardGame(), this.renderer);
@@ -32,17 +33,20 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+
         long lastTime = System.nanoTime();
         double amountOfTicks =Double.MAX_VALUE;
         double ns = 1000000000 / amountOfTicks;
+        if(gameStatus== GameStatus.RUNNING){
+            ns = 1000000000 / 60.0;
+            Constants.DEFAULT_SPEED=4;
+        }
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
         while (gameStatus!= GameStatus.STOP) {
             long now = System.nanoTime();
-            if(gameStatus== GameStatus.RUNNING){
-                ns = 1000000000 / 60.0;
-            }
+
             delta += (now - lastTime) / ns;
             lastTime = now;
             while (delta >= 1) {
@@ -55,7 +59,6 @@ public class Game implements Runnable {
             frames++;
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-             //   System.out.println("FPS: " + frames);
                 frames = 0;
             }
         }
@@ -68,7 +71,10 @@ public class Game implements Runnable {
         boardGameController.getBoardGame().getMap().clear();
         boardGameController.getBoardGame().put(pl, Constants.PLAYER_1_STARTINGLOCATION);
         boardGameController.getBoardGame().put(p2,Constants.PLAYER_2_STARTINGLOCATION);
+        boardGameController.getBoardGame().getInfo().setAllCellsToEmpty();
+        boardGameController.generateFinalCrates();
         run();
+
     }
     private void start() {
         Thread thread = new Thread(this);
@@ -96,6 +102,8 @@ public class Game implements Runnable {
         }
         if(boardGameController.generated){
             boardGameController.generated=false;
+            Constants.BASIC_BOMB_EXPLOSION_TIMER=4;
+            Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER=2;
             resetGame();
         }
     }

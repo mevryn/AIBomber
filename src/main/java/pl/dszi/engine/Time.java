@@ -10,7 +10,7 @@ public class Time {
         ScheduledExecutorService scheduler
                 = Executors.newSingleThreadScheduledExecutor();
 
-        scheduler.schedule(task, delay, TimeUnit.MILLISECONDS);
+        scheduler.schedule(task, delay, TimeUnit.SECONDS);
         scheduler.shutdown();
     }
 }

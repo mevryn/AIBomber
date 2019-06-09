@@ -4,6 +4,8 @@ import pl.dszi.board.BoardGame;
 import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
 import pl.dszi.board.Direction;
+import pl.dszi.engine.Game;
+import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.launchers.Main;
 import pl.dszi.player.Player;
@@ -133,17 +135,28 @@ public class NoobPlayerController implements PlayerController {
     }
 
     public void makeAMove(Cell cell,Player player) {
-            if (playerLocation.x > cell.getBody().x && playerLocation.y == cell.getBody().y ) {
+        if(Game.gameStatus!=GameStatus.GENERATING) {
+            if (playerLocation.x > cell.getBody().x && playerLocation.y == cell.getBody().y) {
                 boardGame.move(player, Direction.WEST);
-            } else if (playerLocation.x < cell.getBody().x && playerLocation.y == cell.getBody().y  ) {
+            } else if (playerLocation.x < cell.getBody().x && playerLocation.y == cell.getBody().y) {
                 boardGame.move(player, Direction.EAST);
-            } else if (playerLocation.y > cell.getBody().y && playerLocation.x == cell.getBody().x ) {
+            } else if (playerLocation.y > cell.getBody().y && playerLocation.x == cell.getBody().x) {
                 boardGame.move(player, Direction.NORTH);
-            } else if (playerLocation.y < cell.getBody().y && playerLocation.x == cell.getBody().x ) {
+            } else if (playerLocation.y < cell.getBody().y && playerLocation.x == cell.getBody().x) {
                 boardGame.move(player, Direction.SOUTH);
             }
             actionCounter++;
-
+        }else {
+            if (playerLocation.x > cell.getBody().x && playerLocation.y == cell.getBody().y) {
+                boardGame.move(player, Direction.GENWEST);
+            } else if (playerLocation.x < cell.getBody().x && playerLocation.y == cell.getBody().y) {
+                boardGame.move(player, Direction.GENEAST);
+            } else if (playerLocation.y > cell.getBody().y && playerLocation.x == cell.getBody().x) {
+                boardGame.move(player, Direction.GENNORTH);
+            } else if (playerLocation.y < cell.getBody().y && playerLocation.x == cell.getBody().x) {
+                boardGame.move(player, Direction.GENSOUTH);
+            }
+        }
     }
 
     @Override
