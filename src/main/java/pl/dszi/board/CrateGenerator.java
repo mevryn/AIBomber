@@ -68,13 +68,20 @@ public class CrateGenerator {
 
     }
 
+    private int BoosterCrates = 0;
+
     void randomizeCrateCells(Cell[][] cells, BoardGameInfo boardGameInfo, int populationIndex) {
         int[] population = listOfPopulations.get(populationIndex);
         for (int i = 0; i < numberOfCrates; i++) {
             int col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = population[i] / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
                 if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() == CellType.CELL_EMPTY) {
-                    cells[col][row].setType(CellType.CELL_CRATE);
+                    if (new Random().nextInt() % 101 >= Constants.BOOSTER_CRATE_THRESHOLD && BoosterCrates < Constants.MAX_BOOSTER_CRATES) {
+                        BoosterCrates++;
+                        cells[col][row].setType(CellType.CELL_CRATEBONUS);
+                    } else {
+                        cells[col][row].setType(CellType.CELL_CRATE);
+                    }
                 }
                 }
             }

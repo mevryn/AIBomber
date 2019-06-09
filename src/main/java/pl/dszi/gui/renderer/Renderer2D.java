@@ -22,6 +22,9 @@ public class Renderer2D extends Renderer {
     private Graphics graphics;
 
     private BufferedImage crateImg;
+    private BufferedImage characterImg;
+    private BufferedImage crateBoostImg;
+    private BufferedImage boosterImg;
     private BufferedImage explosionImg;
     private BufferedImage bombImg;
     private BufferedImage wallImg;
@@ -47,11 +50,12 @@ public class Renderer2D extends Renderer {
     @Override
     public void renderPlayer(Player player, Point point) {
         bufferStrategy = getBufferStrategy();
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(getClass().getResource(Resource.CHARACTERPATH.getPath()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if(characterImg == null) {
+            try {
+                characterImg = ImageIO.read(getClass().getResource(Resource.CHARACTERPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         if (bufferStrategy == null) {
             this.createBufferStrategy(3);
@@ -61,11 +65,11 @@ public class Renderer2D extends Renderer {
         if (!player.isMortal() && player.isAlive()) {
             Time.scheduleTimer(this::blinkImageBool, 0);
             if (switcher) {
-                graphics.drawImage(img, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
+                graphics.drawImage(characterImg, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
             }
         } else if (player.isAlive()) {
             graphics.setColor(player.getColor());
-            graphics.drawImage(img, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
+            graphics.drawImage(characterImg, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
         }
     }
 
@@ -73,35 +77,38 @@ public class Renderer2D extends Renderer {
         switcher = !switcher;
     }
     private void initializeImg() {
-        BufferedImage temp;
-        try {
-            temp = ImageIO.read(getClass().getResource(Resource.CRATEPATH.getPath()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp = null;
+        if(crateImg == null) {
+            try {
+                crateImg = ImageIO.read(getClass().getResource(Resource.CRATEPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                crateImg = null;
+            }
         }
-        crateImg = temp;
-        try {
-            temp = ImageIO.read(getClass().getResource(Resource.EXPLOSIONPATH.getPath()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp = null;
+        if(explosionImg == null) {
+            try {
+                explosionImg = ImageIO.read(getClass().getResource(Resource.EXPLOSIONPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                explosionImg = null;
+            }
         }
-        explosionImg = temp;
-        try {
-            temp = ImageIO.read(getClass().getResource(Resource.BOMBPATH.getPath()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp = null;
+        if(bombImg == null) {
+            try {
+                bombImg = ImageIO.read(getClass().getResource(Resource.BOMBPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                bombImg = null;
+            }
         }
-        bombImg = temp;
-        try {
-            temp = ImageIO.read(getClass().getResource(Resource.WALLPATH.getPath()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            temp = null;
+        if(wallImg == null) {
+            try {
+                wallImg = ImageIO.read(getClass().getResource(Resource.WALLPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                wallImg = null;
+            }
         }
-        wallImg = temp;
     }
 
     @Override

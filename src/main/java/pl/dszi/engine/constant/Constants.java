@@ -32,4 +32,10 @@ public class Constants {
     public static final Point  PLAYER_4_STARTINGLOCATION= new Point(0, DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY - 1));
     public static final Player godPlayer = new Player("GOD", 3, new ManualPlayerController());
     public static final int MAXIMUM_CRATE_AMOUNT=143;
+    public static final int MAX_BOOSTER_CRATES = 5;
+    public static final double BOOSTER_CRATE_THRESHOLD = 80;
+    public static final double GA_UNIFORM_RATE = 0.5;
+    public static final double GA_MUTATION_RATE = 0.015;
+    public static final int GA_TOURNAMENT_SIZE = 2;
+    public static final boolean GA_ELITISM = false;
 }

@@ -261,16 +261,16 @@ public class BoardGame implements Cloneable {
     public boolean checkIfNeighborIsCrate(Cell aCell) {
         int row = aCell.getPoint().x;
         int col = aCell.getPoint().y;
-        if (row - 1 >= 0 && boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATE) {
+        if (row - 1 >= 0 &&( boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATEBONUS)) {
             return true;
         }
-        if (col - 1 >= 0 && boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATE) {
+        if (col - 1 >= 0 && (boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATE) || boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATEBONUS) {
             return true;
         }
-        if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY && boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATE) {
+        if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY && (boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATEBONUS)) {
             return true;
         }
-        return col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY && boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATE;
+        return col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY && (boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATEBONUS);
     }
 
     private List<Cell> getNeighbors(Cell aCell) {
