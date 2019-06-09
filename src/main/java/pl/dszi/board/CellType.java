@@ -11,6 +11,8 @@ public enum CellType {
     CELL_EMPTY(' ',true),
     CELL_WALL('#',false),
     CELL_CRATE('c',false),
+    CELL_CRATEBONUS('t',false),
+    CELL_BOOSTER('o',true),
     CELL_BOMB('b',true),
     CELL_BOOM_LEFT('<',false),
     CELL_BOOM_RIGHT('>',false),

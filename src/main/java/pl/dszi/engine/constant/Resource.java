@@ -5,6 +5,8 @@ public enum Resource {
     BOMBPATH("/images/bomba.png"),
     CHARACTERPATH("/images/BOMBI.png"),
     EXPLOSIONPATH("/images/explosion.png"),
+    BOOSTERPATH("/images/booster.png"),
+    CRATEBONUSPATH("/images/crateBonus.png"),
     WALLPATH("/images/wall.png");
 
     private String path;

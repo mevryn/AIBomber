@@ -5,7 +5,6 @@ import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.Player;
 
 import java.awt.*;
-import java.util.Optional;
 
 public class NoobRossaAI implements NoobAI {
 
