@@ -273,7 +273,7 @@ public class BoardGame implements Cloneable {
     }
 
     private void detonateTimer(Cell cell, int bombRange) {
-        Time.scheduleTimer(() -> detonateBomb(cell, bombRange), Constants.BASIC_BOMB_EXPLOSION_TIMER*100);
+        Time.scheduleTimer(() -> detonateBomb(cell, bombRange), Constants.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
     public Cell[][] getCells() {
