@@ -29,6 +29,8 @@ public class Renderer2D extends Renderer {
     private BufferedImage bombImg;
     private BufferedImage wallImg;
 
+    private BufferedImage launcherImg;
+
     private boolean switcher = true;
 
     public Renderer2D() {
@@ -85,6 +87,14 @@ public class Renderer2D extends Renderer {
                 crateImg = null;
             }
         }
+        if(launcherImg == null) {
+            try {
+                launcherImg = ImageIO.read(getClass().getResource(Resource.LAUNCHERPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                launcherImg = null;
+            }
+        }
         if(crateBoostImg == null) {
             try {
                 crateBoostImg = ImageIO.read(getClass().getResource(Resource.CRATEBONUSPATH.getPath()));
@@ -125,6 +135,21 @@ public class Renderer2D extends Renderer {
                 wallImg = null;
             }
         }
+    }
+
+    @Override
+    public void renderLauncherWhileLoading(){
+        bufferStrategy = getBufferStrategy();
+        if (bufferStrategy == null) {
+            this.createBufferStrategy(3);
+            return;
+        }
+        graphics = bufferStrategy.getDrawGraphics();
+        graphics.setColor(new Color(34, 139, 34));
+        graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
+        graphics.drawImage(launcherImg, 0, Constants.DEFAULT_GAME_HEIGHT/4, Constants.DEFAULT_GAME_WIDTH,416 , this);
+        graphics.dispose();
+        bufferStrategy.show();
     }
 
     @Override

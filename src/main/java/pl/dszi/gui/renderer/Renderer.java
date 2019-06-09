@@ -17,5 +17,5 @@ public abstract class Renderer extends Canvas {
 
     public abstract void renderBoardGame(Cell[][] cells);
 
-
+    public abstract void renderLauncherWhileLoading();
 }

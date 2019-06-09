@@ -52,10 +52,12 @@ public class Game implements Runnable {
             while (delta >= 1) {
                 tick();
                 delta--;
+                if(gameStatus==GameStatus.GENERATING){
+                    renderer.renderLauncherWhileLoading();
+                }
             }
-            if (gameStatus == GameStatus.RUNNING || gameStatus == GameStatus.TESTING) {
                 render();
-            }
+
             frames++;
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
@@ -88,10 +90,12 @@ public class Game implements Runnable {
     }
 
     private void render() {
+        if(Game.gameStatus!=GameStatus.GENERATING){
         renderer.render();
         renderer.renderBoardGame(boardGameController.getBoardGame().getInfo().getCells());
         boardGameController.getBoardGame().getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();
+        }
     }
 
     private void tick() {

@@ -48,7 +48,7 @@ public class BoardGameController {
     public int[] resetGameWithNewCrates(){
         Player player1=boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
         Player player2=boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
-        if(beatPop>10){
+        if(beatPop>5){
             Game.gameStatus = GameStatus.RUNNING;
             generated=true;
             return crateGenerator.getBestGen();

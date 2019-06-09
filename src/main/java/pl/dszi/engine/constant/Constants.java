@@ -16,8 +16,8 @@ public class Constants {
     public static final int DEFAULT_GAME_WIDTH = DEFAULT_CELL_SIZE * DEFAULT_GAME_TILES_HORIZONTALLY;
     public static final int DEFAULT_GAME_HEIGHT = DEFAULT_CELL_SIZE * DEFAULT_GAME_TILES_VERTICALLY;
     public static final int DEFAULT_PLAYER_HP = 3;
-    public static int BASIC_BOMB_EXPLOSION_TIMER = 4;
-    public static int BASIC_BOMB_EXPLOSION_BURNING_TIMER = 4;
+    public static int BASIC_BOMB_EXPLOSION_TIMER = 0;
+    public static int BASIC_BOMB_EXPLOSION_BURNING_TIMER = 0;
     public static final int DEFAULT_NODE_COST = 1;
     public static final int IMMORTALITY_TIMER = 3;
     public static String PLAYER_1_NAME = "Player 1";
