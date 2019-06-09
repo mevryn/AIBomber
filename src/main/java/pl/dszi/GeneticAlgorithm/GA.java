@@ -28,14 +28,11 @@ public class GA {
     }
 
     private static Booster TournamentSelection(Population population) {
-        // Create a tournament population
         Population tournament = new Population(Constants.GA_TOURNAMENT_SIZE, false);
-        // For each place in the tournament get a random individual
         for (int i = 0; i < Constants.GA_TOURNAMENT_SIZE; i++) {
             int randomId = (int) (Math.random() * population.GetPopulationLength());
             tournament.SaveBooster(i, population.GetBooster(randomId));
         }
-        // Get the fittest
         Booster fittest = tournament.GetFittest();
         return fittest;
     }

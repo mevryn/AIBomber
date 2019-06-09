@@ -1,5 +1,8 @@
 package pl.dszi.board;
 
+import pl.dszi.Booster.Booster;
+import pl.dszi.GeneticAlgorithm.GA;
+import pl.dszi.GeneticAlgorithm.Population;
 import pl.dszi.engine.Time;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.ManualPlayerController;
@@ -127,6 +130,7 @@ public class BoardGame implements Cloneable {
         return rectangle1.intersects(rectangle2);
     }
 
+    Population Boosters = null;
 
     private boolean checkIfFieldIsObstacle(Player player, Point point) {
         Rectangle pointToBody = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
@@ -134,6 +138,18 @@ public class BoardGame implements Cloneable {
             for (Cell aCell : cell) {
                 if (playerInterfereWithCell(pointToBody, aCell.getBody()) && (!aCell.getType().walkable)) {
                     return true;
+                }
+                else if(playerInterfereWithCell(pointToBody, aCell.getBody()) && aCell.getType() == CellType.CELL_BOOSTER)
+                {
+                    if(Boosters == null){
+                        Boosters = new Population(10, true);
+                    }else{
+                        Boosters = GA.EvolvePopulation(Boosters);
+                    }
+                    Booster booster = Boosters.GetFittest();
+                    System.out.println("Aktywowano booster " + booster.GetBoosterType() + " na " + booster.GetTimerDelay() + "ms o wartości " + booster.GetValue());
+                    booster.SetPlayer(player);
+                    aCell.setType(CellType.CELL_EMPTY);
                 }
             }
         }
@@ -146,7 +162,7 @@ public class BoardGame implements Cloneable {
     private boolean checkIfCrateForward(Rectangle body) {
         for (Cell[] columns : getInfo().getCells()) {
             for (Cell crateCell : columns) {
-                if (crateCell.getType() == CellType.CELL_CRATE && crateCell.getBody().intersects(body)) {
+                if ((crateCell.getType() == CellType.CELL_CRATE || crateCell.getType() == CellType.CELL_CRATEBONUS) && crateCell.getBody().intersects(body)) {
                     return true;
                 }
             }
@@ -155,7 +171,7 @@ public class BoardGame implements Cloneable {
     }
 
     private boolean checkIfCrateAtSpecificIndex(Point aCoord) {
-        return boardGameInfo.getCells()[aCoord.x][aCoord.y].getType() == CellType.CELL_CRATE;
+        return boardGameInfo.getCells()[aCoord.x][aCoord.y].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[aCoord.x][aCoord.y].getType() == CellType.CELL_CRATEBONUS;
     }
 
     public boolean checkIfBombForward(Player player, Rectangle body) {
@@ -180,7 +196,7 @@ public class BoardGame implements Cloneable {
             if (player.canPlantBomb()&&playerPosition.getType() == CellType.CELL_EMPTY) {
                 playerPosition.setType(CellType.CELL_BOMB);
                 setInterectionWithBomb(playerPosition);
-                detonateTimer(playerPosition);
+                detonateTimer(playerPosition, player.getBombRange());
                // System.out.println("Bomb Planted");
                 player.plantBomb();
                 player.restoreBombAmountEvent();
@@ -227,23 +243,28 @@ public class BoardGame implements Cloneable {
     }
 
 
-    private void detonateBomb(Cell bombCell) {
-        Set<Cell> cellsToExplode = getCellsToExplosion(getCellCordByBomb(bombCell));
+    private void detonateBomb(Cell bombCell, int bombRange) {
+        Set<Cell> cellsToExplode = getCellsToExplosion(getCellCordByBomb(bombCell), bombRange);
         cellsToExplode.forEach(cell -> {
-                   cell.setType(CellType.CELL_BOOM_CENTER);
-                    this.setEstinguishTimer(cell);
+                    if(cell.getType() == CellType.CELL_CRATEBONUS){
+                        cell.setType(CellType.CELL_BOOSTER);
+                    }else {
+                        cell.setType(CellType.CELL_BOOM_CENTER);
+                        this.setEstinguishTimer(cell);
+                    }
                 }
         );
     }
 
     private void setEstinguishTimer(Cell cell) {
-        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER*100);
+        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY)
+            , Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER*100);
     }
 
 
 
-    private void detonateTimer(Cell cell) {
-        Time.scheduleTimer(() -> detonateBomb(cell), Constants.BASIC_BOMB_EXPLOSION_TIMER*100);
+    private void detonateTimer(Cell cell, int bombRange) {
+        Time.scheduleTimer(() -> detonateBomb(cell, bombRange), Constants.BASIC_BOMB_EXPLOSION_TIMER*100);
     }
 
     public Cell[][] getCells() {
@@ -254,8 +275,8 @@ public class BoardGame implements Cloneable {
         return !map.containsValue(point);
     }
 
-    private Set<Cell> getCellsToExplosion(Point point) {
-        return new HashSet<>(getAccessibleNeighbors(getInfo().getCells()[point.x][point.y],Constants.DEFAULT_RANGE));
+    private Set<Cell> getCellsToExplosion(Point point, int bombRange) {
+        return new HashSet<>(getAccessibleNeighbors(getInfo().getCells()[point.x][point.y], bombRange));
     }
 
     public boolean checkIfNeighborIsCrate(Cell aCell) {
@@ -306,7 +327,7 @@ public class BoardGame implements Cloneable {
         boolean west = true;
         boolean east = true;
         boolean south = true;
-        for (int range = 1; range < Constants.DEFAULT_RANGE; range++) {
+        for (int range = 1; range < rangeChecker; range++) {
             int row = aCell.getPoint().x;
             int col = aCell.getPoint().y;
             if (west &&

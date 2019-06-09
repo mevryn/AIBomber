@@ -35,7 +35,6 @@ public class Cell {
         this.body = new Rectangle(point.x * Constants.DEFAULT_CELL_SIZE, point.y * Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
     }
 
-
     public Rectangle getBody() {
         return body;
     }

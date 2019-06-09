@@ -85,6 +85,22 @@ public class Renderer2D extends Renderer {
                 crateImg = null;
             }
         }
+        if(crateBoostImg == null) {
+            try {
+                crateBoostImg = ImageIO.read(getClass().getResource(Resource.CRATEBONUSPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                crateImg = null;
+            }
+        }
+        if(boosterImg == null) {
+            try {
+                boosterImg = ImageIO.read(getClass().getResource(Resource.BOOSTERPATH.getPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                boosterImg = null;
+            }
+        }
         if(explosionImg == null) {
             try {
                 explosionImg = ImageIO.read(getClass().getResource(Resource.EXPLOSIONPATH.getPath()));
@@ -132,6 +148,10 @@ public class Renderer2D extends Renderer {
                     graphics.drawImage(explosionImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
                 } else if (aCell.getType() == CellType.CELL_BOMB) {
                     graphics.drawImage(bombImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
+                }else if (aCell.getType() == CellType.CELL_CRATEBONUS) {
+                    graphics.drawImage(crateBoostImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
+                }else if (aCell.getType() == CellType.CELL_BOOSTER) {
+                    graphics.drawImage(boosterImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
                 }
             }
         }

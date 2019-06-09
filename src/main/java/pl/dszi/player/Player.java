@@ -95,11 +95,13 @@ public class Player {
     }
 
     public void damagePlayer() {
-        currentHp--;
-        System.out.println(currentHp);
-        mortal = false;
-        Time.scheduleTimer(() -> mortal = true, Constants.IMMORTALITY_TIMER);
-        makeMortalAgain();
+        if (mortal) {
+            currentHp--;
+            System.out.println(currentHp);
+            mortal = false;
+            Time.scheduleTimer(() -> mortal = true, Constants.IMMORTALITY_TIMER);
+            makeMortalAgain();
+        }
     }
 
     public boolean canPlantBomb(){

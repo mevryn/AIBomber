@@ -67,23 +67,23 @@ public class Booster {
 
     private void CalculateFitness(){
         Fitness = Value * TimerDelay;
-        switch(Type){
-            case BOOSTER_IMMORTALITY:
-                Fitness *= 0.19;
-                break;
-            case BOOSTER_EXPLOSION:
-                Fitness *= 0.2;
-                break;
-            case BOOSTER_HP:
-                Fitness *= 0.21;
-                break;
-            case BOOSTER_MOREBOMBS:
-                Fitness *= 0.22;
-                break;
-            case BOOSTER_NOTYPE:
-                Fitness *= 0;
-                break;
-        }
+        //switch(Type){
+        //    case BOOSTER_IMMORTALITY:
+        //        Fitness *= 0.19;
+        //        break;
+        //    case BOOSTER_EXPLOSION:
+        //        Fitness *= 0.2;
+        //        break;
+        //    case BOOSTER_HP:
+        //        Fitness *= 0.21;
+        //        break;
+        //    case BOOSTER_MOREBOMBS:
+        //        Fitness *= 0.22;
+        //        break;
+        //    case BOOSTER_NOTYPE:
+        //        Fitness *= 0;
+        //        break;
+        //}
     }
 
     public void Starting(){
@@ -92,8 +92,8 @@ public class Booster {
                 Player.setBombRange(Player.getBombRange() + Value);
                 break;
             case BOOSTER_HP:
-                if(Player.getCurrentHp() < Player.getMaxHp()) {
-                    Player.setCurrentHp(Player.getCurrentHp() + 1);
+                if(Player.getCurrentHp() < Player.getMaxHp() && Value >= 0) {
+                    Player.setCurrentHp(Player.getCurrentHp() + Value);
                 }
                 break;
             case BOOSTER_IMMORTALITY:
@@ -112,6 +112,12 @@ public class Booster {
         switch(Type){
             case BOOSTER_IMMORTALITY:
                 Player.setMortality(true);
+                break;
+            case BOOSTER_EXPLOSION:
+                Player.setBombRange(Player.getBombRange() - Value);
+                break;
+            case BOOSTER_MOREBOMBS:
+                Player.setBombAmount(Player.getBombAmount() - Value);
                 break;
             default:
                 break;

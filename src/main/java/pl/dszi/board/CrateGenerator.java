@@ -68,9 +68,8 @@ public class CrateGenerator {
 
     }
 
-    private int BoosterCrates = 0;
-
     void randomizeCrateCells(Cell[][] cells, BoardGameInfo boardGameInfo, int populationIndex) {
+        int BoosterCrates = 0;
         int[] population = listOfPopulations.get(populationIndex);
         for (int i = 0; i < numberOfCrates; i++) {
             int col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;

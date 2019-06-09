@@ -66,7 +66,7 @@ public class BoardGameInfo {
         Set<Cell> crates = new HashSet<>();
         for(Cell[] columns:cells){
             for(Cell cell:columns){
-                if(cell.getType()==CellType.CELL_CRATE)
+                if(cell.getType()==CellType.CELL_CRATE || cell.getType() == CellType.CELL_CRATEBONUS)
                 crates.add(cell);
             }
         }
