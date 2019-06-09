@@ -92,10 +92,16 @@ class CrateGenerator {
         }
             }
     void createCrates(Cell[][] cells, BoardGameInfo boardGameInfo,int[] crates){
+        int BoosterCrates = 0;
         for (int crate : crates) {
             int col = crate % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = crate / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
-            cells[col][row].setType(CellType.CELL_CRATE);
+            if (new Random().nextInt() % 101 >= Constants.BOOSTER_CRATE_THRESHOLD && BoosterCrates < Constants.MAX_BOOSTER_CRATES) {
+                BoosterCrates++;
+                cells[col][row].setType(CellType.CELL_CRATEBONUS);
+            } else {
+                cells[col][row].setType(CellType.CELL_CRATE);
+            }
         }
     }
 
