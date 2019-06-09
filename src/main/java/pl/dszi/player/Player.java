@@ -13,7 +13,7 @@ public class Player {
     private final Color color;
     private final int maxHp;
     private int currentHp;
-    private final int range;
+    private int range;
     private int bombAmount;
     private int bombActualyTicking = 0;
     private boolean mortal = true;
@@ -95,11 +95,13 @@ public class Player {
     }
 
     public void damagePlayer() {
-        currentHp--;
-        System.out.println(currentHp);
-        mortal = false;
-        Time.scheduleTimer(() -> mortal = true, Constants.IMMORTALITY_TIMER);
-        makeMortalAgain();
+        if (mortal) {
+            currentHp--;
+            System.out.println(currentHp);
+            mortal = false;
+            Time.scheduleTimer(() -> mortal = true, Constants.IMMORTALITY_TIMER);
+            makeMortalAgain();
+        }
     }
 
     public boolean canPlantBomb(){
@@ -111,5 +113,29 @@ public class Player {
 
     public Color getColor() {
         return color;
+    }
+
+    public void setMortality(boolean mortal){
+        this.mortal = mortal;
+    }
+
+    public int getBombRange(){
+        return range;
+    }
+
+    public void setBombRange(int range){
+        this.range = range;
+    }
+
+    public void setBombAmount(int amount){
+        bombAmount = amount;
+    }
+
+    public void setCurrentHp(int hp) {
+        currentHp = hp;
+    }
+
+    public int getMaxHp() {
+        return maxHp;
     }
 }

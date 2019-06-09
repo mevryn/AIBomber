@@ -68,6 +68,7 @@ class CrateGenerator {
     }
 
     void randomizeCrateCells(Cell[][] cells, BoardGameInfo boardGameInfo, int populationIndex) {
+        int BoosterCrates = 0;
         int[] population = listOfPopulations.get(populationIndex);
         for (int i = 0; i < numberOfCrates; i++) {
             int col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
@@ -75,7 +76,12 @@ class CrateGenerator {
             boolean generated = false;
             while (!generated) {
                 if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() == CellType.CELL_EMPTY) {
-                    cells[col][row].setType(CellType.CELL_CRATE);
+                    if (new Random().nextInt() % 101 >= Constants.BOOSTER_CRATE_THRESHOLD && BoosterCrates < Constants.MAX_BOOSTER_CRATES) {
+                        BoosterCrates++;
+                        cells[col][row].setType(CellType.CELL_CRATEBONUS);
+                    } else {
+                        cells[col][row].setType(CellType.CELL_CRATE);
+                    }
                     generated=true;
                 }else{
                     population[i] = new Random().nextInt(Constants.MAXIMUM_CRATE_AMOUNT);
@@ -86,10 +92,16 @@ class CrateGenerator {
         }
             }
     void createCrates(Cell[][] cells, BoardGameInfo boardGameInfo,int[] crates){
+        int BoosterCrates = 0;
         for (int crate : crates) {
             int col = crate % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = crate / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
-            cells[col][row].setType(CellType.CELL_CRATE);
+            if (new Random().nextInt() % 101 >= Constants.BOOSTER_CRATE_THRESHOLD && BoosterCrates < Constants.MAX_BOOSTER_CRATES) {
+                BoosterCrates++;
+                cells[col][row].setType(CellType.CELL_CRATEBONUS);
+            } else {
+                cells[col][row].setType(CellType.CELL_CRATE);
+            }
         }
     }
 
