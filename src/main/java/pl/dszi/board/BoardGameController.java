@@ -1,10 +1,12 @@
 package pl.dszi.board;
 
+import pl.dszi.engine.Game;
+import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.Player;
 
 import java.awt.*;
-import java.util.Collection;
+import java.util.Arrays;
 
 public class BoardGameController {
     private BoardGame boardGame;
@@ -12,13 +14,14 @@ public class BoardGameController {
     private int beatenGens=0;
     private int beatPop=0;
 
+    public boolean generated = false;
     public BoardGameController(BoardGame boardGame) {
         this.boardGame = boardGame;
-        this.crateGenerator= new CrateGenerator(50);
+        this.crateGenerator= new CrateGenerator(70);
     }
 
     public void initializeCrates(){
-        this.crateGenerator.randomizeCrateCells(boardGame.getCells(),boardGame.getInfo(),beatenGens);
+            this.crateGenerator.randomizeCrateCells(boardGame.getCells(),boardGame.getInfo(),beatenGens);
     }
 
     public boolean checkIfPlayersOnSamePosition(Player player1, Player player2){
@@ -42,7 +45,9 @@ public class BoardGameController {
     public int[] resetGameWithNewCrates(){
         Player player1=boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
         Player player2=boardGame.getPlayerByName(Constants.PLAYER_2_NAME);
-        if(beatPop>=3){
+        if(beatPop>10){
+            Game.gameStatus = GameStatus.RUNNING;
+            generated=true;
             return crateGenerator.getBestGen();
         }
         if(beatenGens>9){

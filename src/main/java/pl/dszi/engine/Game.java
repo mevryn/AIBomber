@@ -6,17 +6,22 @@ import pl.dszi.engine.constant.Constants;
 import pl.dszi.gui.Window;
 import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
+import pl.dszi.player.ManualPlayerController;
 import pl.dszi.player.Player;
+import pl.dszi.player.noob.NoobPlayerController;
+import pl.dszi.player.noob.NoobRossaAI;
 
 import java.util.List;
 
 public class Game implements Runnable {
 
 
-    private GameStatus gameStatus = GameStatus.STOP;
+    public static GameStatus gameStatus = GameStatus.STOP;
 
     private Renderer renderer;
     private BoardGameController boardGameController;
+    private int[] crates;
+
     public Game(BoardGameController boardGameController) {
         this.boardGameController = boardGameController;
         this.renderer = new Renderer2D();
@@ -28,13 +33,16 @@ public class Game implements Runnable {
     @Override
     public void run() {
         long lastTime = System.nanoTime();
-        double amountOfTicks = 60.0;
+        double amountOfTicks =Double.MAX_VALUE;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
-        while (gameStatus==GameStatus.RUNNING || gameStatus == GameStatus.TESTING) {
+        while (gameStatus!= GameStatus.STOP) {
             long now = System.nanoTime();
+            if(gameStatus== GameStatus.RUNNING){
+                ns = 1000000000 / 60.0;
+            }
             delta += (now - lastTime) / ns;
             lastTime = now;
             while (delta >= 1) {
@@ -54,10 +62,18 @@ public class Game implements Runnable {
         stop();
     }
 
+    private void resetGame(){
+        Player pl = new Player(Constants.PLAYER_1_NAME, 3,new ManualPlayerController());
+        Player p2 = new Player(Constants.PLAYER_2_NAME, 3,new NoobPlayerController(boardGameController.getBoardGame(), new NoobRossaAI( )));
+        boardGameController.getBoardGame().getMap().clear();
+        boardGameController.getBoardGame().put(pl, Constants.PLAYER_1_STARTINGLOCATION);
+        boardGameController.getBoardGame().put(p2,Constants.PLAYER_2_STARTINGLOCATION);
+        run();
+    }
     private void start() {
         Thread thread = new Thread(this);
         thread.start();
-        gameStatus=GameStatus.TESTING;
+        gameStatus=GameStatus.GENERATING;
     }
 
     private void stop() {
@@ -75,8 +91,12 @@ public class Game implements Runnable {
         this.aiMovement();
         if(gameStatus==GameStatus.RUNNING)
         boardGameController.getBoardGame().damageAllPlayersIntersectingWithExplosion();
-        if(boardGameController.checkIfPlayersOnSamePosition(boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_1_NAME),boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_2_NAME))){
-            boardGameController.resetGameWithNewCrates();
+        if(gameStatus==GameStatus.GENERATING&&boardGameController.checkIfPlayersOnSamePosition(boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_1_NAME),boardGameController.getBoardGame().getPlayerByName(Constants.PLAYER_2_NAME))){
+           crates= boardGameController.resetGameWithNewCrates();
+        }
+        if(boardGameController.generated){
+            boardGameController.generated=false;
+            resetGame();
         }
     }
 

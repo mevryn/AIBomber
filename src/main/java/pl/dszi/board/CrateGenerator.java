@@ -1,13 +1,12 @@
 package pl.dszi.board;
 
-import javafx.util.Pair;
 import pl.dszi.engine.constant.Constants;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class CrateGenerator {
+class CrateGenerator {
 
     private int numberOfCrates;
     private int initializedPupulation = 0;
@@ -73,29 +72,46 @@ public class CrateGenerator {
         for (int i = 0; i < numberOfCrates; i++) {
             int col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = population[i] / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
+            boolean generated = false;
+            while (!generated) {
                 if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() == CellType.CELL_EMPTY) {
                     cells[col][row].setType(CellType.CELL_CRATE);
-                }
+                    generated=true;
+                }else{
+                    population[i] = new Random().nextInt(Constants.MAXIMUM_CRATE_AMOUNT);
+                    col = population[i] % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
+                    row = population[i] / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
                 }
             }
+        }
+            }
+    void createCrates(Cell[][] cells, BoardGameInfo boardGameInfo,int[] crates){
+        for (int crate : crates) {
+            int col = crate % Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
+            int row = crate / Constants.DEFAULT_GAME_TILES_HORIZONTALLY;
+            cells[col][row].setType(CellType.CELL_CRATE);
+        }
+    }
 
     void setPopulationScore(int population, int actionAmount) {
         populationScores.replace(population, actionAmount);
     }
 
     Parents makeSelectionWithRanking() {
-        List<Integer> rankingList = new ArrayList<>(populationScores.values());
-        rankingList.sort((o1, o2) -> o2 - o1);
-        bestGen= listOfPopulations.get(getIndexOfScorePopulation(0));
-        return new Parents(getIndexOfScorePopulation(rankingList.get(0)),getIndexOfScorePopulation(rankingList.get(1)));
-}
+        List<Map.Entry<Integer, Integer>> populationAndItScore = new ArrayList<>(populationScores.entrySet());
+        populationAndItScore.sort((o1, o2) -> o2.getValue() - o1.getValue());
+        bestGen = listOfPopulations.get(populationAndItScore.get(0).getKey());
+
+        return new Parents(populationAndItScore.get(0).getKey(), populationAndItScore.get(1).getKey());
+    }
 
     void reproduction(Parents parents) {
         crossing(parents);
         mutation();
     }
 
-    int getIndexOfScorePopulation(int score){
+    private int getIndexOfScorePopulation(int score){
+
         for(Map.Entry<Integer,Integer> population:populationScores.entrySet()){
             if(population.getValue() ==score){
                 return population.getKey();
@@ -115,7 +131,11 @@ public class CrateGenerator {
                 }
             }
         }
-        for (int iterator = 0; iterator < listOfPopulations.size()-1; iterator++) {
+        int[] firstParent = listOfPopulations.get(parents.getFirstPopulation());
+        int[] secondParent = listOfPopulations.get(parents.getSecondPopulation());
+        listOfPopulations.set(0,firstParent);
+        listOfPopulations.set(1,secondParent);
+        for (int iterator = 2; iterator < listOfPopulations.size()-1; iterator++) {
             listOfPopulations.set(iterator,cropPopulation(parents,croppingIndexes.get(iterator)));
         }
 

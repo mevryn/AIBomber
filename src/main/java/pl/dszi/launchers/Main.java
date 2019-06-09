@@ -27,7 +27,6 @@ public class Main {
         boardGame.put(p2,Constants.PLAYER_2_STARTINGLOCATION);
         //boardGame.put(p3,Constants.player3StartingLocation);
         //boardGame.put(p4,Constants.player4StartingLocation);
-        System.out.println(Direction.NORTH.turnSide(false));
         BoardGameController boardGameController=new BoardGameController(boardGame);
         boardGameController.initializeCrates();
         Game game = new Game(boardGameController);
