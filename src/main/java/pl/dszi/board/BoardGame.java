@@ -274,8 +274,8 @@ public class BoardGame {
         return getPlayerPosition(player1).equals(getPlayerPosition(player2));
     }
 
-    public Set<Cell> getAccessibleNeighbors(Cell aCell, int rangeChecker) {
-        Set<Cell> neighbors = new HashSet<>();
+    public List<Cell> getAccessibleNeighbors(Cell aCell, int rangeChecker) {
+        List<Cell> neighbors = new ArrayList<>();
         boolean north = true;
         boolean west = true;
         boolean east = true;

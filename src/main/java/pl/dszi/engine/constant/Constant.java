@@ -16,6 +16,7 @@ public class Constant {
     public static String PLAYER_1_NAME = "Player 1";
     public static String PLAYER_2_NAME = "Player 2";
     public static int DEFAULT_SPEED = 4;
+    public static final int DEFAULT_EXPLOSION_RANGE=4;
     public static final Point PLAYER_1_STARTINGLOCATION = new Point(0, 0);
     public static final Point PLAYER_2_STARTINGLOCATION = new Point(DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_HORIZONTALLY - 1), DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_VERTICALLY - 1));
     public static final int MAXIMUM_CRATE_AMOUNT = 143;

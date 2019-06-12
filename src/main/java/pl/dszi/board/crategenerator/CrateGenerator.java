@@ -79,7 +79,7 @@ class CrateGenerator {
             int row = population[i] / Constant.DEFAULT_GAME_TILES_HORIZONTALLY;
             boolean generated = false;
             while (!generated) {
-                if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() == CellType.CELL_EMPTY) {
+                if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() != CellType.CELL_WALL) {
                     boosterCrates = getBoosterCrates(cells, boosterCrates, col, row);
                     generated = true;
                 } else {

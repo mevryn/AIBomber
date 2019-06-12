@@ -46,7 +46,7 @@ class NoobPlayerControllerTest {
         boardGameGenerator.initializeCrates();
         List<Cell> way = player2.getAIController().getAstar().chooseBestWay(boardGameGenerator.getBoardGame().getPlayerPositionCell(player2), boardGameGenerator.getBoardGame().getPlayerPositionCell(player1));
         assertEquals(0, way.size());
-        way = player2.getAIController().getAstar().chooseBestWay(boardGameGenerator.getBoardGame().getPlayerPositionCell(player2), player2.getAIController().getClosestCellToEnemy(boardGameGenerator.getBoardGame().getPlayerPositionCell(player2.getAIController().getClosestPlayer(player2))));
+        way = player2.getAIController().getAstar().chooseBestWay(boardGameGenerator.getBoardGame().getPlayerPositionCell(player2), player2.getAIController().getClosestCellToEnemy(boardGameGenerator.getBoardGame().getPlayerPositionCell(player2.getAIController().getClosestPlayer(player2)),player1));
         assertNotEquals(0, way.size());
     }
 }

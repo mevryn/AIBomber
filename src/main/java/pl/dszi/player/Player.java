@@ -80,7 +80,7 @@ public class Player {
         this.currentHp = maxHp;
         this.color = new Color((int) (Math.random() * 0x1000000));
         this.bombAmount = 1;
-        this.range = 3;
+        this.range = Constant.DEFAULT_EXPLOSION_RANGE;
         this.AIController = AIController;
     }
 

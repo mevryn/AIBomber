@@ -1,6 +1,7 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.constant.Constant;
 
 import java.util.*;

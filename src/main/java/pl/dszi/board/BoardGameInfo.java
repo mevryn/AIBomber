@@ -57,7 +57,7 @@ public class BoardGameInfo {
         Arrays.stream(this.getCells()).forEach(cells1 -> Arrays.stream(cells1).filter(cell -> cell.getType() != CellType.CELL_WALL).forEach(cell -> cell.setType(CellType.CELL_EMPTY)));
     }
 
-    public List<Cell> getAllSpecificCells(CellType cellType) {
+    public synchronized List<Cell> getAllSpecificCells(CellType cellType) {
         List<Cell> specificCells = new ArrayList<>();
         Arrays.stream(this.getCells()).forEach(cells -> Arrays.stream(cells).filter(cell -> cell.getType() == cellType).forEach(specificCells::add));
         return specificCells;

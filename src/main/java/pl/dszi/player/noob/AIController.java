@@ -6,6 +6,7 @@ import pl.dszi.board.CellType;
 import pl.dszi.board.Direction;
 import pl.dszi.engine.Game;
 import pl.dszi.engine.GameStatus;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.player.Player;
 
 import java.awt.*;
@@ -19,7 +20,7 @@ public class AIController {
     private List<Cell> way = new ArrayList<>();
     private Astar astar;
     private List<Cell> bombs = new ArrayList<>();
-
+    private boolean runningFromBomb = false;
 
     private int actionCounter = 0;
 
@@ -34,31 +35,32 @@ public class AIController {
         astar = new Astar(boardGame.getCells());
         if (way.size() == 0)
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
-
-        if (!playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))).getBody().getLocation())) {
-            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))));
-            if (checkIfPlayerInRangeOfExplosions(player) && Game.gameStatus != GameStatus.GENERATING) {
-                way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestSafeCell(player));
-            }
-            if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
-                way.remove(0);
-                if (way.size() > 0)
-                    makeAMove(way.get(0), player);
-            } else if (way.size() > 0)
-                makeAMove(way.get(0), player);
+        if (way.size()==0 && checkIfPlayerInRangeOfExplosions(player)) {
+            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestSafeCell(player));
+            runningFromBomb=true;
+        }else if (!runningFromBomb  &&  !playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)),player).getBody().getLocation())) {
+            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)),player));
+        }else if(boardGame.getInfo().getAllSpecificCells(CellType.CELL_BOOM_CENTER).size()==0&&boardGame.getInfo().getAllSpecificCells(CellType.CELL_BOMB).size()==0){
+            runningFromBomb=false;
         }
-        if (playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))).getBody().getLocation())) {
+        if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
+            way.remove(0);
+        }
+        if (way.size() > 0)
+            makeAMove(way.get(0), player);
+        if (playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)),player).getBody().getLocation())) {
             if (boardGame.plantBomb(player))
                 actionCounter = actionCounter + 5;
         }
     }
 
-    Cell getClosestCellToEnemy(Cell closestPlayerCell) {
+
+    Cell getClosestCellToEnemy(Cell closestPlayerCell,Player player) {
         int min = Integer.MAX_VALUE;
         int distance;
         Cell returnCell = closestPlayerCell;
         List<Node> closedSetList = new ArrayList<>(astar.getClosedSet());
-        closedSetList.sort(Comparator.comparingInt(o -> o.getCell().getPoint().x));
+        closedSetList.sort(Comparator.comparingInt(o -> Distances.returnManhattanDistance(boardGame.getPlayerPosition(getClosestPlayer(player)),o.getCell().getBody().getLocation())));
         for (Node node : closedSetList) {
             distance = Distances.returnManhattanDistance(node.getCell().getPoint(), closestPlayerCell.getPoint());
             if (distance < min) {
@@ -78,7 +80,7 @@ public class AIController {
             bombs.clear();
         getBombs();
         for (Cell bomb : bombs) {
-            Set<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb, 4);
+            List<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb, 4);
             if (explosionBombRange.stream().anyMatch(e -> e.getBody().intersects(boardGame.getPlayerBody(player)))) {
                 return true;
             }
@@ -89,21 +91,22 @@ public class AIController {
     private Cell getClosestSafeCell(Player player) {
         Set<Node> safeCellsNode = astar.getClosedSet()
                 .stream()
-                .filter(node -> node.getCell().getType() != CellType.CELL_BOOM_CENTER)
+                .filter(node ->node.getCell().getType() != CellType.CELL_BOMB && node.getCell().getType() != CellType.CELL_BOOM_CENTER)
                 .collect(Collectors.toSet());
-        Set<Cell> safeCells = new HashSet<>();
+        List<Cell> safeCells = new ArrayList<>();
         safeCellsNode.forEach(node -> safeCells.add(node.getCell()));
-        List<Cell> bombs = boardGame.getInfo().getAllSpecificCells(CellType.CELL_BOMB);
+        safeCells.sort(Comparator.comparingInt(o -> Distances.returnManhattanDistance(playerLocation,o.getBody().getLocation())));
         for (Cell bomb : bombs) {
-            Set<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb, 4);
+            List<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb, Constant.DEFAULT_EXPLOSION_RANGE);
             safeCells.removeAll(explosionBombRange);
             safeCells.remove(bomb);
         }
+        System.out.println(getClosestCellFromCollection(player, safeCells));
         return getClosestCellFromCollection(player, safeCells);
     }
 
 
-    private Cell getClosestCellFromCollection(Player player, Collection<Cell> cells) {
+    private Cell getClosestCellFromCollection(Player player, List<Cell> cells) {
         int min = Integer.MAX_VALUE;
         Cell returnCell = boardGame.getPlayerPositionCell(player);
         for (Cell cell : cells) {

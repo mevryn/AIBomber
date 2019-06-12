@@ -7,10 +7,10 @@ public enum Direction {
     EAST(Constant.DEFAULT_SPEED, 0),
     SOUTH(0, Constant.DEFAULT_SPEED),
     WEST(-Constant.DEFAULT_SPEED, 0),
-    GENNORTH(0, -Constant.DEFAULT_SPEED * 16),
-    GENEAST(Constant.DEFAULT_SPEED * 16, 0),
-    GENSOUTH(0, Constant.DEFAULT_SPEED * 16),
-    GENWEST(-Constant.DEFAULT_SPEED * 16, 0);
+    GENNORTH(0, -64),
+    GENEAST(64, 0),
+    GENSOUTH(0, 64),
+    GENWEST(-64, 0);
 
     Direction(int x, int y) {
         this.x = x;
