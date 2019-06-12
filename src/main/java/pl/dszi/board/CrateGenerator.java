@@ -70,7 +70,7 @@ class CrateGenerator {
     }
 
     void randomizeCrateCells(Cell[][] cells, BoardGameInfo boardGameInfo, int populationIndex) {
-        int BoosterCrates = 0;
+        int boosterCrates = 0;
         int[] population = listOfPopulations.get(populationIndex);
         for (int i = 0; i < numberOfCrates; i++) {
             int col = population[i] % Constant.DEFAULT_GAME_TILES_HORIZONTALLY;
@@ -78,7 +78,7 @@ class CrateGenerator {
             boolean generated = false;
             while (!generated) {
                 if (boardGameInfo.checkIfIsNotStartingPoint(new Point(col, row)) && cells[col][row].getType() == CellType.CELL_EMPTY) {
-                    BoosterCrates = getBoosterCrates(cells, BoosterCrates, col, row);
+                    boosterCrates = getBoosterCrates(cells, boosterCrates, col, row);
                     generated = true;
                 } else {
                     population[i] = new Random().nextInt(Constant.MAXIMUM_CRATE_AMOUNT);

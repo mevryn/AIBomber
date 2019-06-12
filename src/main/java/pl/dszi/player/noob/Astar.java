@@ -5,11 +5,10 @@ import pl.dszi.engine.constant.Constant;
 
 import java.util.*;
 
-public class Astar {
+class Astar {
     private Node[][] nodes;
     private PriorityQueue<Node> openList;
     private Set<Node> closedSet;
-    private Node nodeStart;
     private Node nodeEnd;
 
 
@@ -36,13 +35,10 @@ public class Astar {
         }
     }
 
-    public Node getNodeEnd() {
-        return nodeEnd;
-    }
 
     List<Cell> chooseBestWay(Cell start, Cell end) {
         closedSet.clear();
-        nodeStart = getNodeFromCell(start);
+        Node nodeStart = getNodeFromCell(start);
         nodeEnd = getNodeFromCell(end);
         setAllHeuristic(nodeEnd);
         openList.add(nodeStart);
@@ -87,30 +83,30 @@ public class Astar {
                     row = i;
                     col = j;
                     if (row - 1 >= 0) {
-                        checkNode(aNode, row - 1, col, 1);
+                        checkNode(aNode, row - 1, col);
                     }
                     if (col - 1 >= 0) {
-                        checkNode(aNode, row, col - 1, 1);
+                        checkNode(aNode, row, col - 1);
                     }
                     if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY) {
-                        checkNode(aNode, row + 1, col, 1);
+                        checkNode(aNode, row + 1, col);
                     }
                     if (col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY) {
-                        checkNode(aNode, row, col + 1, 1);
+                        checkNode(aNode, row, col + 1);
                     }
                 }
             }
         }
     }
 
-    private void checkNode(Node currentNode, int row, int col, int cost) {
+    private void checkNode(Node currentNode, int row, int col) {
         Node adjacentNode = nodes[row][col];
         if (adjacentNode.getCell().getType().walkable && !getClosedSet().contains(adjacentNode)) {
             if (!getOpenList().contains(adjacentNode)) {
                 adjacentNode.setNodeData(currentNode);
                 getOpenList().add(adjacentNode);
             } else {
-                boolean changed = adjacentNode.checkBetterPath(currentNode, cost);
+                boolean changed = adjacentNode.checkBetterPath(currentNode);
                 if (changed) {
                     getOpenList().remove(adjacentNode);
                     getOpenList().add(adjacentNode);

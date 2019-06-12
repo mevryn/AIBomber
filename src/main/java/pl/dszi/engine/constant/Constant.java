@@ -6,12 +6,8 @@ import java.awt.*;
 
 public class Constant {
     public static final int DEFAULT_CELL_SIZE = 64;
-    public static final int DEFAULT_OFFSET = 64;
     public static final int DEFAULT_GAME_TILES_HORIZONTALLY = 13;
     public static final int DEFAULT_GAME_TILES_VERTICALLY = 11;
-    public static final int DEFAULT_BORDER = 2;
-    public static final int HALF_DEFAULT_CELL_SIZE = DEFAULT_CELL_SIZE / 2;
-    public static final int HALF_DEFAULT_CELL_SIZE_RENDER = DEFAULT_CELL_SIZE / 4;
     public static final int DEFAULT_GAME_WIDTH = DEFAULT_CELL_SIZE * DEFAULT_GAME_TILES_HORIZONTALLY;
     public static final int DEFAULT_GAME_HEIGHT = DEFAULT_CELL_SIZE * DEFAULT_GAME_TILES_VERTICALLY;
     public static final int DEFAULT_PLAYER_HP = 3;
@@ -24,7 +20,6 @@ public class Constant {
     public static String PLAYER_3_NAME = "Player 3";
     public static String PLAYER_4_NAME = "Player 4";
     public static int DEFAULT_SPEED = 4;
-    public static final int DEFAULT_RANGE = 4;
     public static final Point PLAYER_1_STARTINGLOCATION = new Point(0, 0);
     public static final Point  PLAYER_2_STARTINGLOCATION = new Point(DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_HORIZONTALLY - 1), DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_VERTICALLY - 1));
     public static final Point  PLAYER_3_STARTINGLOCATION= new Point(DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_HORIZONTALLY - 1), 0);
@@ -34,7 +29,6 @@ public class Constant {
     public static final int MAX_BOOSTER_CRATES = 5;
     public static final double BOOSTER_CRATE_THRESHOLD = 80;
     public static final double GA_UNIFORM_RATE = 0.5;
-    public static final double GA_MUTATION_RATE = 0.015;
     public static final int GA_TOURNAMENT_SIZE = 2;
     public static final boolean GA_ELITISM = false;
 }

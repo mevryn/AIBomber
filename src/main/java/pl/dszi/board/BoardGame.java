@@ -63,6 +63,10 @@ public class BoardGame {
 
 
     public Cell getPlayerPositionCell(Player player) {
+
+        Cell playerCell = Arrays.stream(getCells()).
+                 forEach(cells -> Arrays.stream(cells).
+                 filter(cell -> this.pointIsInsideBody(getPlayerPosition(player),cell.getBody())).findAny().get());
         for (Cell[] columns : boardGameInfo.getCells()) {
             for (Cell aCell : columns) {
                 if (this.pointIsInsideBody(getPlayerPosition(player), aCell.getBody())) {
@@ -81,8 +85,8 @@ public class BoardGame {
 
     public void damageAllPlayersIntersectingWithExplosion() {
         for (Player player : getMap().keySet()) {
-            if (getInfo().getAllExplosions().stream().anyMatch(explosion -> explosion.getBody().intersects(getPlayerBody(player))) && player.isMortal())
-                player.damagePlayer();
+            if (getInfo().getAllSpecificCells(CellType.CELL_BOOM_CENTER).stream().anyMatch(explosion -> explosion.getBody().intersects(getPlayerBody(player))) && player.isMortal())
+                player.damagePlayer(Game.gameStatus);
         }
     }
 

@@ -10,15 +10,7 @@ public class Cell {
     private CellType type;
     final Point point;
     private Rectangle body;
-    private Player player;
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
     public Point getPoint() {
         return point;
@@ -31,7 +23,6 @@ public class Cell {
     Cell(CellType type, Point point) {
         this.point = point;
         this.type = type;
-        this.player = Constant.godPlayer;
         this.body = new Rectangle(point.x * Constant.DEFAULT_CELL_SIZE, point.y * Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
     }
 

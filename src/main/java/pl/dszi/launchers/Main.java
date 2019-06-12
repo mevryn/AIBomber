@@ -7,7 +7,6 @@ import pl.dszi.engine.constant.Constant;
 import pl.dszi.engine.Game;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;
-import pl.dszi.player.noob.NoobRossaAI;
 
 public class Main {
     public static void main(final String[] args) {

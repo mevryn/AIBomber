@@ -1,8 +1,8 @@
 package pl.dszi.gui;
 
 import pl.dszi.board.BoardGame;
-import pl.dszi.engine.constant.Constant;
 import pl.dszi.engine.KeyInput;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.gui.renderer.Renderer;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ public class Window extends JFrame {
         this.addKeyListener(new KeyInput(boardGame));
         this.setTitle(title);
         this.setSize(new Dimension(Constant.DEFAULT_GAME_WIDTH, Constant.DEFAULT_GAME_HEIGHT));
-        this.getContentPane().setPreferredSize(new Dimension(Constant.DEFAULT_GAME_WIDTH - 10, Constant.DEFAULT_GAME_HEIGHT - 10));
+        this.getContentPane().setPreferredSize(new Dimension(Constant.DEFAULT_GAME_WIDTH, Constant.DEFAULT_GAME_HEIGHT));
         this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);

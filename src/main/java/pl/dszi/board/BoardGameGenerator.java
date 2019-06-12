@@ -25,7 +25,7 @@ public class BoardGameGenerator {
     }
 
     public void initializeCrates() {
-        this.crateGenerator.randomizeCrateCells(boardGame.getCells(), boardGame.getInfo(), beatenGens);
+        this.crateGenerator.randomizeCrateCells(boardGame.getCells(), boardGame.getInfo(), beatPop);
     }
 
     public boolean checkIfPlayersOnSamePosition(Player player1, Player player2) {

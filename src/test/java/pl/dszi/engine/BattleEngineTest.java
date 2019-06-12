@@ -14,7 +14,6 @@ import java.awt.*;
 
 class BattleEngineTest {
     private Player player1;
-    private Player player2;
     private BoardGame boardGame;
     @BeforeEach
     void init(){
@@ -40,6 +39,12 @@ class BattleEngineTest {
         boardGame.damageAllPlayersIntersectingWithExplosion();
         assertEquals(2,player1.getCurrentHp());
     }
-    
 
+    @Test
+    void playerShouldBeImmortalAfterTakingDamage () {
+        boardGame.put(player1,new Point(0,0));
+        player1.damagePlayer(GameStatus.RUNNING);
+        player1.damagePlayer(GameStatus.RUNNING);
+        assertEquals(2,player1.getCurrentHp());
+    }
 }

@@ -25,6 +25,8 @@ public class NoobPlayerController {
 
     public NoobPlayerController(BoardGame boardGame) {
         this.boardGame = boardGame;
+        this.astar = new Astar(boardGame.getCells());
+
     }
 
     public void AIPlaning(Player player) {
@@ -33,8 +35,8 @@ public class NoobPlayerController {
         if (way.size() == 0)
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
 
-        if (!playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player).getBody().getLocation())) {
-            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player));
+        if (!playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))).getBody().getLocation())) {
+            way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))));
             if(checkIfPlayerInRangeOfExplosions(player)&&Game.gameStatus!=GameStatus.GENERATING){
                 way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestSafeCell(player));
             }
@@ -45,15 +47,15 @@ public class NoobPlayerController {
             } else if (way.size() > 0)
                 makeAMove(way.get(0), player);
         }
-        if (playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player).getBody().getLocation())) {
+        if (playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player))).getBody().getLocation())) {
             if (boardGame.plantBomb(player))
                 actionCounter = actionCounter + 5;
         }
     }
 
-    private Cell getClosestCellToEnemy(Cell closestPlayerCell, Player player) {
+    public Cell getClosestCellToEnemy(Cell closestPlayerCell) {
         int min = Integer.MAX_VALUE;
-        int distance = 0;
+        int distance;
         Cell returnCell = closestPlayerCell;
         List<Node> closedSetList = new ArrayList<>(astar.getClosedSet());
         closedSetList.sort(Comparator.comparingInt(o -> o.getCell().getPoint().x));
@@ -68,7 +70,7 @@ public class NoobPlayerController {
     }
 
     private void getBombs() {
-        bombs = boardGame.getInfo().getAllBombs();
+        bombs = boardGame.getInfo().getAllSpecificCells(CellType.CELL_BOMB);
     }
 
     private boolean checkIfPlayerInRangeOfExplosions(Player player) {
@@ -88,7 +90,7 @@ public class NoobPlayerController {
         Set<Node> safeCellsNode = astar.getClosedSet().stream().filter(node -> node.getCell().getType() != CellType.CELL_BOOM_CENTER).collect(Collectors.toSet());
         Set<Cell> safeCells = new HashSet<>();
         safeCellsNode.forEach(node -> safeCells.add(node.getCell()));
-        List<Cell> bombs = boardGame.getInfo().getAllBombs();
+        List<Cell> bombs = boardGame.getInfo().getAllSpecificCells(CellType.CELL_BOMB);
         for (Cell bomb : bombs) {
             Set<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb, 4);
             safeCells.removeAll(explosionBombRange);
@@ -111,12 +113,12 @@ public class NoobPlayerController {
         return returnCell;
     }
 
-    private Player getClosestPlayer(Player player) {
+    Player getClosestPlayer(Player player) {
         int min = Integer.MAX_VALUE;
         Player returnPlayer = player;
         for (Player playerEntry : boardGame.getMap().keySet()) {
             if (!playerEntry.equals(player)) {
-                int distance = Distances.returnManhattaDistanceOfTwoCells(playerLocation, boardGame.getMap().get(playerEntry));
+                int distance = Distances.returnManhattaDistanceOfTwoCells(boardGame.getPlayerPosition(player), boardGame.getMap().get(playerEntry));
                 if (distance < min) {
                     returnPlayer = playerEntry;
                     min = distance;
@@ -151,14 +153,6 @@ public class NoobPlayerController {
         }
     }
 
-    public void plantBomb(Player player) {
-        boardGame.plantBomb(player);
-    }
-
-    public boolean checkIfManual() {
-        return false;
-    }
-
     public int getActionCounter() {
         return actionCounter;
     }
@@ -167,5 +161,8 @@ public class NoobPlayerController {
         this.actionCounter = actionCounter;
     }
 
+    public Astar getAstar() {
+        return astar;
+    }
 }
 

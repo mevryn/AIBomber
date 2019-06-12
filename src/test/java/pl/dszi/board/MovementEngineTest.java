@@ -2,10 +2,11 @@ package pl.dszi.board;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import pl.dszi.engine.Game;
+import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.constant.Constant;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;
-import pl.dszi.player.noob.NoobRossaAI;
 
 import java.awt.*;
 
@@ -38,6 +39,13 @@ class MovementEngineTest {
         boardGame.move(player1,Direction.EAST);
         assertEquals(new Point(4, 0), boardGame.getPlayerPosition(player1));
     }
+
+    @Test
+    void playerShouldMoveOneCellToEastWhileGenerating() {
+        boardGame.put(player1,new Point(0,0));
+        boardGame.move(player1,Direction.GENEAST);
+        assertEquals(new Point(64, 0), boardGame.getPlayerPosition(player1));
+    }
     @Test
     void playerCantMoveOutOfBoard(){
         boardGame.put(player1,new Point(0,0));
@@ -47,11 +55,12 @@ class MovementEngineTest {
 
     @Test
     void playerCantMoverAfterReachingZeroLife() {
+        GameStatus gameStatus =  GameStatus.TESTING;
         Point NOT_IMPORTANT_POINT = new Point(0,0);
         boardGame.put(player1,NOT_IMPORTANT_POINT);
-        player1.damagePlayer();
-        player1.damagePlayer();
-        player1.damagePlayer();
+        player1.damagePlayer(gameStatus);
+        player1.damagePlayer(gameStatus);
+        player1.damagePlayer(gameStatus);
         Point oldPosition = boardGame.getPlayerPosition(player1);
         boardGame.move(player1,Direction.SOUTH);
         Point newPosition = boardGame.getPlayerPosition(player1);

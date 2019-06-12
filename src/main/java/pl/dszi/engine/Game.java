@@ -17,7 +17,6 @@ public class Game implements Runnable {
 
     private Renderer renderer;
     private BoardGameGenerator boardGameGen;
-    private int[] crates;
 
     public Game(BoardGameGenerator boardGameController) {
 
@@ -99,7 +98,7 @@ public class Game implements Runnable {
         if(gameStatus==GameStatus.RUNNING)
         boardGameGen.getBoardGame().damageAllPlayersIntersectingWithExplosion();
         if(gameStatus==GameStatus.GENERATING&& boardGameGen.checkIfPlayersOnSamePosition(boardGameGen.getBoardGame().getPlayerByName(Constant.PLAYER_1_NAME), boardGameGen.getBoardGame().getPlayerByName(Constant.PLAYER_2_NAME))){
-           crates= boardGameGen.resetGameWithNewCrates();
+            int[] crates = boardGameGen.resetGameWithNewCrates();
         }
         if(boardGameGen.generated){
             boardGameGen.generated=false;

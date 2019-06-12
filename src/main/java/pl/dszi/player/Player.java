@@ -1,5 +1,7 @@
 package pl.dszi.player;
 
+import pl.dszi.board.BoardGame;
+import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.Time;
 import pl.dszi.engine.constant.Constant;
 
@@ -106,8 +108,8 @@ public class Player {
         Time.scheduleTimer(this::detonateBomb, Constant.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
-    public void damagePlayer() {
-        if (mortal) {
+    public void damagePlayer(GameStatus gameStatus) {
+        if (mortal || gameStatus ==GameStatus.TESTING) {
             currentHp--;
             System.out.println(currentHp);
             mortal = false;

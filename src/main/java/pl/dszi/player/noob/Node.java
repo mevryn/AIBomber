@@ -1,7 +1,6 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
-import pl.dszi.board.Direction;
 import pl.dszi.engine.constant.Constant;
 
 public class Node {
@@ -9,7 +8,6 @@ public class Node {
     private int g;
     private int h;
     private int f;
-    private Direction direction;
     private Node parent;
 
     int getF() {
@@ -28,8 +26,8 @@ public class Node {
         this.parent = parent;
     }
 
-    boolean checkBetterPath(Node currentNode, int cost) {
-        int gCost = currentNode.getG() + cost;
+    boolean checkBetterPath(Node currentNode) {
+        int gCost = currentNode.getG() + 1;
         if (gCost < getG()) {
             setNodeData(currentNode);
             return true;
@@ -61,19 +59,9 @@ public class Node {
         this.f = g + h;
     }
 
-    public Node(Direction direction) {
-        this.direction = direction;
-    }
 
     Node(Cell cell) {
         this.cell = cell;
         this.g = 1;
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" +
-                "cell=" + cell +
-                '}';
     }
 }

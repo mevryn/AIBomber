@@ -1,6 +1,6 @@
 package pl.dszi.player.noob;
 
-import pl.dszi.board.Cell;
+
 
 import java.awt.*;
 
