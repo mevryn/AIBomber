@@ -71,6 +71,7 @@ public class AIController {
         return returnCell;
     }
 
+
     private void getBombs() {
         bombs = boardGame.getInfo().getAllSpecificCells(CellType.CELL_BOMB);
     }

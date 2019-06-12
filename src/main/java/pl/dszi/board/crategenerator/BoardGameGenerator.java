@@ -39,6 +39,7 @@ public class BoardGameGenerator {
 
 
     public void generateFinalCrates() {
+        boardGame.getInfo().setAllCellsToEmpty();
         crateGenerator.createCrates(boardGame.getCells(), crateGenerator.getBestGen());
     }
 

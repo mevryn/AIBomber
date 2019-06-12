@@ -70,8 +70,8 @@ public class Game implements Runnable {
         boardGameGen.getBoardGame().getMap().clear();
         boardGameGen.getBoardGame().put(pl, Constant.PLAYER_1_STARTINGLOCATION);
         boardGameGen.getBoardGame().put(p2, Constant.PLAYER_2_STARTINGLOCATION);
-        boardGameGen.getBoardGame().getInfo().setAllCellsToEmpty();
         boardGameGen.generateFinalCrates();
+
         run();
     }
 
