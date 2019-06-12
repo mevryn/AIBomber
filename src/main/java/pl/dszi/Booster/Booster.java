@@ -2,122 +2,125 @@ package pl.dszi.Booster;
 
 import pl.dszi.player.Player;
 
-import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Booster {
-    private int Value;
-    private BoosterType Type;
-    private Player Player;
-    private Timer BoostTimer;
-    private int TimerDelay;
-    private int Fitness;
+    private int value;
+    private BoosterType type;
+    private Player player;
+    private Timer boostTimer;
+    private int timerDelay;
+    private int fitness;
 
-    public int GetValue(){
-        return Value;
-    }
-    public BoosterType GetBoosterType() { return Type; }
-    public Player GetPlayer() { return Player; }
-    public Timer GetBoostTimer() { return BoostTimer; }
-    public int GetTimerDelay() { return TimerDelay; }
 
-    public void SetValue(int value){
-        Value = value;
-    }
-
-    public void SetType(BoosterType type){
-        Type = type;
-    }
-
-    public void SetPlayer(Player player){
-        Player = player;
-        Starting();
-    }
-
-    public void SetTimerDelay(int timer){
-        if(timer > 0)
-        {
-            TimerDelay = timer;
-            BoostTimer = new Timer();
-        }
-        else {
-            TimerDelay = 1000;
-            BoostTimer = new Timer();
-        }
-    }
 
     public Booster(int value, BoosterType type, int timer){
-        Value = value;
-        Type = type;
-        BoostTimer = new Timer();
+        this.value = value;
+        this.type = type;
+        boostTimer = new Timer();
         if(timer > 0) {
-            TimerDelay = timer;
+            timerDelay = timer;
         }
         else{
-            TimerDelay = 1000;
+            timerDelay = 1000;
         }
-        CalculateFitness();
+        calculateFitness();
     }
+
+
+    public int getValue(){
+        return value;
+    }
+    public BoosterType getBoosterType() { return type; }
+    public Player getPlayer() { return player; }
+    public Timer getBoostTimer() { return boostTimer; }
+    public int getTimerDelay() { return timerDelay; }
+
+    public void setValue(int value){
+        this.value = value;
+    }
+
+    public void setType(BoosterType type){
+        this.type = type;
+    }
+
+    public void setPlayer(Player player){
+        this.player = player;
+        starting();
+    }
+
+    public void setTimerDelay(int timer){
+        if(timer > 0)
+        {
+            timerDelay = timer;
+            boostTimer = new Timer();
+        }
+        else {
+            timerDelay = 1000;
+            boostTimer = new Timer();
+        }
+    }
+
 
     public int GetFitness(){
-        CalculateFitness();
-        return Fitness;
+        calculateFitness();
+        return fitness;
     }
 
-    private void CalculateFitness(){
-        Fitness = Value * TimerDelay;
-        switch(Type){
+    private void calculateFitness(){
+        fitness = value * timerDelay;
+        switch(type){
             case BOOSTER_IMMORTALITY:
-                Fitness *= 0.19;
+                fitness *= 0.19;
                 break;
             case BOOSTER_EXPLOSION:
-                Fitness *= 0.2;
+                fitness *= 0.2;
                 break;
             case BOOSTER_HP:
-                Fitness *= 0.21;
+                fitness *= 0.21;
                 break;
-            case BOOSTER_MOREBOMBS:
-                Fitness *= 0.22;
+            case BOOSTER_MORE_BOMBS:
+                fitness *= 0.22;
                 break;
-            case BOOSTER_NOTYPE:
-                Fitness *= 0;
+            case BOOSTER_NO_TYPE:
+                fitness *= 0;
                 break;
         }
     }
 
-    public void Starting(){
-        switch(Type){
+    private void starting(){
+        switch(type){
             case BOOSTER_EXPLOSION:
-                Player.setBombRange(Player.getBombRange() + Value);
+                player.setBombRange(player.getBombRange() + value);
                 break;
             case BOOSTER_HP:
-                if(Player.getCurrentHp() < Player.getMaxHp() && Value >= 0) {
-                    Player.setCurrentHp(Player.getCurrentHp() + Value);
+                if(player.getCurrentHp() < player.getMaxHp() && value >= 0) {
+                    player.setCurrentHp(player.getCurrentHp() + value);
                 }
                 break;
             case BOOSTER_IMMORTALITY:
-                Player.setMortality(false);
+                player.setMortality(false);
                 break;
-            case BOOSTER_MOREBOMBS:
-                Player.setBombAmount(Player.getBombAmount() + Value);
+            case BOOSTER_MORE_BOMBS:
+                player.setBombAmount(player.getBombAmount() + value);
                 break;
             default:
                 break;
         }
-        BoostTimer.schedule(new TimerTask(){ public void run(){ Finished();}}, TimerDelay);
+        boostTimer.schedule(new TimerTask(){ public void run(){ Finished();}}, timerDelay);
     }
 
-    public void Finished(){
-        switch(Type){
+    private void Finished(){
+        switch(type){
             case BOOSTER_IMMORTALITY:
-                Player.setMortality(true);
+                player.setMortality(true);
                 break;
             case BOOSTER_EXPLOSION:
-                Player.setBombRange(Player.getBombRange() - Value);
+                player.setBombRange(player.getBombRange() - value);
                 break;
-            case BOOSTER_MOREBOMBS:
-                Player.setBombAmount(Player.getBombAmount() - Value);
+            case BOOSTER_MORE_BOMBS:
+                player.setBombAmount(player.getBombAmount() - value);
                 break;
             default:
                 break;

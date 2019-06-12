@@ -2,7 +2,7 @@ package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
 import pl.dszi.board.Direction;
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 
 public class Node {
     private Cell cell;
@@ -42,7 +42,7 @@ public class Node {
     }
 
     void setNodeData(Node currentNode) {
-        int gCost = currentNode.getG() + Constants.DEFAULT_NODE_COST;
+        int gCost = currentNode.getG() + Constant.DEFAULT_NODE_COST;
         setParent(currentNode);
         setG(gCost);
         calculateFinalCost();
@@ -63,16 +63,6 @@ public class Node {
 
     public Node(Direction direction) {
         this.direction = direction;
-    }
-
-    public void setDirection(Direction direction) {
-
-        this.direction = direction;
-    }
-
-    public Direction getDirection() {
-
-        return direction;
     }
 
     Node(Cell cell) {

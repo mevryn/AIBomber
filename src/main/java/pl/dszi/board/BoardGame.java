@@ -6,17 +6,15 @@ import pl.dszi.GeneticAlgorithm.Population;
 import pl.dszi.engine.Game;
 import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.Time;
-import pl.dszi.engine.constant.Constants;
-import pl.dszi.player.ManualPlayerController;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.player.Player;
-import pl.dszi.player.noob.Node;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BoardGame implements Cloneable {
+public class BoardGame {
 
     private Map<Player, Point> map = new HashMap<>();
 
@@ -25,11 +23,6 @@ public class BoardGame implements Cloneable {
     public BoardGame(Cell[][] cells) {
         this.boardGameInfo = new BoardGameInfo(cells);
         BoardGameInitializator.initializeBoard(boardGameInfo);
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     private Set<Player> getPlayers() {
@@ -47,7 +40,7 @@ public class BoardGame implements Cloneable {
 
     public Player getPlayerByName(String playerName) {
         Optional<Player> optionalPlayer = getPlayers().stream().filter(player -> player.getName().equals(playerName)).findAny();
-        return optionalPlayer.orElseGet(() -> new Player("Sample Player", Constants.DEFAULT_PLAYER_HP, new ManualPlayerController()));
+        return optionalPlayer.orElseGet(() -> new Player("Sample Player", Constant.DEFAULT_PLAYER_HP));
     }
 
     public boolean put(Player player, Point point) {
@@ -81,27 +74,15 @@ public class BoardGame implements Cloneable {
         return null;
     }
 
-    private Set<Cell> getAllExplosions() {
 
-        Set<Cell> explosionCells = new HashSet<>();
-        for (Cell[] columns :this.getInfo().getCells()) {
-            for (Cell aCell : columns) {
-                if (aCell.getType() == CellType.CELL_BOOM_CENTER) {
-                    explosionCells.add(aCell);
-                }
-            }
-        }
-        return explosionCells;
-    }
-
-
-    public Rectangle getPlayerBody(Player player){
+    public Rectangle getPlayerBody(Player player) {
         Point location = getMap().get(player);
-        return new Rectangle(location.x,location.y,Constants.DEFAULT_CELL_SIZE,Constants.DEFAULT_CELL_SIZE);
+        return new Rectangle(location.x, location.y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
     }
-    public void damageAllPlayersIntersectingWithExplosion(){
-        for(Player player: getMap().keySet()) {
-            if(getAllExplosions().stream().anyMatch(explo -> explo.getBody().intersects(getPlayerBody(player)))&& player.isMortal())
+
+    public void damageAllPlayersIntersectingWithExplosion() {
+        for (Player player : getMap().keySet()) {
+            if (getInfo().getAllExplosions().stream().anyMatch(explosion -> explosion.getBody().intersects(getPlayerBody(player))) && player.isMortal())
                 player.damagePlayer();
         }
     }
@@ -119,8 +100,8 @@ public class BoardGame implements Cloneable {
     private boolean targetSpaceIsInsideBoardGame(Point point) {
         return pointIsInsideBody(point, new Rectangle(0,
                 0,
-                Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY - 1) + Constants.DEFAULT_SPEED,
-                Constants.DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY - 1) + Constants.DEFAULT_SPEED
+                Constant.DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_HORIZONTALLY - 1) + Constant.DEFAULT_SPEED,
+                Constant.DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_VERTICALLY - 1) + Constant.DEFAULT_SPEED
         ));
     }
 
@@ -132,34 +113,30 @@ public class BoardGame implements Cloneable {
         return rectangle1.intersects(rectangle2);
     }
 
-    Population Boosters = null;
-    boolean FirstRun = true;
+    private Population boosters = null;
+    private boolean firstRun = true;
 
     private boolean checkIfFieldIsObstacle(Player player, Point point) {
-        Rectangle pointToBody = new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+        Rectangle pointToBody = new Rectangle(point.x, point.y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
         for (Cell[] cell : boardGameInfo.getCells()) {
             for (Cell aCell : cell) {
                 if (playerInterfereWithCell(pointToBody, aCell.getBody()) && (!aCell.getType().walkable)) {
                     return true;
-                }
-                else if(playerInterfereWithCell(pointToBody, aCell.getBody()) && aCell.getType() == CellType.CELL_BOOSTER)
-                {
-                    //Wyczyszczenie danych po A*
-                    if(Game.gameStatus == GameStatus.RUNNING && FirstRun)
-                    {
-                        FirstRun = false;
-                        Boosters = null;
+                } else if (playerInterfereWithCell(pointToBody, aCell.getBody()) && aCell.getType() == CellType.CELL_BOOSTER) {
+                    if (Game.gameStatus == GameStatus.RUNNING && firstRun) {
+                        firstRun = false;
+                        boosters = null;
                     }
 
-                    if(Boosters == null){
-                            Boosters = new Population(10, true);
-                        }else{
-                            Boosters = GA.EvolvePopulation(Boosters);
-                        }
-                        Booster booster = Boosters.GetFittest();
-                    if(!FirstRun) {
-                        booster.SetPlayer(player);
-                        System.out.println("Aktywowano booster " + booster.GetBoosterType() + " na " + booster.GetTimerDelay() + "ms o wartości " + booster.GetValue() + " przez " + booster.GetPlayer().getName());
+                    if (boosters == null) {
+                        boosters = new Population(10, true);
+                    } else {
+                        boosters = GA.evolvePopulation(boosters);
+                    }
+                    Booster booster = boosters.getFittest();
+                    if (!firstRun) {
+                        booster.setPlayer(player);
+                        System.out.println("Aktywowano booster " + booster.getBoosterType() + " na " + booster.getTimerDelay() + "ms o wartości " + booster.getValue() + " przez " + booster.getPlayer().getName());
                     }
                     aCell.setType(CellType.CELL_EMPTY);
                 }
@@ -192,8 +169,8 @@ public class BoardGame implements Cloneable {
         intersectsBombs = intersectsBombs.stream().filter(cell -> cell.getType() == CellType.CELL_BOMB && body.intersects(cell.getBody())).collect(Collectors.toList());
         if (intersectsBombs.size() == 0 && player.isInsideBomb()) {
             player.setInsideBomb(false);
-        return false;
-    }
+            return false;
+        }
         return !player.isInsideBomb() && intersectsBombs.size() > 0;
     }
 
@@ -205,11 +182,10 @@ public class BoardGame implements Cloneable {
             }
             Cell playerPosition = getPlayerPositionCellByCenter(player);
             assert playerPosition != null;
-            if (player.canPlantBomb()&&playerPosition.getType() == CellType.CELL_EMPTY) {
+            if (player.canPlantBomb() && playerPosition.getType() == CellType.CELL_EMPTY) {
                 playerPosition.setType(CellType.CELL_BOMB);
                 setInterectionWithBomb(playerPosition);
                 detonateTimer(playerPosition, player.getBombRange());
-               // System.out.println("Bomb Planted");
                 player.plantBomb();
                 player.restoreBombAmountEvent();
                 return true;
@@ -221,7 +197,7 @@ public class BoardGame implements Cloneable {
     }
 
     private Rectangle getBodyFromPoint(Point point) {
-        return new Rectangle(point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+        return new Rectangle(point.x, point.y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
     }
 
     private void setInterectionWithBomb(Cell cell) {
@@ -233,7 +209,7 @@ public class BoardGame implements Cloneable {
     }
 
     public Cell getPlayerPositionCellByCenter(Player player) {
-        Rectangle playerBody = new Rectangle(getPlayerPosition(player).x, getPlayerPosition(player).y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+        Rectangle playerBody = new Rectangle(getPlayerPosition(player).x, getPlayerPosition(player).y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
         for (Cell[] columns : boardGameInfo.getCells()) {
             for (Cell aCell : columns) {
                 if (this.pointIsInsideBody(new Point((int) Math.round(playerBody.getCenterX()), (int) Math.round(playerBody.getCenterY())), aCell.getBody())) {
@@ -258,9 +234,9 @@ public class BoardGame implements Cloneable {
     private void detonateBomb(Cell bombCell, int bombRange) {
         Set<Cell> cellsToExplode = getCellsToExplosion(getCellCordByBomb(bombCell), bombRange);
         cellsToExplode.forEach(cell -> {
-                    if(cell.getType() == CellType.CELL_CRATEBONUS){
+                    if (cell.getType() == CellType.CELL_CRATEBONUS) {
                         cell.setType(CellType.CELL_BOOSTER);
-                    }else {
+                    } else {
                         cell.setType(CellType.CELL_BOOM_CENTER);
                         this.setEstinguishTimer(cell);
                     }
@@ -269,11 +245,11 @@ public class BoardGame implements Cloneable {
     }
 
     private void setEstinguishTimer(Cell cell) {
-        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constants.BASIC_BOMB_EXPLOSION_BURNING_TIMER);
+        Time.scheduleTimer(() -> cell.setType(CellType.CELL_EMPTY), Constant.BASIC_BOMB_EXPLOSION_BURNING_TIMER);
     }
 
     private void detonateTimer(Cell cell, int bombRange) {
-        Time.scheduleTimer(() -> detonateBomb(cell, bombRange), Constants.BASIC_BOMB_EXPLOSION_TIMER);
+        Time.scheduleTimer(() -> detonateBomb(cell, bombRange), Constant.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
     public Cell[][] getCells() {
@@ -291,22 +267,22 @@ public class BoardGame implements Cloneable {
     public boolean checkIfNeighborIsCrate(Cell aCell) {
         int row = aCell.getPoint().x;
         int col = aCell.getPoint().y;
-        if (row - 1 >= 0 &&( boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATEBONUS)) {
+        if (row - 1 >= 0 && (boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATEBONUS)) {
             return true;
         }
         if (col - 1 >= 0 && (boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATE) || boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATEBONUS) {
             return true;
         }
-        if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY && (boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATEBONUS)) {
+        if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY && (boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATEBONUS)) {
             return true;
         }
-        return col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY && (boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATEBONUS);
+        return col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY && (boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATEBONUS);
     }
 
     private List<Cell> getNeighbors(Cell aCell) {
         List<Cell> neighbors = new ArrayList<>();
-        int row = 0;
-        int col = 0;
+        int row;
+        int col;
         for (int i = 0; i < boardGameInfo.getCells().length; i++) {
             for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
                 if (boardGameInfo.getCells()[i][j].equals(aCell)) {
@@ -318,10 +294,10 @@ public class BoardGame implements Cloneable {
                     if (col - 1 >= 0) {
                         neighbors.add(boardGameInfo.getCells()[row][col - 1]);
                     }
-                    if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
+                    if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY) {
                         neighbors.add(boardGameInfo.getCells()[row + 1][col]);
                     }
-                    if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
+                    if (col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY) {
                         neighbors.add(boardGameInfo.getCells()[row][col + 1]);
                     }
                 }
@@ -330,7 +306,7 @@ public class BoardGame implements Cloneable {
         return neighbors;
     }
 
-    public Set<Cell> getAccessibleNeighbors(Cell aCell,int rangeChecker) {
+    public Set<Cell> getAccessibleNeighbors(Cell aCell, int rangeChecker) {
         Set<Cell> neighbors = new HashSet<>();
         boolean north = true;
         boolean west = true;
@@ -360,7 +336,7 @@ public class BoardGame implements Cloneable {
             } else
                 north = false;
             if (east &&
-                    row + range < Constants.DEFAULT_GAME_TILES_HORIZONTALLY &&
+                    row + range < Constant.DEFAULT_GAME_TILES_HORIZONTALLY &&
                     boardGameInfo.getCells()[row + range][col].getType() != CellType.CELL_WALL &&
                     boardGameInfo.getCells()[row + range][col].getType() != CellType.CELL_BOMB) {
                 neighbors.add(boardGameInfo.getCells()[row + range][col]);
@@ -370,7 +346,7 @@ public class BoardGame implements Cloneable {
             } else
                 east = false;
             if (south &&
-                    col + range < Constants.DEFAULT_GAME_TILES_VERTICALLY &&
+                    col + range < Constant.DEFAULT_GAME_TILES_VERTICALLY &&
                     boardGameInfo.getCells()[row][col + range].getType() != CellType.CELL_WALL &&
                     boardGameInfo.getCells()[row][col + range].getType() != CellType.CELL_BOMB) {
                 neighbors.add(boardGameInfo.getCells()[row][col + range]);
@@ -380,7 +356,7 @@ public class BoardGame implements Cloneable {
             } else
                 south = false;
         }
-         neighbors.add(aCell);
+        neighbors.add(aCell);
         return neighbors;
     }
 }

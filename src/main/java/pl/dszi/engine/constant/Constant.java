@@ -1,11 +1,10 @@
 package pl.dszi.engine.constant;
 
-import pl.dszi.player.ManualPlayerController;
 import pl.dszi.player.Player;
 
 import java.awt.*;
 
-public class Constants {
+public class Constant {
     public static final int DEFAULT_CELL_SIZE = 64;
     public static final int DEFAULT_OFFSET = 64;
     public static final int DEFAULT_GAME_TILES_HORIZONTALLY = 13;
@@ -27,10 +26,10 @@ public class Constants {
     public static int DEFAULT_SPEED = 4;
     public static final int DEFAULT_RANGE = 4;
     public static final Point PLAYER_1_STARTINGLOCATION = new Point(0, 0);
-    public static final Point  PLAYER_2_STARTINGLOCATION = new Point(DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY - 1), DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY - 1));
-    public static final Point  PLAYER_3_STARTINGLOCATION= new Point(DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_HORIZONTALLY - 1), 0);
-    public static final Point  PLAYER_4_STARTINGLOCATION= new Point(0, DEFAULT_CELL_SIZE * (Constants.DEFAULT_GAME_TILES_VERTICALLY - 1));
-    public static final Player godPlayer = new Player("GOD", 3, new ManualPlayerController());
+    public static final Point  PLAYER_2_STARTINGLOCATION = new Point(DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_HORIZONTALLY - 1), DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_VERTICALLY - 1));
+    public static final Point  PLAYER_3_STARTINGLOCATION= new Point(DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_HORIZONTALLY - 1), 0);
+    public static final Point  PLAYER_4_STARTINGLOCATION= new Point(0, DEFAULT_CELL_SIZE * (Constant.DEFAULT_GAME_TILES_VERTICALLY - 1));
+    public static final Player godPlayer = new Player("GOD", 3);
     public static final int MAXIMUM_CRATE_AMOUNT=143;
     public static final int MAX_BOOSTER_CRATES = 5;
     public static final double BOOSTER_CRATE_THRESHOLD = 80;

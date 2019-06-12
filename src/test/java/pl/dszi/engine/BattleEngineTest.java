@@ -5,15 +5,12 @@ import org.junit.jupiter.api.Test;
 import pl.dszi.board.BoardGame;
 import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
-import pl.dszi.board.Direction;
-import pl.dszi.engine.constant.Constants;
-import pl.dszi.player.ManualPlayerController;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.player.Player;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.*;
-import java.util.Optional;
 
 class BattleEngineTest {
     private Player player1;
@@ -23,8 +20,8 @@ class BattleEngineTest {
     void init(){
         String NOT_IMPORTNANT_NAME="player";
         int hp = 3;
-        boardGame = new BoardGame(new Cell[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY]);
-        player1 = new Player(NOT_IMPORTNANT_NAME,hp,new ManualPlayerController());
+        boardGame = new BoardGame(new Cell[Constant.DEFAULT_GAME_TILES_HORIZONTALLY][Constant.DEFAULT_GAME_TILES_VERTICALLY]);
+        player1 = new Player(NOT_IMPORTNANT_NAME,hp);
     }
 
 

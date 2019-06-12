@@ -1,6 +1,6 @@
 package pl.dszi.board;
 
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.player.Player;
 
 import java.awt.*;
@@ -31,8 +31,8 @@ public class Cell {
     Cell(CellType type, Point point) {
         this.point = point;
         this.type = type;
-        this.player = Constants.godPlayer;
-        this.body = new Rectangle(point.x * Constants.DEFAULT_CELL_SIZE, point.y * Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE);
+        this.player = Constant.godPlayer;
+        this.body = new Rectangle(point.x * Constant.DEFAULT_CELL_SIZE, point.y * Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
     }
 
     public Rectangle getBody() {
@@ -41,7 +41,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "x: "+point.x+"\n"+"y: "+point.y+"\n";
+        return "x: " + point.x + "\n" + "y: " + point.y + "\n";
     }
 
     public void setType(CellType type) {

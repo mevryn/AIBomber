@@ -2,7 +2,7 @@ package pl.dszi.engine;
 
 import pl.dszi.board.BoardGame;
 import pl.dszi.board.Direction;
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.player.Player;
 
 import java.awt.event.KeyAdapter;
@@ -17,7 +17,7 @@ public class KeyInput extends KeyAdapter {
     }
 
     public void keyPressed(KeyEvent e) {
-        Player player = boardGame.getPlayerByName(Constants.PLAYER_1_NAME);
+        Player player = boardGame.getPlayerByName(Constant.PLAYER_1_NAME);
         int key = e.getKeyCode();
         try {
             if (key == KeyEvent.VK_W) {
@@ -30,7 +30,7 @@ public class KeyInput extends KeyAdapter {
                 boardGame.move(player, Direction.EAST);
             }
             if (key == KeyEvent.VK_SPACE) {
-                if (player.getBombAmount() > player.getBombActualyTicking())
+                if (player.getBombAmount() > player.getBombActuallyTicking())
                     boardGame.plantBomb(player);
             }
         }catch(NullPointerException nullPointerException){

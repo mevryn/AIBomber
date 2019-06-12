@@ -1,8 +1,7 @@
 package pl.dszi.player.noob;
 
 import pl.dszi.board.Cell;
-import pl.dszi.board.CellType;
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 
 import java.util.*;
 
@@ -15,7 +14,7 @@ public class Astar {
 
 
     Astar(Cell[][] cells) {
-        this.nodes = new Node[Constants.DEFAULT_GAME_TILES_HORIZONTALLY][Constants.DEFAULT_GAME_TILES_VERTICALLY];
+        this.nodes = new Node[Constant.DEFAULT_GAME_TILES_HORIZONTALLY][Constant.DEFAULT_GAME_TILES_VERTICALLY];
         this.openList = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
@@ -93,10 +92,10 @@ public class Astar {
                     if (col - 1 >= 0) {
                         checkNode(aNode, row, col - 1, 1);
                     }
-                    if (row + 1 < Constants.DEFAULT_GAME_TILES_HORIZONTALLY) {
+                    if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY) {
                         checkNode(aNode, row + 1, col, 1);
                     }
-                    if (col + 1 < Constants.DEFAULT_GAME_TILES_VERTICALLY) {
+                    if (col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY) {
                         checkNode(aNode, row, col + 1, 1);
                     }
                 }

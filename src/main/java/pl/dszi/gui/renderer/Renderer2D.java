@@ -3,7 +3,7 @@ package pl.dszi.gui.renderer;
 import pl.dszi.board.Cell;
 import pl.dszi.board.CellType;
 import pl.dszi.engine.Time;
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 import pl.dszi.engine.constant.Resource;
 import pl.dszi.player.Player;
 
@@ -12,9 +12,6 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Renderer2D extends Renderer {
 
@@ -46,13 +43,13 @@ public class Renderer2D extends Renderer {
         }
         graphics = bufferStrategy.getDrawGraphics();
         graphics.setColor(Color.DARK_GRAY);
-        graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
+        graphics.fillRect(0, 0, Constant.DEFAULT_GAME_WIDTH, Constant.DEFAULT_GAME_HEIGHT);
     }
 
     @Override
     public void renderPlayer(Player player, Point point) {
         bufferStrategy = getBufferStrategy();
-        if(characterImg == null) {
+        if (characterImg == null) {
             try {
                 characterImg = ImageIO.read(getClass().getResource(Resource.CHARACTERPATH.getPath()));
             } catch (IOException ex) {
@@ -67,19 +64,20 @@ public class Renderer2D extends Renderer {
         if (!player.isMortal() && player.isAlive()) {
             Time.scheduleTimer(this::blinkImageBool, 0);
             if (switcher) {
-                graphics.drawImage(characterImg, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
+                graphics.drawImage(characterImg, point.x, point.y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE, this);
             }
         } else if (player.isAlive()) {
             graphics.setColor(player.getColor());
-            graphics.drawImage(characterImg, point.x, point.y, Constants.DEFAULT_CELL_SIZE, Constants.DEFAULT_CELL_SIZE, this);
+            graphics.drawImage(characterImg, point.x, point.y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE, this);
         }
     }
 
     private void blinkImageBool() {
         switcher = !switcher;
     }
+
     private void initializeImg() {
-        if(crateImg == null) {
+        if (crateImg == null) {
             try {
                 crateImg = ImageIO.read(getClass().getResource(Resource.CRATEPATH.getPath()));
             } catch (IOException ex) {
@@ -87,7 +85,7 @@ public class Renderer2D extends Renderer {
                 crateImg = null;
             }
         }
-        if(launcherImg == null) {
+        if (launcherImg == null) {
             try {
                 launcherImg = ImageIO.read(getClass().getResource(Resource.LAUNCHERPATH.getPath()));
             } catch (IOException ex) {
@@ -95,7 +93,7 @@ public class Renderer2D extends Renderer {
                 launcherImg = null;
             }
         }
-        if(crateBoostImg == null) {
+        if (crateBoostImg == null) {
             try {
                 crateBoostImg = ImageIO.read(getClass().getResource(Resource.CRATEBONUSPATH.getPath()));
             } catch (IOException ex) {
@@ -103,7 +101,7 @@ public class Renderer2D extends Renderer {
                 crateImg = null;
             }
         }
-        if(boosterImg == null) {
+        if (boosterImg == null) {
             try {
                 boosterImg = ImageIO.read(getClass().getResource(Resource.BOOSTERPATH.getPath()));
             } catch (IOException ex) {
@@ -111,7 +109,7 @@ public class Renderer2D extends Renderer {
                 boosterImg = null;
             }
         }
-        if(explosionImg == null) {
+        if (explosionImg == null) {
             try {
                 explosionImg = ImageIO.read(getClass().getResource(Resource.EXPLOSIONPATH.getPath()));
             } catch (IOException ex) {
@@ -119,7 +117,7 @@ public class Renderer2D extends Renderer {
                 explosionImg = null;
             }
         }
-        if(bombImg == null) {
+        if (bombImg == null) {
             try {
                 bombImg = ImageIO.read(getClass().getResource(Resource.BOMBPATH.getPath()));
             } catch (IOException ex) {
@@ -127,7 +125,7 @@ public class Renderer2D extends Renderer {
                 bombImg = null;
             }
         }
-        if(wallImg == null) {
+        if (wallImg == null) {
             try {
                 wallImg = ImageIO.read(getClass().getResource(Resource.WALLPATH.getPath()));
             } catch (IOException ex) {
@@ -138,30 +136,28 @@ public class Renderer2D extends Renderer {
     }
 
     @Override
-    public void renderLauncherWhileLoading(){
-        bufferStrategy = getBufferStrategy();
-        if (bufferStrategy == null) {
-            this.createBufferStrategy(3);
-            return;
-        }
-        graphics = bufferStrategy.getDrawGraphics();
-        graphics.setColor(new Color(34, 139, 34));
-        graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
-        graphics.drawImage(launcherImg, 0, Constants.DEFAULT_GAME_HEIGHT/4, Constants.DEFAULT_GAME_WIDTH,416 , this);
+    public void renderLauncherWhileLoading() {
+        if (renderInit()) return;
+        graphics.drawImage(launcherImg, 0, Constant.DEFAULT_GAME_HEIGHT / 4, Constant.DEFAULT_GAME_WIDTH, 416, this);
         graphics.dispose();
         bufferStrategy.show();
     }
 
-    @Override
-    public void renderBoardGame(Cell[][] cells) {
+    private boolean renderInit() {
         bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
             this.createBufferStrategy(3);
-            return;
+            return true;
         }
         graphics = bufferStrategy.getDrawGraphics();
         graphics.setColor(new Color(34, 139, 34));
-        graphics.fillRect(0, 0, Constants.DEFAULT_GAME_WIDTH, Constants.DEFAULT_GAME_HEIGHT);
+        graphics.fillRect(0, 0, Constant.DEFAULT_GAME_WIDTH, Constant.DEFAULT_GAME_HEIGHT);
+        return false;
+    }
+
+    @Override
+    public void renderBoardGame(Cell[][] cells) {
+        if (renderInit()) return;
         for (Cell[] columns : cells) {
             for (Cell aCell : columns) {
                 graphics.setColor(Color.LIGHT_GRAY);
@@ -173,9 +169,9 @@ public class Renderer2D extends Renderer {
                     graphics.drawImage(explosionImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
                 } else if (aCell.getType() == CellType.CELL_BOMB) {
                     graphics.drawImage(bombImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
-                }else if (aCell.getType() == CellType.CELL_CRATEBONUS) {
+                } else if (aCell.getType() == CellType.CELL_CRATEBONUS) {
                     graphics.drawImage(crateBoostImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
-                }else if (aCell.getType() == CellType.CELL_BOOSTER) {
+                } else if (aCell.getType() == CellType.CELL_BOOSTER) {
                     graphics.drawImage(boosterImg, aCell.getBody().x, aCell.getBody().y, aCell.getBody().width, aCell.getBody().height, this);
                 }
             }

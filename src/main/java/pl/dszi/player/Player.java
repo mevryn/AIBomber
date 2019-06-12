@@ -1,12 +1,14 @@
 package pl.dszi.player;
 
 import pl.dszi.engine.Time;
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 
 import java.awt.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import pl.dszi.player.noob.NoobPlayerController;
 
 public class Player {
     private final String name;
@@ -15,14 +17,13 @@ public class Player {
     private int currentHp;
     private int range;
     private int bombAmount;
-    private int bombActualyTicking = 0;
+    private int bombActuallyTicking = 0;
     private boolean mortal = true;
     private boolean insideBomb = false;
 
 
-
     public boolean isAlive() {
-        return currentHp>0;
+        return currentHp > 0;
     }
 
     public boolean isInsideBomb() {
@@ -39,37 +40,48 @@ public class Player {
         return bombAmount;
     }
 
-    public int getBombActualyTicking() {
-        return bombActualyTicking;
+    public int getBombActuallyTicking() {
+        return bombActuallyTicking;
     }
 
     public void plantBomb() {
-        bombActualyTicking++;
+        bombActuallyTicking++;
         this.setInsideBomb(true);
     }
 
     private void detonateBomb() {
-        bombActualyTicking--;
+        bombActuallyTicking--;
     }
 
-    private final PlayerController playerController;
+    private final NoobPlayerController noobPlayerController;
 
     public String getName() {
         return name;
     }
 
-    public PlayerController getPlayerController() {
-        return playerController;
+    public NoobPlayerController getNoobPlayerController() {
+        return noobPlayerController;
     }
 
-    public Player(String name, int maxHp, PlayerController playerController) {
+    public Player(String name, int maxHp) {
         this.name = name;
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.color = new Color((int) (Math.random() * 0x1000000));
         this.bombAmount = 1;
         this.range = 3;
-        this.playerController = playerController;
+        noobPlayerController = null;
+    }
+
+
+    public Player(String name, int maxHp, NoobPlayerController NoobPlayerController) {
+        this.name = name;
+        this.maxHp = maxHp;
+        this.currentHp = maxHp;
+        this.color = new Color((int) (Math.random() * 0x1000000));
+        this.bombAmount = 1;
+        this.range = 3;
+        this.noobPlayerController = NoobPlayerController;
     }
 
     public int getCurrentHp() {
@@ -84,14 +96,14 @@ public class Player {
         ScheduledExecutorService scheduler
                 = Executors.newSingleThreadScheduledExecutor();
         Runnable task = () -> mortal = true;
-        int delay = Constants.IMMORTALITY_TIMER;
+        int delay = Constant.IMMORTALITY_TIMER;
         scheduler.schedule(task, delay, TimeUnit.SECONDS);
         scheduler.shutdown();
     }
 
 
     public void restoreBombAmountEvent() {
-        Time.scheduleTimer(this::detonateBomb, Constants.BASIC_BOMB_EXPLOSION_TIMER);
+        Time.scheduleTimer(this::detonateBomb, Constant.BASIC_BOMB_EXPLOSION_TIMER);
     }
 
     public void damagePlayer() {
@@ -99,35 +111,36 @@ public class Player {
             currentHp--;
             System.out.println(currentHp);
             mortal = false;
-            Time.scheduleTimer(() -> mortal = true, Constants.IMMORTALITY_TIMER);
+            Time.scheduleTimer(() -> mortal = true, Constant.IMMORTALITY_TIMER);
             makeMortalAgain();
         }
     }
 
-    public boolean canPlantBomb(){
-        return bombActualyTicking<bombAmount;
+    public boolean canPlantBomb() {
+        return bombActuallyTicking < bombAmount;
     }
+
     public boolean getIfManual() {
-        return this.playerController.checkIfManual();
+        return this.noobPlayerController == null;
     }
 
     public Color getColor() {
         return color;
     }
 
-    public void setMortality(boolean mortal){
+    public void setMortality(boolean mortal) {
         this.mortal = mortal;
     }
 
-    public int getBombRange(){
+    public int getBombRange() {
         return range;
     }
 
-    public void setBombRange(int range){
+    public void setBombRange(int range) {
         this.range = range;
     }
 
-    public void setBombAmount(int amount){
+    public void setBombAmount(int amount) {
         bombAmount = amount;
     }
 

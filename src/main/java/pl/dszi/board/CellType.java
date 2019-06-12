@@ -1,11 +1,6 @@
 package pl.dszi.board;
 
-import pl.dszi.engine.constant.Constants;
 import pl.dszi.player.Player;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public enum CellType {
     CELL_EMPTY(' ',true),
@@ -44,7 +39,7 @@ public enum CellType {
         this.bombPlayerOwner = bombPlayerOwner;
     }
 
-    private CellType(char code, boolean walkable) {
+    CellType(char code, boolean walkable) {
         this.code = code;
         this.walkable = walkable;
         destroyable = code == 'c';

@@ -2,19 +2,18 @@ package pl.dszi.GeneticAlgorithm;
 
 import pl.dszi.Booster.Booster;
 import pl.dszi.Booster.BoosterType;
-import pl.dszi.engine.constant.Constants;
+import pl.dszi.engine.constant.Constant;
 
 import java.util.Random;
 
 public class GA {
-    public static Population EvolvePopulation(Population population){
-        System.out.println("Ewoluowanie populacji");
+    public static Population evolvePopulation(Population population){
         Population newPopulation = new Population(population.GetPopulationLength(), false);
-        if(Constants.GA_ELITISM){
-            newPopulation.SaveBooster(0, population.GetFittest());
+        if(Constant.GA_ELITISM){
+            newPopulation.SaveBooster(0, population.getFittest());
         }
 
-        int elitismOffset = Constants.GA_ELITISM ? 1 : 0;
+        int elitismOffset = Constant.GA_ELITISM ? 1 : 0;
         for(int i = elitismOffset; i < population.GetPopulationLength(); i++){
             Booster individual1 = TournamentSelection(population);
             Booster individual2 = TournamentSelection(population);
@@ -22,46 +21,45 @@ public class GA {
             newPopulation.SaveBooster(i, newIndividual);
         }
         for(int i = elitismOffset; i < population.GetPopulationLength(); i++){
-            newPopulation.SaveBooster(i,Mutate(newPopulation.GetBooster(i)));
+            newPopulation.SaveBooster(i,Mutate(newPopulation.getBooster(i)));
         }
         return newPopulation;
     }
 
     private static Booster TournamentSelection(Population population) {
-        Population tournament = new Population(Constants.GA_TOURNAMENT_SIZE, false);
-        for (int i = 0; i < Constants.GA_TOURNAMENT_SIZE; i++) {
+        Population tournament = new Population(Constant.GA_TOURNAMENT_SIZE, false);
+        for (int i = 0; i < Constant.GA_TOURNAMENT_SIZE; i++) {
             int randomId = (int) (Math.random() * population.GetPopulationLength());
-            tournament.SaveBooster(i, population.GetBooster(randomId));
+            tournament.SaveBooster(i, population.getBooster(randomId));
         }
-        Booster fittest = tournament.GetFittest();
-        return fittest;
+        return tournament.getFittest();
     }
 
     private static Booster Crossover(Booster individual1, Booster individual2){
-        Booster newIndividual = new Booster(0, BoosterType.BOOSTER_NOTYPE,0);
-        if(Math.random() <= Constants.GA_UNIFORM_RATE){
-            newIndividual.SetTimerDelay(individual1.GetTimerDelay());
+        Booster newIndividual = new Booster(0, BoosterType.BOOSTER_NO_TYPE,0);
+        if(Math.random() <= Constant.GA_UNIFORM_RATE){
+            newIndividual.setTimerDelay(individual1.getTimerDelay());
         }else{
-            newIndividual.SetTimerDelay(individual2.GetTimerDelay());
+            newIndividual.setTimerDelay(individual2.getTimerDelay());
         }
-        if(Math.random() <= Constants.GA_UNIFORM_RATE){
-            newIndividual.SetValue(individual1.GetValue());
+        if(Math.random() <= Constant.GA_UNIFORM_RATE){
+            newIndividual.setValue(individual1.getValue());
         }else{
-            newIndividual.SetValue(individual2.GetValue());
+            newIndividual.setValue(individual2.getValue());
         }
-        if(Math.random() <= Constants.GA_UNIFORM_RATE){
-            newIndividual.SetType(individual1.GetBoosterType());
+        if(Math.random() <= Constant.GA_UNIFORM_RATE){
+            newIndividual.setType(individual1.getBoosterType());
         }else{
-            newIndividual.SetType(individual2.GetBoosterType());
+            newIndividual.setType(individual2.getBoosterType());
         }
         return newIndividual;
     }
 
     private static Booster Mutate(Booster booster){
-        Booster newIndividual = new Booster(0, booster.GetBoosterType(), 0);
+        Booster newIndividual = new Booster(0, booster.getBoosterType(), 0);
         Random random = new Random();
-        newIndividual.SetValue(Math.random() >= 0.5 ? booster.GetValue() + random.nextInt() % 2 : booster.GetValue() - random.nextInt() % 2);
-        newIndividual.SetTimerDelay(Math.random() >= 0.5 ? booster.GetTimerDelay() + random.nextInt() % 1000 : booster.GetTimerDelay() - random.nextInt() % 1000);
+        newIndividual.setValue(Math.random() >= 0.5 ? booster.getValue() + random.nextInt() % 2 : booster.getValue() - random.nextInt() % 2);
+        newIndividual.setTimerDelay(Math.random() >= 0.5 ? booster.getTimerDelay() + random.nextInt() % 1000 : booster.getTimerDelay() - random.nextInt() % 1000);
         return newIndividual;
     }
 }
