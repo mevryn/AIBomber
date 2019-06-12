@@ -21,7 +21,7 @@ class MovementEngineTest {
         int NOT_IMPORTANT_HP = 3;
         boardGame = new BoardGame(new Cell[Constant.DEFAULT_GAME_TILES_HORIZONTALLY][Constant.DEFAULT_GAME_TILES_VERTICALLY]);
         player1 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP);
-        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame,new NoobRossaAI()));
+        player2 = new Player(NOT_IMPORTNANT_NAME,NOT_IMPORTANT_HP,new NoobPlayerController(boardGame));
   }
 
     @Test

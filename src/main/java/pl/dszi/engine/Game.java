@@ -7,7 +7,6 @@ import pl.dszi.gui.renderer.Renderer;
 import pl.dszi.gui.renderer.Renderer2D;
 import pl.dszi.player.Player;
 import pl.dszi.player.noob.NoobPlayerController;
-import pl.dszi.player.noob.NoobRossaAI;
 
 import java.util.List;
 
@@ -17,14 +16,14 @@ public class Game implements Runnable {
     public static GameStatus gameStatus = GameStatus.STOP;
 
     private Renderer renderer;
-    private BoardGameGenerator boardGameController;
+    private BoardGameGenerator boardGameGen;
     private int[] crates;
 
     public Game(BoardGameGenerator boardGameController) {
 
-        this.boardGameController = boardGameController;
+        this.boardGameGen = boardGameController;
         this.renderer = new Renderer2D();
-        new Window("AiBomber", this.boardGameController.getBoardGame(), this.renderer);
+        new Window("AiBomber", this.boardGameGen.getBoardGame(), this.renderer);
         this.start();
     }
 
@@ -68,12 +67,12 @@ public class Game implements Runnable {
 
     private void resetGame(){
         Player pl = new Player(Constant.PLAYER_1_NAME, 3);
-        Player p2 = new Player(Constant.PLAYER_2_NAME, 3,new NoobPlayerController(boardGameController.getBoardGame(), new NoobRossaAI( )));
-        boardGameController.getBoardGame().getMap().clear();
-        boardGameController.getBoardGame().put(pl, Constant.PLAYER_1_STARTINGLOCATION);
-        boardGameController.getBoardGame().put(p2, Constant.PLAYER_2_STARTINGLOCATION);
-        boardGameController.getBoardGame().getInfo().setAllCellsToEmpty();
-        boardGameController.generateFinalCrates();
+        Player p2 = new Player(Constant.PLAYER_2_NAME, 3,new NoobPlayerController(boardGameGen.getBoardGame()));
+        boardGameGen.getBoardGame().getMap().clear();
+        boardGameGen.getBoardGame().put(pl, Constant.PLAYER_1_STARTINGLOCATION);
+        boardGameGen.getBoardGame().put(p2, Constant.PLAYER_2_STARTINGLOCATION);
+        boardGameGen.getBoardGame().getInfo().setAllCellsToEmpty();
+        boardGameGen.generateFinalCrates();
         run();
     }
     private void start() {
@@ -89,8 +88,8 @@ public class Game implements Runnable {
     private void render() {
         if(Game.gameStatus!=GameStatus.GENERATING){
         renderer.render();
-        renderer.renderBoardGame(boardGameController.getBoardGame().getInfo().getCells());
-        boardGameController.getBoardGame().getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
+        renderer.renderBoardGame(boardGameGen.getBoardGame().getInfo().getCells());
+        boardGameGen.getBoardGame().getMap().forEach((player, point) -> renderer.renderPlayer(player, point));
         renderer.showGraphic();
         }
     }
@@ -98,12 +97,12 @@ public class Game implements Runnable {
     private void tick() {
         this.aiMovement();
         if(gameStatus==GameStatus.RUNNING)
-        boardGameController.getBoardGame().damageAllPlayersIntersectingWithExplosion();
-        if(gameStatus==GameStatus.GENERATING&&boardGameController.checkIfPlayersOnSamePosition(boardGameController.getBoardGame().getPlayerByName(Constant.PLAYER_1_NAME),boardGameController.getBoardGame().getPlayerByName(Constant.PLAYER_2_NAME))){
-           crates= boardGameController.resetGameWithNewCrates();
+        boardGameGen.getBoardGame().damageAllPlayersIntersectingWithExplosion();
+        if(gameStatus==GameStatus.GENERATING&& boardGameGen.checkIfPlayersOnSamePosition(boardGameGen.getBoardGame().getPlayerByName(Constant.PLAYER_1_NAME), boardGameGen.getBoardGame().getPlayerByName(Constant.PLAYER_2_NAME))){
+           crates= boardGameGen.resetGameWithNewCrates();
         }
-        if(boardGameController.generated){
-            boardGameController.generated=false;
+        if(boardGameGen.generated){
+            boardGameGen.generated=false;
             Constant.BASIC_BOMB_EXPLOSION_TIMER=4;
             Constant.BASIC_BOMB_EXPLOSION_BURNING_TIMER=2;
             resetGame();
@@ -112,7 +111,7 @@ public class Game implements Runnable {
 
 
     private void aiMovement() {
-        List<Player> autoPlayers = boardGameController.getBoardGame().getAllNonManualPlayers();
+        List<Player> autoPlayers = boardGameGen.getBoardGame().getAllNonManualPlayers();
         autoPlayers.stream().filter(Player::isAlive).forEach(player -> player.getNoobPlayerController().AIPlaning(player));
     }
 }

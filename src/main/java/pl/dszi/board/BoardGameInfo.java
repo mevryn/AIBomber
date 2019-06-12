@@ -51,14 +51,9 @@ public class BoardGameInfo {
         return startingPoints.stream().noneMatch(point1 -> point1.equals(point));
     }
 
-    public Set<Cell> getAllBombs() {
-        Set<Cell> bombs = new HashSet<>();
-        for (Cell[] columns : cells) {
-            for (Cell cell : columns) {
-                if (cell.getType() == CellType.CELL_BOMB)
-                    bombs.add(cell);
-            }
-        }
+    public synchronized List<Cell> getAllBombs() {
+        List<Cell> bombs = new ArrayList<>();
+        Arrays.stream(this.getCells()).forEach(cells1 ->Arrays.stream(cells1).filter(cell ->cell.getType()==CellType.CELL_BOMB).forEach(bombs::add) );
         return bombs;
     }
 
@@ -72,9 +67,9 @@ public class BoardGameInfo {
     }
 
     Set<Cell> getAllExplosions() {
-        Set<Cell> exploCells = new HashSet<>();
-        Arrays.stream(this.getCells()).forEach(cells -> Arrays.stream(cells).filter(cell -> cell.getType() == CellType.CELL_BOOM_CENTER).forEach(exploCells::add));
-        return exploCells;
+        Set<Cell> explosionCells = new HashSet<>();
+        Arrays.stream(this.getCells()).forEach(cells -> Arrays.stream(cells).filter(cell -> cell.getType() == CellType.CELL_BOOM_CENTER).forEach(explosionCells::add));
+        return explosionCells;
     }
 
 }

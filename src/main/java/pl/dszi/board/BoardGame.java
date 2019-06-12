@@ -48,7 +48,6 @@ public class BoardGame {
             map.put(player, point);
             return true;
         } else {
-            System.err.println("Point is not empty");
             return false;
         }
 
@@ -136,7 +135,6 @@ public class BoardGame {
                     Booster booster = boosters.getFittest();
                     if (!firstRun) {
                         booster.setPlayer(player);
-                        System.out.println("Aktywowano booster " + booster.getBoosterType() + " na " + booster.getTimerDelay() + "ms o wartości " + booster.getValue() + " przez " + booster.getPlayer().getName());
                     }
                     aCell.setType(CellType.CELL_EMPTY);
                 }
@@ -191,7 +189,7 @@ public class BoardGame {
                 return true;
             }
         } catch (NullPointerException exception) {
-            System.err.println("Cant plant bomb for some reason");
+            exception.printStackTrace();
         }
         return false;
     }

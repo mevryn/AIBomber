@@ -9,7 +9,6 @@ import java.util.List;
 class CrateGenerator {
 
     private int numberOfCrates;
-    private int initializedPupulation = 0;
     private List<int[]> listOfPopulations = new ArrayList<>();
     private Map<Integer, Integer> populationScores = new HashMap<>();
 
@@ -123,15 +122,6 @@ class CrateGenerator {
     void reproduction(Parents parents) {
         crossing(parents);
         mutation();
-    }
-
-    private int getIndexOfScorePopulation(int score) {
-        for (Map.Entry<Integer, Integer> population : populationScores.entrySet()) {
-            if (population.getValue() == score) {
-                return population.getKey();
-            }
-        }
-        return 0;
     }
 
     private void crossing(Parents parents) {

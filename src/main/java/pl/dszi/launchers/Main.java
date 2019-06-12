@@ -15,7 +15,7 @@ public class Main {
         Constant.BASIC_BOMB_EXPLOSION_TIMER = 0;
         Constant.BASIC_BOMB_EXPLOSION_BURNING_TIMER = 0;
         Player pl = new Player(Constant.PLAYER_1_NAME, 3);
-        Player p2 = new Player(Constant.PLAYER_2_NAME, 3, new NoobPlayerController(boardGame, new NoobRossaAI()));
+        Player p2 = new Player(Constant.PLAYER_2_NAME, 3, new NoobPlayerController(boardGame));
         boardGame.put(pl, Constant.PLAYER_1_STARTINGLOCATION);
         boardGame.put(p2, Constant.PLAYER_2_STARTINGLOCATION);
         BoardGameGenerator boardGameController = new BoardGameGenerator(boardGame);

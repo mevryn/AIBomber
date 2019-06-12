@@ -18,12 +18,12 @@ public class NoobPlayerController {
     private Point playerLocation;
     private List<Cell> way = new ArrayList<>();
     private Astar astar;
-    private Set<Cell> bombs = new HashSet<>();
+    private List<Cell> bombs = new ArrayList<>();
 
 
     private int actionCounter = 0;
 
-    public NoobPlayerController(BoardGame boardGame, NoobRossaAI noobRossaAI) {
+    public NoobPlayerController(BoardGame boardGame) {
         this.boardGame = boardGame;
     }
 
@@ -35,6 +35,9 @@ public class NoobPlayerController {
 
         if (!playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player).getBody().getLocation())) {
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)), player));
+            if(checkIfPlayerInRangeOfExplosions(player)&&Game.gameStatus!=GameStatus.GENERATING){
+                way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player),getClosestSafeCell(player));
+            }
             if (way.size() > 0 && playerLocation.equals(way.get(0).getBody().getLocation())) {
                 way.remove(0);
                 if (way.size() > 0)
@@ -85,7 +88,7 @@ public class NoobPlayerController {
         Set<Node> safeCellsNode = astar.getClosedSet().stream().filter(node -> node.getCell().getType() != CellType.CELL_BOOM_CENTER).collect(Collectors.toSet());
         Set<Cell> safeCells = new HashSet<>();
         safeCellsNode.forEach(node -> safeCells.add(node.getCell()));
-        Set<Cell> bombs = boardGame.getInfo().getAllBombs();
+        List<Cell> bombs = boardGame.getInfo().getAllBombs();
         for (Cell bomb : bombs) {
             Set<Cell> explosionBombRange = boardGame.getAccessibleNeighbors(bomb, 4);
             safeCells.removeAll(explosionBombRange);
