@@ -23,7 +23,7 @@ public class KeyInput extends KeyAdapter {
             if (key == KeyEvent.VK_W) {
                 boardGame.move(player, Direction.NORTH);
             } else if (key == KeyEvent.VK_S) {
-                boardGame.move(player,Direction.SOUTH);
+                boardGame.move(player, Direction.SOUTH);
             } else if (key == KeyEvent.VK_A) {
                 boardGame.move(player, Direction.WEST);
             } else if (key == KeyEvent.VK_D) {
@@ -33,8 +33,8 @@ public class KeyInput extends KeyAdapter {
                 if (player.getBombAmount() > player.getBombActuallyTicking())
                     boardGame.plantBomb(player);
             }
-        }catch(NullPointerException nullPointerException){
+        } catch (NullPointerException nullPointerException) {
             System.out.println("You are dead");
         }
-  }
+    }
 }

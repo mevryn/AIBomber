@@ -1,7 +1,5 @@
 package pl.dszi.board;
 
-import pl.dszi.player.Player;
-
 public enum CellType {
     CELL_EMPTY(' ', true),
     CELL_WALL('#', false),
@@ -21,11 +19,14 @@ public enum CellType {
 
     public boolean walkable;
 
+    public boolean isDestroyable() {
+        return this == CellType.CELL_CRATE;
+    }
 
     CellType(char code, boolean walkable) {
         this.code = code;
         this.walkable = walkable;
-        destroyable = code == 'c';
+        this.destroyable = isDestroyable();
     }
 
 }

@@ -76,63 +76,25 @@ public class Renderer2D extends Renderer {
         switcher = !switcher;
     }
 
+    private BufferedImage loadImage(String path) {
+        try {
+            return ImageIO.read(getClass().getResource(path));
+        } catch (IOException ex) {
+            throw new RuntimeException("Can't load image", ex);
+        }
+    }
+
     private void initializeImg() {
-        if (crateImg == null) {
-            try {
-                crateImg = ImageIO.read(getClass().getResource(Resource.CRATEPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                crateImg = null;
-            }
-        }
-        if (launcherImg == null) {
-            try {
-                launcherImg = ImageIO.read(getClass().getResource(Resource.LAUNCHERPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                launcherImg = null;
-            }
-        }
-        if (crateBoostImg == null) {
-            try {
-                crateBoostImg = ImageIO.read(getClass().getResource(Resource.CRATEBONUSPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                crateImg = null;
-            }
-        }
-        if (boosterImg == null) {
-            try {
-                boosterImg = ImageIO.read(getClass().getResource(Resource.BOOSTERPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                boosterImg = null;
-            }
-        }
-        if (explosionImg == null) {
-            try {
-                explosionImg = ImageIO.read(getClass().getResource(Resource.EXPLOSIONPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                explosionImg = null;
-            }
-        }
-        if (bombImg == null) {
-            try {
-                bombImg = ImageIO.read(getClass().getResource(Resource.BOMBPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                bombImg = null;
-            }
-        }
-        if (wallImg == null) {
-            try {
-                wallImg = ImageIO.read(getClass().getResource(Resource.WALLPATH.getPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                wallImg = null;
-            }
-        }
+
+        crateImg = loadImage(Resource.CRATEPATH.getPath());
+        launcherImg = loadImage(Resource.LAUNCHERPATH.getPath());
+        launcherImg = loadImage(Resource.LAUNCHERPATH.getPath());
+        crateBoostImg = loadImage(Resource.CRATEBONUSPATH.getPath());
+        boosterImg = loadImage(Resource.BOOSTERPATH.getPath());
+        explosionImg = loadImage(Resource.EXPLOSIONPATH.getPath());
+        bombImg = loadImage(Resource.BOMBPATH.getPath());
+        wallImg = loadImage(Resource.WALLPATH.getPath());
+
     }
 
     @Override

@@ -1,7 +1,6 @@
 package pl.dszi.player.noob;
 
 
-
 import java.awt.*;
 
 class Distances {
@@ -18,7 +17,7 @@ class Distances {
     }
 
 
-    static int returnManhattaDistanceOfTwoCells(Point point1, Point point2) {
+    static int returnManhattanDistance(Point point1, Point point2) {
         return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y);
     }
 }

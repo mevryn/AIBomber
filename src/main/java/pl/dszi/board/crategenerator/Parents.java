@@ -1,4 +1,4 @@
-package pl.dszi.board;
+package pl.dszi.board.crategenerator;
 
 class Parents {
     private final Integer firstPopulation;

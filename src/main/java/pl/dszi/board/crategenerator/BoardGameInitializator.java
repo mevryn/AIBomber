@@ -1,9 +1,13 @@
-package pl.dszi.board;
+package pl.dszi.board.crategenerator;
+
+import pl.dszi.board.BoardGameInfo;
+import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 
 import java.awt.*;
 
-class BoardGameInitializator {
-    static void initializeBoard(BoardGameInfo boardGameInfo) {
+public class BoardGameInitializator {
+    public static void initializeBoard(BoardGameInfo boardGameInfo) {
 
         for (int i = 0; i < boardGameInfo.getCells().length; i++) {
             for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {

@@ -1,16 +1,14 @@
 package pl.dszi.player;
 
-import pl.dszi.board.BoardGame;
 import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.Time;
 import pl.dszi.engine.constant.Constant;
+import pl.dszi.player.noob.AIController;
 
 import java.awt.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import pl.dszi.player.noob.NoobPlayerController;
 
 public class Player {
     private final String name;
@@ -55,14 +53,14 @@ public class Player {
         bombActuallyTicking--;
     }
 
-    private final NoobPlayerController noobPlayerController;
+    private final AIController AIController;
 
     public String getName() {
         return name;
     }
 
-    public NoobPlayerController getNoobPlayerController() {
-        return noobPlayerController;
+    public AIController getAIController() {
+        return AIController;
     }
 
     public Player(String name, int maxHp) {
@@ -72,18 +70,18 @@ public class Player {
         this.color = new Color((int) (Math.random() * 0x1000000));
         this.bombAmount = 1;
         this.range = 3;
-        noobPlayerController = null;
+        AIController = null;
     }
 
 
-    public Player(String name, int maxHp, NoobPlayerController NoobPlayerController) {
+    public Player(String name, int maxHp, AIController AIController) {
         this.name = name;
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.color = new Color((int) (Math.random() * 0x1000000));
         this.bombAmount = 1;
         this.range = 3;
-        this.noobPlayerController = NoobPlayerController;
+        this.AIController = AIController;
     }
 
     public int getCurrentHp() {
@@ -109,9 +107,8 @@ public class Player {
     }
 
     public void damagePlayer(GameStatus gameStatus) {
-        if (mortal || gameStatus ==GameStatus.TESTING) {
+        if (mortal || gameStatus == GameStatus.TESTING) {
             currentHp--;
-            System.out.println(currentHp);
             mortal = false;
             Time.scheduleTimer(() -> mortal = true, Constant.IMMORTALITY_TIMER);
             makeMortalAgain();
@@ -123,7 +120,7 @@ public class Player {
     }
 
     public boolean getIfManual() {
-        return this.noobPlayerController == null;
+        return this.AIController == null;
     }
 
     public Color getColor() {

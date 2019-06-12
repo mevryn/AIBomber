@@ -3,6 +3,7 @@ package pl.dszi.board;
 import pl.dszi.Booster.Booster;
 import pl.dszi.GeneticAlgorithm.GA;
 import pl.dszi.GeneticAlgorithm.Population;
+import pl.dszi.board.crategenerator.BoardGameInitializator;
 import pl.dszi.engine.Game;
 import pl.dszi.engine.GameStatus;
 import pl.dszi.engine.Time;
@@ -63,18 +64,11 @@ public class BoardGame {
 
 
     public Cell getPlayerPositionCell(Player player) {
-
-        Cell playerCell = Arrays.stream(getCells()).
-                 forEach(cells -> Arrays.stream(cells).
-                 filter(cell -> this.pointIsInsideBody(getPlayerPosition(player),cell.getBody())).findAny().get());
-        for (Cell[] columns : boardGameInfo.getCells()) {
-            for (Cell aCell : columns) {
-                if (this.pointIsInsideBody(getPlayerPosition(player), aCell.getBody())) {
-                    return aCell;
-                }
-            }
-        }
-        return null;
+        return Arrays.stream(getCells())
+                .flatMap(Arrays::stream)
+                .filter(cell -> this.pointIsInsideBody(getPlayerPosition(player), cell.getBody()))
+                .findAny()
+                .orElse(null);
     }
 
 
@@ -151,21 +145,16 @@ public class BoardGame {
     }
 
     private boolean checkIfCrateForward(Rectangle body) {
-        for (Cell[] columns : getInfo().getCells()) {
-            for (Cell crateCell : columns) {
-                if ((crateCell.getType() == CellType.CELL_CRATE || crateCell.getType() == CellType.CELL_CRATEBONUS) && crateCell.getBody().intersects(body)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return Arrays.stream(getCells())
+                .flatMap(Arrays::stream)
+                .anyMatch(cell -> (cell.getType() == CellType.CELL_CRATE || cell.getType() == CellType.CELL_CRATEBONUS) && cell.getBody().intersects(body));
     }
 
     private boolean checkIfCrateAtSpecificIndex(Point aCoord) {
         return boardGameInfo.getCells()[aCoord.x][aCoord.y].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[aCoord.x][aCoord.y].getType() == CellType.CELL_CRATEBONUS;
     }
 
-    public boolean checkIfBombForward(Player player, Rectangle body) {
+    private boolean checkIfBombForward(Player player, Rectangle body) {
         List<Cell> intersectsBombs = getNeighbors(getPlayerPositionCellByCenter(player));
         intersectsBombs.add(getPlayerPositionCellByCenter(player));
         intersectsBombs = intersectsBombs.stream().filter(cell -> cell.getType() == CellType.CELL_BOMB && body.intersects(cell.getBody())).collect(Collectors.toList());
@@ -203,33 +192,27 @@ public class BoardGame {
     }
 
     private void setInterectionWithBomb(Cell cell) {
-        for (Player player : getMap().keySet()) {
-            if (getBodyFromPoint(getPlayerPosition(player)).intersects(cell.getBody())) {
-                player.setInsideBomb(true);
-            }
-        }
+        getMap().keySet().stream()
+                .filter(player -> getBodyFromPoint(getPlayerPosition(player))
+                        .intersects(cell.getBody()))
+                .forEach(player -> player.setInsideBomb(true));
     }
 
-    public Cell getPlayerPositionCellByCenter(Player player) {
+    private Cell getPlayerPositionCellByCenter(Player player) {
         Rectangle playerBody = new Rectangle(getPlayerPosition(player).x, getPlayerPosition(player).y, Constant.DEFAULT_CELL_SIZE, Constant.DEFAULT_CELL_SIZE);
-        for (Cell[] columns : boardGameInfo.getCells()) {
-            for (Cell aCell : columns) {
-                if (this.pointIsInsideBody(new Point((int) Math.round(playerBody.getCenterX()), (int) Math.round(playerBody.getCenterY())), aCell.getBody())) {
-                    return aCell;
-                }
-            }
-        }
-        return null;
+        return Arrays.stream(getCells())
+                .flatMap(Arrays::stream)
+                .filter(cell -> this.pointIsInsideBody(new Point((int) Math.round(playerBody.getCenterX()), (int) Math.round(playerBody.getCenterY())), cell.getBody()))
+                .findAny()
+                .orElse(null);
     }
 
     private Point getCellCordByBomb(Cell bombCell) {
-        for (int i = 0; i < getInfo().getCells().length; i++) {
-            for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
-                if (boardGameInfo.getCells()[i][j].getPoint().equals(bombCell.point))
-                    return new Point(i, j);
-            }
-        }
-        return new Point(0, 0);
+        Cell bomb = Arrays.stream(getCells())
+                .flatMap(Arrays::stream)
+                .filter(cell -> cell.getPoint().equals(bombCell.point)).findAny().orElse(null);
+        assert bomb != null;
+        return bomb.getPoint();
     }
 
 
@@ -266,46 +249,29 @@ public class BoardGame {
         return new HashSet<>(getAccessibleNeighbors(getInfo().getCells()[point.x][point.y], bombRange));
     }
 
-    public boolean checkIfNeighborIsCrate(Cell aCell) {
-        int row = aCell.getPoint().x;
-        int col = aCell.getPoint().y;
-        if (row - 1 >= 0 && (boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row - 1][col].getType() == CellType.CELL_CRATEBONUS)) {
-            return true;
-        }
-        if (col - 1 >= 0 && (boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATE) || boardGameInfo.getCells()[row][col - 1].getType() == CellType.CELL_CRATEBONUS) {
-            return true;
-        }
-        if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY && (boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row + 1][col].getType() == CellType.CELL_CRATEBONUS)) {
-            return true;
-        }
-        return col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY && (boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATE || boardGameInfo.getCells()[row][col + 1].getType() == CellType.CELL_CRATEBONUS);
-    }
-
     private List<Cell> getNeighbors(Cell aCell) {
         List<Cell> neighbors = new ArrayList<>();
         int row;
         int col;
-        for (int i = 0; i < boardGameInfo.getCells().length; i++) {
-            for (int j = 0; j < boardGameInfo.getCells()[i].length; j++) {
-                if (boardGameInfo.getCells()[i][j].equals(aCell)) {
-                    row = i;
-                    col = j;
-                    if (row - 1 >= 0) {
-                        neighbors.add(boardGameInfo.getCells()[row - 1][col]);
-                    }
-                    if (col - 1 >= 0) {
-                        neighbors.add(boardGameInfo.getCells()[row][col - 1]);
-                    }
-                    if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY) {
-                        neighbors.add(boardGameInfo.getCells()[row + 1][col]);
-                    }
-                    if (col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY) {
-                        neighbors.add(boardGameInfo.getCells()[row][col + 1]);
-                    }
-                }
-            }
+        row = aCell.getPoint().x;
+        col = aCell.getPoint().y;
+        if (row - 1 >= 0) {
+            neighbors.add(boardGameInfo.getCells()[row - 1][col]);
+        }
+        if (col - 1 >= 0) {
+            neighbors.add(boardGameInfo.getCells()[row][col - 1]);
+        }
+        if (row + 1 < Constant.DEFAULT_GAME_TILES_HORIZONTALLY) {
+            neighbors.add(boardGameInfo.getCells()[row + 1][col]);
+        }
+        if (col + 1 < Constant.DEFAULT_GAME_TILES_VERTICALLY) {
+            neighbors.add(boardGameInfo.getCells()[row][col + 1]);
         }
         return neighbors;
+    }
+
+    public boolean checkIfPlayersOnSamePosition(Player player1, Player player2) {
+        return getPlayerPosition(player1).equals(getPlayerPosition(player2));
     }
 
     public Set<Cell> getAccessibleNeighbors(Cell aCell, int rangeChecker) {

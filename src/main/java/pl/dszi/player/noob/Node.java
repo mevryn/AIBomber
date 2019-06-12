@@ -5,9 +5,9 @@ import pl.dszi.engine.constant.Constant;
 
 public class Node {
     private Cell cell;
-    private int g;
-    private int h;
-    private int f;
+    private int g;//heuristic cost
+    private int h; //default node cost
+    private int f; //final cost
     private Node parent;
 
     int getF() {

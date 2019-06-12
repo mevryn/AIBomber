@@ -3,7 +3,8 @@ package pl.dszi.board;
 import pl.dszi.engine.constant.Constant;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BoardGameInfo {
@@ -47,7 +48,7 @@ public class BoardGameInfo {
         return cells;
     }
 
-    boolean checkIfIsNotStartingPoint(Point point) {
+    public boolean checkIfIsNotStartingPoint(Point point) {
         return startingPoints.stream().noneMatch(point1 -> point1.equals(point));
     }
 
@@ -56,7 +57,7 @@ public class BoardGameInfo {
         Arrays.stream(this.getCells()).forEach(cells1 -> Arrays.stream(cells1).filter(cell -> cell.getType() != CellType.CELL_WALL).forEach(cell -> cell.setType(CellType.CELL_EMPTY)));
     }
 
-    public List<Cell> getAllSpecificCells(CellType cellType){
+    public List<Cell> getAllSpecificCells(CellType cellType) {
         List<Cell> specificCells = new ArrayList<>();
         Arrays.stream(this.getCells()).forEach(cells -> Arrays.stream(cells).filter(cell -> cell.getType() == cellType).forEach(specificCells::add));
         return specificCells;

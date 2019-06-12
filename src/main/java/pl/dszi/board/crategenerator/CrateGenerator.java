@@ -1,5 +1,8 @@
-package pl.dszi.board;
+package pl.dszi.board.crategenerator;
 
+import pl.dszi.board.BoardGameInfo;
+import pl.dszi.board.Cell;
+import pl.dszi.board.CellType;
 import pl.dszi.engine.constant.Constant;
 
 import java.awt.*;
@@ -18,7 +21,7 @@ class CrateGenerator {
     CrateGenerator(int numberOfCrates) {
         this.numberOfCrates = numberOfCrates;
         if (this.numberOfCrates > Constant.MAXIMUM_CRATE_AMOUNT) {
-            this.numberOfCrates = new Random().nextInt(93);
+            this.numberOfCrates = new Random().nextInt(Constant.MAXIMUM_CRATE_AMOUNT_LOCATION);
         }
         randomizeInitialPopulation();
         initializePopulationScores();
@@ -41,12 +44,11 @@ class CrateGenerator {
         return bestGen;
     }
 
-    int[] returnRandomCrates() {
+    void returnRandomCrates() {
         int[] crates = new int[numberOfCrates];
         for (int i = 0; i < crates.length; i++) {
             crates[i] = new Random().nextInt(Constant.MAXIMUM_CRATE_AMOUNT);
         }
-        return crates;
     }
 
     private void randomizeInitialPopulation() {
@@ -159,6 +161,7 @@ class CrateGenerator {
     }
 
     private void mutation() {
+        //1% chance to mutate random population
         if (new Random().nextInt(100) == 99) {
             listOfPopulations.get(new Random().nextInt(10))[new Random().nextInt(numberOfCrates)] = new Random().nextInt(Constant.MAXIMUM_CRATE_AMOUNT);
         }
