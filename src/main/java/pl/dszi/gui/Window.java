@@ -15,7 +15,7 @@ public class Window extends JFrame {
         this.addKeyListener(new KeyInput(boardGame));
         this.setTitle(title);
         this.setSize(new Dimension(Constant.DEFAULT_GAME_WIDTH, Constant.DEFAULT_GAME_HEIGHT));
-        this.getContentPane().setPreferredSize(new Dimension(Constant.DEFAULT_GAME_WIDTH, Constant.DEFAULT_GAME_HEIGHT));
+        this.getContentPane().setPreferredSize(new Dimension(Constant.DEFAULT_GAME_WIDTH-12, Constant.DEFAULT_GAME_HEIGHT-12));
         this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);

@@ -25,6 +25,7 @@ public class BoardGameGenerator {
     }
 
     public void initializeCrates() {
+        getBoardGame().getInfo().setAllCellsToEmpty();
         this.crateGenerator.randomizeCrateCells(boardGame.getCells(), boardGame.getInfo(), beatPop);
     }
 
@@ -39,7 +40,6 @@ public class BoardGameGenerator {
 
 
     public void generateFinalCrates() {
-        boardGame.getInfo().setAllCellsToEmpty();
         crateGenerator.createCrates(boardGame.getCells(), crateGenerator.getBestGen());
     }
 

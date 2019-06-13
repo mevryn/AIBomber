@@ -19,7 +19,7 @@ public class Game implements Runnable {
     private BoardGameGenerator boardGameGen;
 
     public Game(BoardGameGenerator boardGameController) {
-
+        gameStatus = GameStatus.GENERATING;
         this.boardGameGen = boardGameController;
         this.renderer = new Renderer2D();
         new Window("AiBomber", this.boardGameGen.getBoardGame(), this.renderer);
@@ -42,7 +42,6 @@ public class Game implements Runnable {
         int frames = 0;
         while (gameStatus != GameStatus.STOP) {
             long now = System.nanoTime();
-
             delta += (now - lastTime) / ns;
             lastTime = now;
             while (delta >= 1) {
@@ -78,7 +77,7 @@ public class Game implements Runnable {
     private void start() {
         Thread thread = new Thread(this);
         thread.start();
-        gameStatus = GameStatus.GENERATING;
+
     }
 
     private void stop() {

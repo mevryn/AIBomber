@@ -96,6 +96,9 @@ class CrateGenerator {
             boosterCrates++;
             cells[col][row].setType(CellType.CELL_CRATEBONUS);
         }
+        else {
+            cells[col][row].setType(CellType.CELL_CRATE);
+        }
         return boosterCrates;
     }
 
@@ -104,7 +107,6 @@ class CrateGenerator {
         for (int crate : crates) {
             int col = crate % Constant.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = crate / Constant.DEFAULT_GAME_TILES_HORIZONTALLY;
-            cells[col][row].setType(CellType.CELL_CRATE);
             BoosterCrates = getBoosterCrates(cells, BoosterCrates, col, row);
         }
     }
