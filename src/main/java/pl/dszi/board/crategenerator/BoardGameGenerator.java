@@ -47,7 +47,7 @@ public class BoardGameGenerator {
         Player player1 = boardGame.getPlayerByName(Constant.PLAYER_1_NAME);
         Player player2 = boardGame.getPlayerByName(Constant.PLAYER_2_NAME);
 
-        if (beatenGens > Constant.GENERATIONS_TO_BEAT_TO_GENERATE_CRATES || (redundantScore.size() >= 3 && beatenGens > 0)) {
+        if (beatenGens > Constant.GENERATIONS_TO_BEAT_TO_GENERATE_CRATES || (redundantScore.size() >= Constant.MAXIMUM_REDUNDAND_SCORE_OF_POPULATION && beatenGens > 0)) {
             Game.gameStatus = GameStatus.RUNNING;
             generated = true;
             crateGenerator.getBestGen();
