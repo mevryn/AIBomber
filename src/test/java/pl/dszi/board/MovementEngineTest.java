@@ -38,7 +38,7 @@ class MovementEngineTest {
     void playerShouldMoveOnePointToEast() {
         boardGame.put(player1, new Point(0, 0));
         boardGame.move(player1, Direction.EAST);
-        assertEquals(new Point(4, 0), boardGame.getPlayerPosition(player1));
+        assertEquals(new Point(Constant.DEFAULT_SPEED, 0), boardGame.getPlayerPosition(player1));
     }
 
     @Test
