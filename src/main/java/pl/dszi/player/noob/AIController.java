@@ -35,7 +35,7 @@ public class AIController {
         astar = new Astar(boardGame.getCells());
         if (way.size() == 0)
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), boardGame.getPlayerPositionCell(getClosestPlayer(player)));
-        if (way.size()==0 && checkIfPlayerInRangeOfExplosions(player)) {
+        if (Game.gameStatus!=GameStatus.GENERATING&&way.size()==0 && checkIfPlayerInRangeOfExplosions(player)) {
             way = astar.chooseBestWay(boardGame.getPlayerPositionCell(player), getClosestSafeCell(player));
             runningFromBomb=true;
         }else if (!runningFromBomb  &&  !playerLocation.equals(getClosestCellToEnemy(boardGame.getPlayerPositionCell(getClosestPlayer(player)),player).getBody().getLocation())) {
@@ -102,7 +102,6 @@ public class AIController {
             safeCells.removeAll(explosionBombRange);
             safeCells.remove(bomb);
         }
-        System.out.println(getClosestCellFromCollection(player, safeCells));
         return getClosestCellFromCollection(player, safeCells);
     }
 
