@@ -44,9 +44,9 @@ public class Game implements Runnable {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
-            while (delta >= 1) {
+            while (delta >= 2) {
                 tick();
-                delta--;
+                delta = 0;
                 if (gameStatus == GameStatus.GENERATING) {
                     renderer.renderLauncherWhileLoading();
                 }

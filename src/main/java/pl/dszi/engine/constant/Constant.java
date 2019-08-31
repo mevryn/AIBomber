@@ -30,4 +30,7 @@ public class Constant {
     public static final double GA_UNIFORM_RATE = 0.5;
     public static final int GA_TOURNAMENT_SIZE = 2;
     public static final boolean GA_ELITISM = false;
+    public static final boolean GA_REVERSE_CROSSOVER = true;
+    public static final int GA_POPULATION_SIZE = 5;
+    public static final int GA_POPULATION_WIDTH = 5;
 }

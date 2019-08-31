@@ -1,8 +1,8 @@
 package pl.dszi.board;
 
 import pl.dszi.Booster.Booster;
-import pl.dszi.GeneticAlgorithm.GA;
-import pl.dszi.GeneticAlgorithm.Population;
+import pl.dszi.GeneticAlgorithmv2.GA;
+import pl.dszi.GeneticAlgorithmv2.Population;
 import pl.dszi.board.crategenerator.BoardGameInitializator;
 import pl.dszi.engine.Game;
 import pl.dszi.engine.GameStatus;
@@ -126,11 +126,11 @@ public class BoardGame {
                     }
 
                     if (boosters == null) {
-                        boosters = new Population(10, true);
+                        boosters = new Population(Constant.GA_POPULATION_SIZE, Constant.GA_POPULATION_WIDTH, true);
                     } else {
                         boosters = GA.evolvePopulation(boosters);
                     }
-                    Booster booster = boosters.getFittest();
+                    Booster booster = boosters.GetFittestBooster();
                     if (!firstRun) {
                         booster.setPlayer(player);
                     }
