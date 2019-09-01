@@ -124,12 +124,14 @@ public class BoardGame {
                         firstRun = false;
                         boosters = null;
                     }
-
+                    //wygenerowanie boosterów
                     if (boosters == null) {
                         boosters = new Population(Constant.GA_POPULATION_SIZE, Constant.GA_POPULATION_WIDTH, true);
                     } else {
+                    	//ewolucja boosterów
                         boosters = GA.evolvePopulation(boosters);
                     }
+                    //po ewolucji nastepuje wybieranie najlepszego boostera z najlepszego osobnika zawieraj¹cego booster, podczas podnoszenia boostera
                     Booster booster = boosters.GetFittestBooster();
                     if (!firstRun) {
                         booster.setPlayer(player);

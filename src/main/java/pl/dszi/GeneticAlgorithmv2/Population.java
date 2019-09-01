@@ -18,6 +18,7 @@ public class Population {
         return PopulationWidth;
     }
 
+    //jeœli start = true, to trzeba wygenerowaæ populacje pocz¹tkow¹
     public Population(int populationSize, int populationWidth, boolean start){
         PopulationSize = populationSize;
         PopulationWidth = populationWidth;
@@ -32,7 +33,8 @@ public class Population {
     public BoosterPopulation GetBoosterPopulation(int index){
         return BoostersPopulations[index];
     }
-
+    
+    //wybranie najlepszego z osobników
     public BoosterPopulation GetFittest(){
         BoosterPopulation fittest = BoostersPopulations[0];
         for(int i = 0; i < PopulationSize; i++){
@@ -42,7 +44,7 @@ public class Population {
         }
         return fittest;
     }
-
+    //wybranie najlepszego z boosterów z najlepszego osobnika
     public Booster GetFittestBooster(){
         BoosterPopulation fittestPopulation = GetFittest();
         Booster fittestBooster = fittestPopulation.GetBoosterAt(0);

@@ -74,7 +74,7 @@ public class Booster {
 
     private void calculateFitness() {
         fitness = value * timerDelay;
-        switch (type) {
+        /*switch (type) {
             case BOOSTER_IMMORTALITY:
                 fitness *= 0.19;
                 break;
@@ -90,7 +90,7 @@ public class Booster {
             case BOOSTER_NO_TYPE:
                 fitness *= 0;
                 break;
-        }
+        }*/
     }
 
     private void starting() {

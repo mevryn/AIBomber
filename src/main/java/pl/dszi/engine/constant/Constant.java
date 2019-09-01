@@ -33,4 +33,5 @@ public class Constant {
     public static final boolean GA_REVERSE_CROSSOVER = true;
     public static final int GA_POPULATION_SIZE = 5;
     public static final int GA_POPULATION_WIDTH = 5;
+    
 }
