@@ -1,7 +1,7 @@
 package pl.dszi.Booster;
 
 import java.util.Random;
-
+//pojedynczy osobnik zawieraj¹cy boostery
 public class BoosterPopulation {
     Booster[] boosters;
     public BoosterPopulation(int populationSize){
@@ -45,9 +45,9 @@ public class BoosterPopulation {
         boosters[index] = booster;
     }
 
-//TODO:PrzerobiÄ‡ na fitness bazowany na pozycji, zamiast na fitnessie boosterÃ³w
     public double GetFitness(){
         double fitness = 0;
+        //booster.length = d³ugoœæ tablicy osobnika(5)
         for(int i = 0; i < boosters.length; i++){
             fitness += boosters[i].GetFitness();
         }

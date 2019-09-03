@@ -90,8 +90,9 @@ class CrateGenerator {
             }
         }
     }
-
+    //generowanie boosterow na mapie
     private int getBoosterCrates(Cell[][] cells, int boosterCrates, int col, int row) {
+    	//jesli losowana liczba modulo 101 jest wieksza niz BOOSTER_CRATE_THRESHOLD(0.80)
         if (new Random().nextInt() % 101 >= Constant.BOOSTER_CRATE_THRESHOLD && boosterCrates < Constant.MAX_BOOSTER_CRATES) {
             boosterCrates++;
             cells[col][row].setType(CellType.CELL_CRATEBONUS);
