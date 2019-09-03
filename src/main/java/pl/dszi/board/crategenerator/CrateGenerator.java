@@ -95,20 +95,20 @@ class CrateGenerator {
         if (new Random().nextInt() % 101 >= Constant.BOOSTER_CRATE_THRESHOLD && boosterCrates < Constant.MAX_BOOSTER_CRATES) {
             boosterCrates++;
             cells[col][row].setType(CellType.CELL_CRATEBONUS);
-        }
-        else {
+        } else {
             cells[col][row].setType(CellType.CELL_CRATE);
         }
         return boosterCrates;
     }
 
-    void createCrates(Cell[][] cells, int[] crates) {
+    int createCrates(Cell[][] cells, int[] crates) {
         int BoosterCrates = 0;
         for (int crate : crates) {
             int col = crate % Constant.DEFAULT_GAME_TILES_HORIZONTALLY;
             int row = crate / Constant.DEFAULT_GAME_TILES_HORIZONTALLY;
             BoosterCrates = getBoosterCrates(cells, BoosterCrates, col, row);
         }
+        return BoosterCrates;
     }
 
     void setPopulationScore(int population, int actionAmount) {

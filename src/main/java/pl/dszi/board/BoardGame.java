@@ -127,10 +127,17 @@ public class BoardGame {
 
                     if (boosters == null) {
                         boosters = new Population(Constant.GA_POPULATION_SIZE, Constant.GA_POPULATION_WIDTH, true);
+                        System.out.println("Generated population with " + boosters.GetTotalFitness() + " fitness");
                     } else {
                         boosters = GA.evolvePopulation(boosters);
+                        System.out.println("Evolved population to " + boosters.GetTotalFitness() + " fitness");
+                    }
+                    while(boosters.GetTotalFitness() < Constant.GA_POPULATION_MINIMAL_FITNESS){
+                        boosters = GA.evolvePopulation(boosters);
+                        System.out.println("Evolved population to " + boosters.GetTotalFitness() + " fitness");
                     }
                     Booster booster = boosters.GetFittestBooster();
+                    System.out.println("Fittest booster : " + booster.getBoosterType() + " " + booster.getTimerDelay() + " " + booster.getValue() + " with fitness " + booster.GetFitness());
                     if (!firstRun) {
                         booster.setPlayer(player);
                     }
