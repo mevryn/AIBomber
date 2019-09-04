@@ -16,11 +16,11 @@ public class GA {
         }
         int elitismOffset = Constant.GA_ELITISM ? 1 : 0;
         for(int i = elitismOffset; i < population.GetPopulationLength(); i++){
-        	//wybieramy 2 osobniki do "turnieju" i przechodzimy do krzy¿owania wybranych 2 osobników
+        	//wybieramy 2 osobników u¿ywaj¹c zasady turniejowej i przechodzimy do krzy¿owania wybranych 2 osobników
             BoosterPopulation individual1 = tournamentSelection(population);
             BoosterPopulation individual2 = tournamentSelection(population);
             BoosterPopulation newIndividual = crossover(individual1, individual2);
-            //dodajemy do tymczasowej populacji nowego osobnika po krzyzowaniu
+            //dodajemy do tymczasowej populacji nowe osobniki uzyskane po krzyzowaniu
             newPopulation.SaveBoosterPopulation(i, newIndividual);
         }
         //mutacja osobników
@@ -48,17 +48,17 @@ public class GA {
                 Booster boosterIndividual2 = null;
                 //wybieranie boosterów do krzy¿owania na podstawie ustawieñ gry
                 if(Constant.GA_REVERSE_CROSSOVER) {
-                	//je¿eli GA_REVERSE_CROSSOVER = true, to wtedy boostery krzy¿uj¹ siê 04,13,22,31,40
+                	//je¿eli GA_REVERSE_CROSSOVER = true, to wtedy boostery krzy¿uj¹ siê 0-4,1-3,2-2,3-1,4-0
                     boosterIndividual1 = individual1.GetBoosterAt(i);
                     boosterIndividual2 = individual2.GetBoosterAt(individual2.GetPopulationWidth() - i - 1);
                 }else{
-                	////je¿eli GA_REVERSE_CROSSOVER = true, to wtedy boostery krzy¿uj¹ siê 00,11,22,33,44
+                	////je¿eli GA_REVERSE_CROSSOVER = true, to wtedy boostery krzy¿uj¹ siê 0-0,1-1,2-2,3-3,4-4
                     boosterIndividual1 = individual1.GetBoosterAt(i);
                     boosterIndividual2 = individual2.GetBoosterAt(i);
                 }
                 //jeœli losowana liczba jest mniejsza/równa ni¿ GA_UNIFORM_RATE(0.5) to korzystamy z w³aœciwoœci pierwszego wybranego boostera, jeœli jest wiêksza to z drugiego
                     if (Math.random() <= Constant.GA_UNIFORM_RATE) {
-                    	//czas trwania boosterów takich jak: wiêkszy zasiêg eksplozji/nieœmiertelnoœæ/wiêksza iloœc bomb
+                    	//czas trwania boosterów takich jak: wiêkszy zasiêg eksplozji/nieœmiertelnoœæ/wiêksza iloœæ bomb
                         newIndividualBooster.setTimerDelay(boosterIndividual1.getTimerDelay());
                     } else {
                         newIndividualBooster.setTimerDelay(boosterIndividual2.getTimerDelay());

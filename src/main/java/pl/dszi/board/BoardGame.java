@@ -130,8 +130,9 @@ public class BoardGame {
                     } else {
                     	//ewolucja boosterów
                         boosters = GA.evolvePopulation(boosters);
-                    }
+                    } 
                     //po ewolucji nastepuje wybieranie najlepszego boostera z najlepszego osobnika zawieraj¹cego booster, podczas podnoszenia boostera
+                    //dla pierwszego podniesionego boostera by³o 0 ewolucji, dla drugiego by³a 1 ewolucja itd
                     Booster booster = boosters.GetFittestBooster();
                     if (!firstRun) {
                         booster.setPlayer(player);
