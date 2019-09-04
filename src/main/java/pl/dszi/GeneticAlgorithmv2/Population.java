@@ -56,6 +56,14 @@ public class Population {
         return fittestBooster;
     }
 
+    public int GetTotalFitness(){
+        int totalFitness = 0;
+        for(BoosterPopulation boosterPopulation : BoostersPopulations){
+            totalFitness += boosterPopulation.GetFitness();
+        }
+        return totalFitness;
+    }
+
     int GetPopulationLength(){
         return BoostersPopulations.length;
     }
@@ -64,4 +72,3 @@ public class Population {
         BoostersPopulations[index] = boosterPopulation;
     }
 }
- 

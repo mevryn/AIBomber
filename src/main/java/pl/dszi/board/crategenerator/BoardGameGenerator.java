@@ -14,6 +14,10 @@ public class BoardGameGenerator {
     private CrateGenerator crateGenerator;
     private int beatenGens = 0;
     private int beatPop = 0;
+    private int boosterCrates = 0;
+    public int GetBoosterCrates(){
+        return boosterCrates;
+    }
 
     private List<Integer> redundantScore = new ArrayList<>();
 
@@ -40,7 +44,7 @@ public class BoardGameGenerator {
 
 
     public void generateFinalCrates() {
-        crateGenerator.createCrates(boardGame.getCells(), crateGenerator.getBestGen());
+        boosterCrates = crateGenerator.createCrates(boardGame.getCells(), crateGenerator.getBestGen());
     }
 
     public void resetGameWithNewCrates() {
@@ -73,5 +77,9 @@ public class BoardGameGenerator {
             beatPop++;
         }
         crateGenerator.returnRandomCrates();
+    }
+
+    public void ClearBoosterCratesCounter() {
+        boosterCrates = 0;
     }
 }

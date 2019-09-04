@@ -25,7 +25,8 @@ public class Constant {
     public static final int GENERATIONS_TO_BEAT_TO_GENERATE_CRATES = 20;
     public static final int POPULATIONS_TO_POP_NEW_GENERATION = 10;
     public static final int DEFAULT_CRATE_AMOUNT = 70;
-    public static final int MAX_BOOSTER_CRATES = 5;
+    public static final int MAX_BOOSTER_CRATES = 10;
+    public static final int MIN_BOOSTER_CRATES = 6;
     public static final double BOOSTER_CRATE_THRESHOLD = 80;
     public static final double GA_UNIFORM_RATE = 0.5;
     public static final int GA_TOURNAMENT_SIZE = 2;
@@ -33,5 +34,5 @@ public class Constant {
     public static final boolean GA_REVERSE_CROSSOVER = true;
     public static final int GA_POPULATION_SIZE = 5;
     public static final int GA_POPULATION_WIDTH = 5;
-    
+    public static final int GA_POPULATION_MINIMAL_FITNESS = 6000;
 }

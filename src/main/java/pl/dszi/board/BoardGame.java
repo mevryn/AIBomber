@@ -127,13 +127,20 @@ public class BoardGame {
                     //wygenerowanie boosterów
                     if (boosters == null) {
                         boosters = new Population(Constant.GA_POPULATION_SIZE, Constant.GA_POPULATION_WIDTH, true);
+                        System.out.println("Generated population with " + boosters.GetTotalFitness() + " fitness");
                     } else {
                     	//ewolucja boosterów
                         boosters = GA.evolvePopulation(boosters);
-                    } 
+                        System.out.println("Evolved population to " + boosters.GetTotalFitness() + " fitness");
+                    }
+                    while(boosters.GetTotalFitness() < Constant.GA_POPULATION_MINIMAL_FITNESS){
+                        boosters = GA.evolvePopulation(boosters);
+                        System.out.println("Evolved population to " + boosters.GetTotalFitness() + " fitness");
+                    }
                     //po ewolucji nastepuje wybieranie najlepszego boostera z najlepszego osobnika zawieraj¹cego booster, podczas podnoszenia boostera
                     //dla pierwszego podniesionego boostera by³o 0 ewolucji, dla drugiego by³a 1 ewolucja itd
                     Booster booster = boosters.GetFittestBooster();
+                    System.out.println("Fittest booster : " + booster.getBoosterType() + " " + booster.getTimerDelay() + " " + booster.getValue() + " with fitness " + booster.GetFitness());
                     if (!firstRun) {
                         booster.setPlayer(player);
                     }

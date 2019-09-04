@@ -64,13 +64,19 @@ public class Game implements Runnable {
     }
 
     private void resetGame() {
+        System.out.println("Generating new  map, current one contains " + boardGameGen.GetBoosterCrates() + " booster crates");
         Player pl = new Player(Constant.PLAYER_1_NAME, 3);
         Player p2 = new Player(Constant.PLAYER_2_NAME, 3, new AIController(boardGameGen.getBoardGame()));
         boardGameGen.getBoardGame().getMap().clear();
         boardGameGen.getBoardGame().put(pl, Constant.PLAYER_1_STARTINGLOCATION);
         boardGameGen.getBoardGame().put(p2, Constant.PLAYER_2_STARTINGLOCATION);
-        boardGameGen.generateFinalCrates();
-
+        boardGameGen.ClearBoosterCratesCounter();
+        while(boardGameGen.GetBoosterCrates() < Constant.MIN_BOOSTER_CRATES){
+            boardGameGen.ClearBoosterCratesCounter();
+            boardGameGen.generateFinalCrates();
+            System.out.println("Generated new  map, current one contains " + boardGameGen.GetBoosterCrates() + " booster crates");
+        }
+        System.out.println("Running game with " + boardGameGen.GetBoosterCrates() + " booster crates");
         run();
     }
 
